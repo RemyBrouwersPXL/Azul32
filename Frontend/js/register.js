@@ -67,14 +67,23 @@ function validatePastDate(dateString) {
 }
 
 function showError(fieldId, message) {
-    const field = document.getElementById(fieldId);
-    const errorElement = document.createElement('div');
-    errorElement.className = 'error-message';
-    errorElement.textContent = message;
-    errorElement.style.color = 'red';
-    errorElement.style.fontSize = '0.8em';
-
-    field.parentNode.appendChild(errorElement);
+    if (fieldId === 'form') {
+        const form = document.querySelector('.form');
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message';
+        errorElement.textContent = message;
+        errorElement.style.color = 'red';
+        errorElement.style.marginBottom = '15px';
+        form.prepend(errorElement);
+    } else {
+        const field = document.getElementById(fieldId);
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message';
+        errorElement.textContent = message;
+        errorElement.style.color = 'red';
+        errorElement.style.fontSize = '0.8em';
+        field.parentNode.appendChild(errorElement);
+    }
 }
 
 function clearErrors() {
@@ -84,7 +93,7 @@ function clearErrors() {
 
 function sendRegistration(userData) {
     console.log('Sending to backend:', userData);
-    const form = document.querySelector('.form');
+    
 
     let url = 'https://localhost:5051/api/authentication/register';
 
