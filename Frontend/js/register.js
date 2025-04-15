@@ -1,12 +1,10 @@
-const handleWindowLoad = function () {
-    let submitButton = document.getElementsByClassName("submit");
+document.addEventListener('DOMContentLoaded', function () {
+    const submitButton = document.querySelector('.submit');
     submitButton.addEventListener("click", handleSubmitButtonClick);
-};
+});
 
-function handleSubmitButtonClick() {
-    const form = document.getElementsByClassName('form');
-
-    if (form) {
+function handleSubmitButtonClick(event) {
+    event.preventDefault()
 
         const email = document.getElementById('email').value.trim();
         const userName = document.getElementById('username').value.trim();
@@ -51,14 +49,14 @@ function handleSubmitButtonClick() {
 
         if (isValid) {
             const userData = {
-                email,
-                username,
-                password,
-                lastVisitToPortugal: lastVisitToPortugal || null
+                email: email,
+                userName: userName,  
+                password: password,
+                lastVisitToPortugal: lastVisitToPortugal || null  
             };
             sendRegistration(userData);
         }
-    }
+    
 }
 
 function validatePastDate(dateString) {
@@ -85,9 +83,9 @@ function clearErrors() {
 }
 
 function sendRegistration(userData) {
-    console.log('Verzonden naar backend:', userData);
+    console.log('Sending to backend:', userData);
 
-    let url = 'https://localhost:5051//api/Authentication/register';
+    let url = 'https://localhost:5051/api/authentication/register';
 
     fetch(url, {
         method: 'POST',
@@ -99,6 +97,7 @@ function sendRegistration(userData) {
     .then(response => {
         if (!response.ok) {
             throw new Error('Registration failed');
+            return response.json();
         }
         return response.json();
     })
@@ -110,5 +109,3 @@ function sendRegistration(userData) {
         })
 
 }
-
-window.addEventListener('Load', handleWindowLoad);
