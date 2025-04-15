@@ -84,6 +84,7 @@ function clearErrors() {
 
 function sendRegistration(userData) {
     console.log('Sending to backend:', userData);
+    const form = document.querySelector('.form');
 
     let url = 'https://localhost:5051/api/authentication/register';
 
