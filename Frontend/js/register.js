@@ -95,27 +95,38 @@ function sendRegistration(userData) {
     console.log('Sending to backend:', userData);
     
 
-    let url = 'https://localhost:5051/api/authentication/register';
 
-    fetch(url, {
+    fetch('https://localhost:5051/api/authentication/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json'
         },
         body: JSON.stringify(userData)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Registration failed');
-            return response.json();
-        }
-        return response.json();
-    })
-    .then(data => {
-        window.location.href = '../index.html';
-    })
-        .catch(error => {
-            showError('form', error.message || 'An error occurred during registration!')
+        .then(async response => {
+            const text = await response.text(); // Eerst als tekst lezen
+            try {
+                const data = text ? JSON.parse(text) : {}; // Probeer te parsen
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        data.title ||
+                        `Server error: ${response.status} ${response.statusText}`
+                    );
+                }
+                return data;
+            } catch (e) {
+                throw new Error(text || `Request failed with status ${response.status}`);
+            }
         })
+        .then(data => {
+            window.location.href = '../index.html?registration=success';
+            console.log()
+        })
+        .catch(error => {
+            showError('form', error.message);
+            console.error('Registration failed:', error);
+        });
 
 }
