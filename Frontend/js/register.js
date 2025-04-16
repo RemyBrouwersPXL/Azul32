@@ -121,8 +121,8 @@ function sendRegistration(userData) {
             }
         })
         .then(data => {
-            window.location.href = '../index.html?registration=success';
-            console.log()
+            localStorage.setItem('registeredEmail', userData.email);
+            window.location.href = './index.html';
         })
         .catch(error => {
             showError('form', error.message);
