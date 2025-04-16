@@ -122,7 +122,7 @@ function sendRegistration(userData) {
         })
         .then(data => {
             localStorage.setItem('registeredEmail', userData.email);
-            window.location.href = './index.html';
+            window.location.href = './index.html?registration=success';
         })
         .catch(error => {
             showError('form', error.message);
