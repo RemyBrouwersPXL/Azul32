@@ -4,28 +4,67 @@ body {
     padding: 0;
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background: url('../Images/register_background.png') no-repeat center center fixed;
     background-size: cover;
 }
 
-nav {
-    width: auto;
-    color: white;
-    padding: 10px;
+.welcome {
     position: fixed;
-    left: auto;
     top: 0;
-    right: auto;
-}        
-
-nav div {
-    display: flex; /* Zet de container in flex-mode */
-    align-items: center; /* Centreer items verticaal */
-    gap: 10px; /* Voeg wat ruimte tussen de elementen toe */
     text-align: center;
+    padding: 20px;
+    color: #414246;
+    font-size: 28px;
+    font-family: Courier New;
+    animation: netflix_style 3.5s forwards;
+    outline: none;
+    white-space: nowrap;
 }
+
+
+
+
+@keyframes netflix_style {
+    0% {
+        color: #f3f3f3;
+        transform: scale(1.5, 1.5);
+    }
+
+    10% {
+        color: #f3f3f3;
+        transform: scale(1.5, 1.5);
+    }
+
+    15% {
+        color: #f3f3f3;
+    }
+
+    20% {
+        color: #414246;
+        text-shadow: none;
+        transform: scale(1.1, 1.1);
+    }
+
+    75% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+        color: #414246;
+        transform: scale(1, 1);
+    }
+
+    100% {
+        opacity: 1;
+        color: #414246;
+        transform: scale(1, 1);
+    }
+}
+
 
 
 
@@ -156,6 +195,26 @@ nav div {
 
     .submit:hover {
         background-color: #1f2523;
+    }
+
+
+.team {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    font-size: 20px;
+    color: #414246;
+}
+
+    .team:visited {
+        color: #414246;
+        text-decoration: none;
+    }
+
+    .team:hover {
+        text-decoration: underline;
     }
 
 @keyframes pulse {
