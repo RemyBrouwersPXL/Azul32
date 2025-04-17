@@ -1,5 +1,5 @@
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Arial';
     margin: 0;
     padding: 0;
     background-color: #f7ebd6;
@@ -9,12 +9,14 @@ body {
 }
 
 .nav {
+    text-decoration: none;
     display: flex;
     gap: 2rem;
     top: 0;
     flex-wrap: wrap;
     justify-content: left;
-    color: #f7ebd6;
+    color: #fff;
+    font-weight: bold;
     padding-left: 20px;
 }
 
@@ -22,17 +24,17 @@ body {
         text-decoration: none;
     }
 
-    .nav a:visited {
-        color: #f7ebd6;
-        text-decoration: none;
-    }
+        .nav a:visited {
+            color: #084e79;
+            text-decoration: none;
+        }
 
     .nav a:hover {
         text-decoration: underline;
     }
 
 header {
-    background: linear-gradient(#1d7cb6, #53bfcd, #50c1cd);
+    background: #1d7cb6;
     color: #f7ebd6;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

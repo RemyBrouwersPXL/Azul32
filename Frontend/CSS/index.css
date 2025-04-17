@@ -16,7 +16,8 @@ body {
     top: 0;
     text-align: center;
     padding: 20px;
-    color: #414246;
+    color: #084e79;
+    text-shadow: 3px 3px #c3baa9;
     font-size: 28px;
     font-family: Courier New;
     animation: netflix_style 3.5s forwards;
@@ -43,7 +44,7 @@ body {
     }
 
     20% {
-        color: #414246;
+        color: #084e79;
         text-shadow: none;
         transform: scale(1.1, 1.1);
     }
@@ -54,13 +55,13 @@ body {
 
     80% {
         opacity: 1;
-        color: #414246;
+        color: #084e79;
         transform: scale(1, 1);
     }
 
     100% {
         opacity: 1;
-        color: #414246;
+        color: #084e79;
         transform: scale(1, 1);
     }
 }
