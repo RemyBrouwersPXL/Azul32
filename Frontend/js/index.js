@@ -1,20 +1,20 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Check if registration was successful
+    // Controleer op succesvolle registratie
     const urlParams = new URLSearchParams(window.location.search);
     const registrationSuccess = urlParams.get('registration');
 
     if (registrationSuccess === 'success') {
-        // Retrieve the stored email
+        // Opgeslagen email ophalen
         const registeredEmail = localStorage.getItem('registeredEmail');
 
         if (registeredEmail) {
-            // Auto-fill the email field if it exists
-            const emailField = document.getElementById('email'); // Ensure this matches your input ID
+            // Email automatisch invulen indien het bestaat
+            const emailField = document.getElementById('email'); // Verzekeren dat dit uw input ID matcht
             if (emailField) {
                 emailField.value = registeredEmail;
             }
 
-            // Optional: Clear the stored email after use
+            // Opgeslagen Email verwijderen nadat dit gebruikt is
             localStorage.removeItem('registeredEmail');
         }
     }
@@ -112,7 +112,7 @@ function sendRegistration(userData) {
         })
         .then(data => {
             let token = data.token
-            window.location.href = './lobby.htm?token=' + token;
+            window.location.href = './lobby.html?token=' + token;
             
         })
         .catch(error => {
