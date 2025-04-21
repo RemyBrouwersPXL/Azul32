@@ -1,0 +1,5 @@
+Vragen:
+-Mogelijkheid om SQL servers online te hosten zodat ieders SQL gegevens ergens samenkomen (nu niet het geval)
+-Wordt token opnieuw gerefresht na 60 minuten? Is opnieuw inloggen dan noddig?
+-Wat is het nut van table userToken? Moet tokens hierin opgeslagen worden? Zo ja, waarom (als tokens toch refreshen na 60 minuten)?
+-Indien fout bij registratie -> foutcode en email user opslaan in aparte table 
