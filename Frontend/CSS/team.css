@@ -8,6 +8,11 @@ body {
     flex-direction: column;
 }
 
+.banner-pattern {
+    background: url('../Images/TeamBanner.png') repeat-x top center;
+    height: 80px; 
+    width: 100%;
+}
 .nav {
     text-decoration: none;
     display: flex;
