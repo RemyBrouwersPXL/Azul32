@@ -40,7 +40,6 @@ internal class Table : ITable
 
     public void Join(User user)
     {
-        IList<IPlayer> _players = new List<IPlayer>();
         var player = new HumanPlayer(user.Id, user.UserName, user.LastVisitToPortugal);
         if (_seatedPlayers.Any(player => player.Id == user.Id))
         {
@@ -61,6 +60,7 @@ internal class Table : ITable
         {
             throw new InvalidOperationException("User not seated");
         }
-        throw new NotImplementedException();
+        _seatedPlayers.Remove(_seatedPlayers.First(player => player.Id == userId));
+        
     }
 }

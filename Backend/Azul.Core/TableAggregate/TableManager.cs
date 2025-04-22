@@ -49,7 +49,16 @@ internal class TableManager : ITableManager
 
     public void LeaveTable(Guid tableId, User user)
     {
-        throw new NotImplementedException();
+        ITable table = _tableRepository.Get(tableId);
+        if (table.SeatedPlayers.Count > 1)
+        {
+            table.Leave(user.Id);
+        }
+        else
+        {
+            table.Leave(user.Id);
+            _tableRepository.Remove(tableId);
+        }
     }
 
 
