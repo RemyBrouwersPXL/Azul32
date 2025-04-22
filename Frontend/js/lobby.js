@@ -6,7 +6,11 @@ document.getElementById('gameMode').addEventListener('click', function () {
     document.body.style.filter = 'brightness(0.7)';
 
     // You can add your game loading logic here
+    gameModeDiv.addEventListener("click", function () {
 
+        gameModeDiv.hidden = true;
+        loaderOverlay.hidden = false;
+    }
     // Example: After 5 seconds, hide the loader (remove this in production)
     // setTimeout(function() {
     //     document.getElementById('loaderOverlay').style.display = 'none';
