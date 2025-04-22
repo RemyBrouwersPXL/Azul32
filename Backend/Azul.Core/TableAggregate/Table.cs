@@ -11,7 +11,8 @@ internal class Table : ITable
 {
     internal Table(Guid id, ITablePreferences preferences)
     {
-        
+        id = Id;
+        preferences = Preferences;
     }
 
     public Guid Id => throw new NotImplementedException();
