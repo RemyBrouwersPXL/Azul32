@@ -30,15 +30,20 @@ internal class TableManager : ITableManager
 
     public ITable JoinOrCreateTable(User user, ITablePreferences preferences)
     {
-        
-        if (_tableRepository.FindTablesWithAvailableSeats(preferences).Count == 0)
+        var listTables = _tableRepository.FindTablesWithAvailableSeats(preferences);
+        if (listTables.Count == 0)
         {
-            
+            var newTable = _tableFactory.CreateNewForUser(user, preferences);
+            _tableRepository.Add(newTable);
+            return newTable;
         }
         else 
         {
-            _tableFactory.CreateNewForUser(user, preferences);
+            ITable table = listTables[0];
+            table.Join(user);
+            return table;
         }
+        
         
     }
 
