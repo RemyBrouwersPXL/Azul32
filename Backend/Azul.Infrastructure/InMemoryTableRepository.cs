@@ -1,4 +1,6 @@
-﻿using Azul.Core.TableAggregate.Contracts;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Azul.Core.TableAggregate.Contracts;
 using Azul.Core.Util;
 using Azul.Infrastructure.Util;
 
@@ -36,8 +38,20 @@ internal class InMemoryTableRepository : ITableRepository
     public IList<ITable> FindTablesWithAvailableSeats(ITablePreferences preferences)
     {
         //TODO: loop over all tables (user the Values property of _tableDictionary)
+        IReadOnlyList<ITable> tables = _tableDictionary.Values;
+        IList<ITable> _availableTables = new List<ITable>();
+        int _count = 0;
+        while (_count < tables.Count) 
+        { 
+            if (tables[_count].HasAvailableSeat == true && tables[_count].Preferences == preferences)
+            {
+                _availableTables.Add(tables[_count]);
+            }
+            _count++;
+        }
+        return _availableTables;
         //and check if those tables have the same preferences and have seats available.
         //Put the tables that have the same preferences and have seats available in a list and return that list.
-        throw new System.NotImplementedException();
+        
     }
 }
