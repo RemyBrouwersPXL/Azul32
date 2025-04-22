@@ -5,7 +5,7 @@ document.getElementById('gameMode').addEventListener('click', function () {
     document.getElementById('loading_msg').style.display = 'unset';
 
     // Darken the background
-    document.body.style.filter = 'brightness(0.7)';
+    document.span.style.filter = 'brightness(0.7)';
 
     // You can add your game loading logic here
 
