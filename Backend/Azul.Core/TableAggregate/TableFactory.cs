@@ -1,4 +1,5 @@
-﻿using Azul.Core.TableAggregate.Contracts;
+﻿using System.Security.Cryptography;
+using Azul.Core.TableAggregate.Contracts;
 using Azul.Core.UserAggregate;
 
 namespace Azul.Core.TableAggregate;
@@ -8,6 +9,7 @@ internal class TableFactory : ITableFactory
 {
     public ITable CreateNewForUser(User user, ITablePreferences preferences)
     {
-        throw new NotImplementedException();
+        ITable _table = new Table(user.Id, preferences);
+        return _table;
     }
 }

@@ -30,9 +30,16 @@ internal class TableManager : ITableManager
 
     public ITable JoinOrCreateTable(User user, ITablePreferences preferences)
     {
-        //Find a table with available seats that matches the given preferences
-        //If no table is found, create a new table. Otherwise, take the first available table
-        throw new NotImplementedException();
+        
+        if (_tableRepository.FindTablesWithAvailableSeats(preferences).Count == 0)
+        {
+            
+        }
+        else 
+        {
+            _tableFactory.CreateNewForUser(user, preferences);
+        }
+        
     }
 
     public void LeaveTable(Guid tableId, User user)
