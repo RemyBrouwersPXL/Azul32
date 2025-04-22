@@ -9,7 +9,10 @@ internal class TableFactory : ITableFactory
 {
     public ITable CreateNewForUser(User user, ITablePreferences preferences)
     {
-        ITable _table = new Table(user.Id, preferences);
-        return _table;
+        Guid tableId = Guid.NewGuid();
+        ITable table = new Table(tableId, preferences);
+        table.Join(user);
+        return table;
+
     }
 }

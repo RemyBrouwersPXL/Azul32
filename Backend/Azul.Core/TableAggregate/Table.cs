@@ -25,7 +25,7 @@ internal class Table : ITable
 
     public IReadOnlyList<IPlayer> SeatedPlayers => _seatedPlayers.AsReadOnly();
 
-    public bool HasAvailableSeat => true ;
+    public bool HasAvailableSeat =>  _seatedPlayers.Count < Preferences.NumberOfPlayers;
 
     public Guid GameId
     {
@@ -40,12 +40,27 @@ internal class Table : ITable
 
     public void Join(User user)
     {
-        IPlayer player = new(user.Id, user.UserName, user.LastVisitToPortugal);
+        IList<IPlayer> _players = new List<IPlayer>();
+        var player = new HumanPlayer(user.Id, user.UserName, user.LastVisitToPortugal);
+        if (_seatedPlayers.Any(player => player.Id == user.Id))
+        {
+            throw new InvalidOperationException("User already seated");
+        }
+            
+        if (!HasAvailableSeat)
+        {
+            throw new InvalidOperationException("The table is full");
+        }
+
         _seatedPlayers.Add(player);
     }
 
     public void Leave(Guid userId)
     {
+        if (!_seatedPlayers.Any(player => player.Id == userId))
+        {
+            throw new InvalidOperationException("User not seated");
+        }
         throw new NotImplementedException();
     }
 }

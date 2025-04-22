@@ -7,9 +7,9 @@ namespace Azul.Core.PlayerAggregate;
 
 /// <inheritdoc cref="IPlayer"/>
 internal class HumanPlayer : PlayerBase
-{    internal HumanPlayer(Guid userId, string name, DateOnly? lastVisitToPortugal)
+{
+    internal HumanPlayer(Guid userId, string name, DateOnly? lastVisitToPortugal)
+        : base(userId, name, lastVisitToPortugal) 
     {
-       
     }
-
 }
