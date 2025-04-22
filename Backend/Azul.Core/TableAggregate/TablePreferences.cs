@@ -6,7 +6,13 @@ namespace Azul.Core.TableAggregate
     /// <inheritdoc cref="ITablePreferences"/>
     public class TablePreferences : ITablePreferences
     {
+        public TablePreferences()
+        {
+            NumberOfPlayers = 2;
+            NumberOfArtificialPlayers = 0;
+        }
 
+     
         [DefaultValue(2)]
         public int NumberOfPlayers { get; set; }
 

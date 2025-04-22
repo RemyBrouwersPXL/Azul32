@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Numerics;
 using Azul.Core.PlayerAggregate;
 using Azul.Core.PlayerAggregate.Contracts;
 using Azul.Core.TableAggregate.Contracts;
@@ -9,21 +11,27 @@ namespace Azul.Core.TableAggregate;
 /// <inheritdoc cref="ITable"/>
 internal class Table : ITable
 {
+    private readonly List<IPlayer> _seatedPlayers = new List<IPlayer>();
+    private Guid _gameId;
     internal Table(Guid id, ITablePreferences preferences)
     {
-        id = Id;
-        preferences = Preferences;
+        Id = id;
+        Preferences = preferences;
     }
 
-    public Guid Id => throw new NotImplementedException();
+    public Guid Id { get; }
 
-    public ITablePreferences Preferences => throw new NotImplementedException();
+    public ITablePreferences Preferences { get; }
 
-    public IReadOnlyList<IPlayer> SeatedPlayers => throw new NotImplementedException();
+    public IReadOnlyList<IPlayer> SeatedPlayers => _seatedPlayers.AsReadOnly();
 
-    public bool HasAvailableSeat => throw new NotImplementedException();
+    public bool HasAvailableSeat => true ;
 
-    public Guid GameId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public Guid GameId
+    {
+        get => _gameId;
+        set => _gameId = value;
+    }
 
     public void FillWithArtificialPlayers(IGamePlayStrategy gamePlayStrategy)
     {
@@ -32,7 +40,8 @@ internal class Table : ITable
 
     public void Join(User user)
     {
-        throw new NotImplementedException();
+        IPlayer player = new(user.Id, user.UserName, user.LastVisitToPortugal);
+        _seatedPlayers.Add(player);
     }
 
     public void Leave(Guid userId)
