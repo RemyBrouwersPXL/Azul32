@@ -64,7 +64,18 @@ internal class TableManager : ITableManager
 
     public IGame StartGameForTable(Guid tableId)
     {
-        throw new NotImplementedException();
+        ITable table = _tableRepository.Get(tableId);
+        if (table.HasAvailableSeat)
+        {
+            throw new InvalidOperationException("not enough");
+        }
+        else
+        {
+            IGame game = _gameFactory.CreateNewForTable(table);
+            _gameRepository.Add(game);
+            table.GameId = game.Id;
+            return game;
+        }
     }
 
     public void FillWithArtificialPlayers(Guid tableId, User user)

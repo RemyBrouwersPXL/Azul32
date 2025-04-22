@@ -19,7 +19,7 @@ namespace Azul.Core.TableAggregate
         [DefaultValue(0)]
         public int NumberOfArtificialPlayers { get; set; }
 
-        public int NumberOfFactoryDisplays { get; }
+        public int NumberOfFactoryDisplays => NumberOfPlayers * 2 + 1;
 
 
         //DO NOT CHANGE THE CODE BELOW, unless (maybe) when you are working on EXTRA requirements

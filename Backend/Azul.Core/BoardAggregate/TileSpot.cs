@@ -21,6 +21,7 @@ public class TileSpot
 
     public TileSpot(TileType? type = null)
     {
+        
     }
 
     public void PlaceTile(TileType type)
