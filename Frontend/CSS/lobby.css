@@ -50,7 +50,7 @@ body.loading {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -75,23 +75,23 @@ body.loading {
     }
 
     .square:nth-child(2) {
-        background-color: #1f2422;
+        background-color: #52c0d0; /* New teal color */
         animation-delay: 0.15s;
     }
 
     .square:nth-child(3) {
-        background-color: #f55c26;
+        background-color: #1f2422;
         animation-delay: 0.3s;
     }
 
     .square:nth-child(4) {
-        background-color: #ffa12a;
+        background-color: #f55c26;
         animation-delay: 0.45s;
     }
 
     .square:nth-child(5) {
-        background-color: #52c0d0;
-        animation-delay: 0.55s;
+        background-color: #ffa12a;
+        animation-delay: 0.6s;
     }
 
 @keyframes bounce {
@@ -99,13 +99,15 @@ body.loading {
         transform: translateY(0);
     }
 
-    .loading-game {
-        color: azure;
-        font-size: 20px;
-        font-weight: bold;
-    }
-
     20% {
         transform: translateY(-50px);
     }
+}
+
+.loading_msg {
+    margin-top: 200px;
+    display: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
 }
