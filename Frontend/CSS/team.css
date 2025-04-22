@@ -15,18 +15,20 @@ body {
     top: 0;
     flex-wrap: wrap;
     justify-content: left;
-    color: #fff;
+    color: #fff !important;
     font-weight: bold;
     padding-left: 20px;
+    padding-top: 16px;
 }
 
     .nav a {
         text-decoration: none;
+        color: #fff
     }
 
         .nav a:visited {
-            color: #084e79;
             text-decoration: none;
+            color: #fff;
         }
 
     .nav a:hover {
