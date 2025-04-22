@@ -56,9 +56,16 @@ body.loading {
     z-index: 1000;
 }
 
+.loader_section {
+    z-index: 1001;
+}
+
 .loader {
+    padding-left: 10px;
+    padding-right: 10px;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+    width: auto;
     height: 100px;
 }
 
@@ -67,6 +74,7 @@ body.loading {
     height: 20px;
     margin: 0 10px;
     animation: bounce 1.5s infinite ease-in-out;
+    border-radius: 25%;
 }
 
     .square:nth-child(1) {
