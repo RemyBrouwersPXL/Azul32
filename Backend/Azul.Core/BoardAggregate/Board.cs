@@ -47,10 +47,10 @@ internal class Board : IBoard
     {
         get
         {
-            for (int col = 0; col < 5; col++)
+            for (int row = 0; row < 5; row++)
             {
                 bool complete = true;
-                for (int row = 0; row < 5; col++)
+                for (int col = 0; col < 5; col++)
                 {
                     if (!_wall[row, col].HasTile)
                     {

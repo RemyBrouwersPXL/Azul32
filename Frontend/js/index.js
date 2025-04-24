@@ -112,6 +112,7 @@ function sendRegistration(userData) {
         })
         .then(data => {
             let token = data.token
+            localStorage.setItem('userToken', token);
             window.location.href = './lobby.html?token=' + token;
             
         })

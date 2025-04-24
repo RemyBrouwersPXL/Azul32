@@ -5,9 +5,30 @@
     <link rel="icon" type="image/png" href="./Images/logo.jpg">
 </head>
 <body>
-    <div class="_1v1" id="gameMode">
-        <h2>1 vs 1</h2>
-    </div>
+    <form class="form">
+        <p class="title">Settings</p>
+        <p class="message">Choose your settings</p>
+        <span>Players</span>
+        <label>
+            <select class="input" id='player' name='player' required>
+                <option value="2">2 players</option>
+                <option value="3">3 players</option>
+                <option value="4">4 players</option>
+            </select>
+        </label>
+
+        <span>Bots</span>
+        <label>
+            <select class="input" id='bots' name='bots' required>
+                <option value="0">0 bots</option>
+                <option value="1">1 bot</option>
+                <option value="2">2 bots</option>
+
+            </select>
+        </label>
+
+        <button class="submit">Search for tables</button>
+    </form>
 
     <div class="loader-overlay" id="loaderOverlay" hidden="hidden">
         <div class="loader_section">
@@ -19,12 +40,9 @@
                 <div class="square"></div>
             </div>
             <div class="loading_msg" id="loading_msg">
-                Searching for players...
+                Searching for tables...
             </div>
         </div>
-    </div>
-    <div id="tableInfo" class="table-info" hidden>
-
     </div>
 </body>
 <script src="js/lobby.js"></script>

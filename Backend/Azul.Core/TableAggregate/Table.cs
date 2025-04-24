@@ -23,7 +23,7 @@ internal class Table : ITable
 
     public ITablePreferences Preferences { get; }
 
-    public IReadOnlyList<IPlayer> SeatedPlayers => _seatedPlayers.AsReadOnly();
+    public IReadOnlyList<IPlayer> SeatedPlayers => _seatedPlayers;
 
     public bool HasAvailableSeat =>  _seatedPlayers.Count < Preferences.NumberOfPlayers;
 
