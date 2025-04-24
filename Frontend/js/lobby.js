@@ -16,7 +16,7 @@
     document.span.style.filter = 'brightness(0.7)';
 
     // You can add your game loading logic here
-
+/*
     try {
         const response = await fetch('/api/Tables/join-or-create', { //hier heb ik een verzoek verzonden naar de backend
             method: 'POST',
