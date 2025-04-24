@@ -18,24 +18,21 @@
     // You can add your game loading logic here
 
     try {
-        const response = await fetch('/api/Tables/join-or-create', {
+        const response = await fetch('/api/Tables/join-or-create', { //hier heb ik een verzoek verzonden naar de backend
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ desiredPlayers: 2 })
+            body: JSON.stringify({ desiredPlayers: 2 }) //twee spelers nodig
         });
         console.log('Fetch completed:', response.status);
 
-        if (!response.ok) {
-            throw new Error(`Server returned ${response.status}`);
-        }
 
-        const data = await response.json();
+        const data = await response.json(); //leest json response
         console.log('Server data:', data);
 
         overlay.style.display = 'none';
         document.body.style.filter = 'none';
 
-        let info = document.getElementById('tableInfo');
+        let info = document.getElementById('tableInfo'); //toon tabel info
         if (!info) {
             info = document.createElement('div');
             info.id = 'tableInfo';
@@ -44,22 +41,9 @@
         }
 
         const waiting = data.maxPlayers - data.currentPlayers;
-        info.innerHTML = `
-        <p>You're at table <strong>${data.tableId}</strong></p>
-        <p>Players: ${data.currentPlayers}/${data.maxPlayers}</p>
-        <p>${waiting > 0
-                ? `Waiting for ${waiting} your opponent${waiting > 1 ? 's' : ''}…`
-                : `<em>Congratsulations! All players joined, starting soon…</em>`
-            }</p>
-      `;
+     
     }
-    catch (err) {
-        console.error('Error in join-or-create:', err);
-        overlay.style.display = 'none';
-        document.body.style.filter = 'none';
-        gameButton.style.display = 'block';
-        alert('Sorry! There was an error joining the table: ' + err.message);
-    }
+    
     // Example: After 5 seconds, hide the loader (remove this in production)
     // setTimeout(function() {
     //     document.getElementById('loaderOverlay').style.display = 'none';
