@@ -12,7 +12,8 @@ internal class GameFactory : IGameFactory
 {
     public IGame CreateNewForTable(ITable table)
     {
-        Guid gameId = Guid.NewGuid();
-        ITable game = new Game(gameId, );
+        //Guid gameId = Guid.NewGuid();
+        throw new NotImplementedException();
+
     }
 }
