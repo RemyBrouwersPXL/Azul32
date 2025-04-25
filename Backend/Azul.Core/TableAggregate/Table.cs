@@ -31,7 +31,7 @@ internal class Table : ITable
     public Guid GameId
     {
         get => _gameId;
-        set => _gameId = value;
+        set => _gameId = Guid.Empty;
     }
 
     public void FillWithArtificialPlayers(IGamePlayStrategy gamePlayStrategy)

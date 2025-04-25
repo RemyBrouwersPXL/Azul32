@@ -13,7 +13,7 @@ internal class FactoryDisplay : IFactoryDisplay
 
     public IReadOnlyList<TileType> Tiles => throw new NotImplementedException();
 
-    public bool IsEmpty => throw new NotImplementedException();
+    public bool IsEmpty { get; }
 
     public void AddTiles(IReadOnlyList<TileType> tilesToAdd)
     {

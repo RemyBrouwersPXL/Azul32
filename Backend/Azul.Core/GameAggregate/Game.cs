@@ -11,6 +11,7 @@ internal class Game : IGame
 {
     
 
+
     /// <summary>
     /// Creates a new game and determines the player to play first.
     /// </summary>
@@ -23,6 +24,8 @@ internal class Game : IGame
         TileFactory = tileFactory;
         Players = players;
     }
+
+    
 
     public Guid Id { get; }
 
