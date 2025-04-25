@@ -22,9 +22,9 @@ internal class PlayerBase : IPlayer
 
     public DateOnly? LastVisitToPortugal { get; }
 
-    public IBoard Board => throw new NotImplementedException();
+    public IBoard Board { get; } //=> throw new NotImplementedException();
 
-    public bool HasStartingTile { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public bool HasStartingTile { get; set; } //{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public List<TileType> TilesToPlace => throw new NotImplementedException();
+    public List<TileType> TilesToPlace { get; } //=> throw new NotImplementedException();
 }

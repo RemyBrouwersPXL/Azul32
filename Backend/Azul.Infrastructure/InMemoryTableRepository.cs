@@ -43,9 +43,12 @@ internal class InMemoryTableRepository : ITableRepository
         int _count = 0;
         while (_count < tables.Count) 
         { 
-            if (tables[_count].HasAvailableSeat == true && tables[_count].Preferences == preferences)
+            if (tables[_count].HasAvailableSeat == true)
             {
-                _availableTables.Add(tables[_count]);
+                if (tables[_count].Preferences.NumberOfPlayers == preferences.NumberOfPlayers && tables[_count].Preferences.NumberOfArtificialPlayers == preferences.NumberOfArtificialPlayers)
+                {
+                    _availableTables.Add(tables[_count]);
+                }
             }
             _count++;
         }

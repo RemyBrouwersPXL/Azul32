@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
 using Azul.Core.PlayerAggregate;
@@ -45,13 +46,16 @@ internal class Table : ITable
         {
             throw new InvalidOperationException("User already seated");
         }
-            
-        if (!HasAvailableSeat)
+
+        
+
+        if (HasAvailableSeat == false)
         {
             throw new InvalidOperationException("The table is full");
         }
 
         _seatedPlayers.Add(player);
+        int aantal = _seatedPlayers.Count;
     }
 
     public void Leave(Guid userId)
