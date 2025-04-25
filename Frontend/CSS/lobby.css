@@ -59,6 +59,7 @@ body.loading {
     margin: 20px;
     z-index: 1;
     box-shadow: 0 8px 24px #00000026;
+    
 }
 
 .title {

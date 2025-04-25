@@ -30,6 +30,8 @@ function handleSubmitButtonClick(event) {
         showError('player', 'Too many people');
         isValid = false;
     }
+    const form = document.querySelectorAll('.form')[0];
+    form.style.display = 'none';
 
     if (isValid) {
         const userData = {
@@ -79,6 +81,11 @@ function sendRegistration(userData) {
     })
         .then(async response => {
             const text = await response.text; // Eerst als tekst lezen
+        })
+
+        .then(response => {
+            const form = document.querySelector('.form');
+            form.style.display = 'hidden';
         })
         
         .catch(error => {
