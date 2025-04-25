@@ -4,24 +4,49 @@ namespace Azul.Core.TileFactoryAggregate;
 
 internal class TableCenter : ITableCenter
 {
-    public Guid Id => throw new NotImplementedException();
+    private readonly List<TileType> _tiles = new List<TileType>();
+    private const TileType StartingTile = TileType.StartingTile;
 
-    public IReadOnlyList<TileType> Tiles => throw new NotImplementedException();
+    public Guid Id { get; }
 
-    public bool IsEmpty => throw new NotImplementedException();
+    public IReadOnlyList<TileType> Tiles => _tiles;
+
+    public bool IsEmpty => !_tiles.Any();
 
     public void AddStartingTile()
     {
-        throw new NotImplementedException();
+        if (!_tiles.Contains(StartingTile))
+        {
+            _tiles.Add(StartingTile);
+        }
     }
 
     public void AddTiles(IReadOnlyList<TileType> tilesToAdd)
     {
-        throw new NotImplementedException();
+        if (tilesToAdd == null)
+            throw new ArgumentNullException(nameof(tilesToAdd));
+
+        if (tilesToAdd.Contains(StartingTile))
+            throw new ArgumentException("Cannot add StartingTile through this method", nameof(tilesToAdd));
+
+        _tiles.AddRange(tilesToAdd);
     }
 
     public IReadOnlyList<TileType> TakeTiles(TileType tileType)
     {
-        throw new NotImplementedException();
+        if (tileType == StartingTile)
+        {
+            // Special case: when taking starting tile, take ALL tiles of that type (should be just 1)
+            var startingTiles = _tiles.Where(t => t == StartingTile).ToList();
+            _tiles.RemoveAll(t => t == StartingTile);
+            return startingTiles;
+        }
+        else
+        {
+            // Normal tiles: take all tiles of the specified type
+            var takenTiles = _tiles.Where(t => t == tileType).ToList();
+            _tiles.RemoveAll(t => t == tileType);
+            return takenTiles;
+        }
     }
 }

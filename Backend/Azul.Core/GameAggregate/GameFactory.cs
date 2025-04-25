@@ -43,7 +43,7 @@ internal class GameFactory : IGameFactory
                 
                 table.GameId = Id;
             } while (Id == Guid.Empty);
-            IPlayer[] Players = (IPlayer[])table.SeatedPlayers;
+            IPlayer[] Players = table.SeatedPlayers.ToArray();
             // 4. Create and return the game
             return new Game(Id, tileFactory, Players);
         }
