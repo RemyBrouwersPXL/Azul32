@@ -36,16 +36,11 @@ internal class GameFactory : IGameFactory
             ITileFactory tileFactory = new TileFactory(displayCount, tileBag);
 
             // 3. Generate game ID
-            Guid Id;
-            do
-            {
-                Id = Guid.NewGuid();
-                
-                table.GameId = Id;
-            } while (Id == Guid.Empty);
+            Guid guid = Guid.NewGuid();
+            var id = guid.ToString();
             IPlayer[] Players = table.SeatedPlayers.ToArray();
             // 4. Create and return the game
-            return new Game(Id, tileFactory, Players);
+            return new Game(guid, tileFactory, Players);
         }
 
     }

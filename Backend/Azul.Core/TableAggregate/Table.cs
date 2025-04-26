@@ -13,7 +13,7 @@ namespace Azul.Core.TableAggregate;
 internal class Table : ITable
 {
     private readonly List<IPlayer> _seatedPlayers = new List<IPlayer>();
-    private Guid _gameId;
+    public Guid _gameId;
     internal Table(Guid id, ITablePreferences preferences)
     {
         Id = id;
@@ -31,7 +31,18 @@ internal class Table : ITable
     public Guid GameId
     {
         get => _gameId;
-        set => _gameId = Guid.Empty;
+        set
+        {
+            if (!HasAvailableSeat)
+            {
+                _gameId = Guid.Empty;
+            }
+            else
+            {
+                _gameId = value;
+            }
+        }
+
     }
 
     public void FillWithArtificialPlayers(IGamePlayStrategy gamePlayStrategy)
