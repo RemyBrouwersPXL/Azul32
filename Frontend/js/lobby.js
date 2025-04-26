@@ -1,18 +1,11 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
     const submitButton = document.querySelector('.submit');
-    
     submitButton.addEventListener("click", handleSubmitButtonClick);
-
-    
 })
 
-function handleSubmitButtonClick(event) {
+async function handleSubmitButtonClick(event) {
     event.preventDefault();
-
     console.log('gameMode clicked');
-    
-
-    //processWithDelay();
 
     const players = document.getElementById('player').value.trim();
     const bots = document.getElementById('bots').value;
@@ -21,7 +14,6 @@ function handleSubmitButtonClick(event) {
 
     const player = parseInt(players);
     const bot = parseInt(bots);
-
     const people = player + bot;
     console.log('people:', people);
 
@@ -30,15 +22,28 @@ function handleSubmitButtonClick(event) {
         showError('player', 'Too many people');
         isValid = false;
     }
+
     const form = document.querySelectorAll('.form')[0];
     form.style.display = 'none';
 
     if (isValid) {
+        // Show the loader before processing
+        await showLoader();
+
         const userData = {
             numberOfPlayers: players,
             numberOfArtificialPlayers: bots,
         };
-        sendRegistration(userData);
+
+        try {
+            await sendRegistration(userData);
+        } catch (error) {
+            showError('form', error.message);
+            console.error('Registration failed:', error);
+        } finally {
+            // Hide the loader when done
+            hideLoader();
+        }
     }
 }
 
@@ -66,11 +71,12 @@ function clearErrors() {
     const errorMessages = document.querySelectorAll('.error-message');
     errorMessages.forEach(msg => msg.remove());
 }
-    
-function sendRegistration(userData) {
+
+async function sendRegistration(userData) {
     const userToken = sessionStorage.getItem('userToken');
     console.log('Sending to backend:', userToken);
-    fetch('https://localhost:5051/api/Tables/join-or-create', {
+
+    const response = await fetch('https://localhost:5051/api/Tables/join-or-create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -78,43 +84,52 @@ function sendRegistration(userData) {
             'Accept': 'text/plain'
         },
         body: JSON.stringify(userData)
-    })
-        .then(async response => {
-            const text = await response.text; // Eerst als tekst lezen
-        })
+    });
 
-        .then(response => {
-            const form = document.querySelector('.form');
-            form.style.display = 'hidden';
-        })
-        
-        .catch(error => {
-            showError('form', error.message);
-            console.error('Registration failed:', error);
-        });
+    if (!response.ok) {
+        throw new Error('Registration failed');
+    }
+
+    const text = await response.text();
+    return text;
 }
 
-//function delay(ms) {
-//    return new Promise(resolve => setTimeout(resolve, ms));
-//}
+function getRandomDelay(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-//async function processWithDelay() {
+async function showLoader() {
+    const overlay = document.getElementById('loaderOverlay');
+    const loadingMsg = document.getElementById('loading_msg');
+    const submitButton = document.querySelector('.submit');
 
-//    const overlay = document.getElementById('loaderOverlay');
-//    const loadingMsg = document.getElementById('loading_msg');
-//    overlay.style.display = 'flex';
-//    loadingMsg.style.display = 'block';
-//    submitButton.style.display = 'none';
+    // Show loader
+    overlay.style.display = 'flex';
+    loadingMsg.style.display = 'block';
+    submitButton.style.display = 'none';
 
-//    document.span.style.filter = 'brightness(0.7)';
+    // Apply dimming effect to the page
+    document.body.style.filter = 'brightness(0.7)';
 
-//    await delay(5000);
+    // Wait for random time between 5-10 seconds
+    const delayTime = getRandomDelay(5000, 10000);
+    await delay(delayTime);
+}
 
-//    overlay.style.display = 'none';
-//    loadingMsg.style.display = 'none';
-//    document.span.style.filter = 'brightness(1)';
+function hideLoader() {
+    const overlay = document.getElementById('loaderOverlay');
+    const loadingMsg = document.getElementById('loading_msg');
+    const submitButton = document.querySelector('.submit');
 
+    // Hide loader
+    overlay.style.display = 'none';
+    loadingMsg.style.display = 'none';
+    submitButton.style.display = 'block';
 
-//}
+    // Remove dimming effect
+    document.body.style.filter = 'brightness(1)';
+}
 
-
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
