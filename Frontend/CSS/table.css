@@ -1,0 +1,19 @@
+#error-container {
+    display: none;
+    color: red;
+    margin: 10px 0;
+}
+
+#leave-button {
+    padding: 10px 20px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    #leave-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }

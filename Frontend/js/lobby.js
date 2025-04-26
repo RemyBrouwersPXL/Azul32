@@ -1,18 +1,11 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
     const submitButton = document.querySelector('.submit');
-    
     submitButton.addEventListener("click", handleSubmitButtonClick);
-
-    
 })
 
-function handleSubmitButtonClick(event) {
+async function handleSubmitButtonClick(event) {
     event.preventDefault();
-
     console.log('gameMode clicked');
-    
-
-    //processWithDelay();
 
     const players = document.getElementById('player').value.trim();
     const bots = document.getElementById('bots').value;
@@ -21,7 +14,6 @@ function handleSubmitButtonClick(event) {
 
     const player = parseInt(players);
     const bot = parseInt(bots);
-
     const people = player + bot;
     console.log('people:', people);
 
@@ -30,15 +22,28 @@ function handleSubmitButtonClick(event) {
         showError('player', 'Too many people');
         isValid = false;
     }
+
     const form = document.querySelectorAll('.form')[0];
     form.style.display = 'none';
 
     if (isValid) {
+        // Show the loader before processing
+        await showLoader();
+
         const userData = {
             numberOfPlayers: players,
             numberOfArtificialPlayers: bots,
         };
-        sendRegistration(userData);
+
+        try {
+            await sendRegistration(userData);
+        } catch (error) {
+            showError('form', error.message);
+            console.error('Registration failed:', error);
+        } finally {
+            // Hide the loader when done
+            hideLoader();
+        }
     }
 }
 
@@ -66,55 +71,103 @@ function clearErrors() {
     const errorMessages = document.querySelectorAll('.error-message');
     errorMessages.forEach(msg => msg.remove());
 }
-    
-function sendRegistration(userData) {
+
+async function sendRegistration(userData) {
     const userToken = sessionStorage.getItem('userToken');
     console.log('Sending to backend:', userToken);
-    fetch('https://localhost:5051/api/Tables/join-or-create', {
+
+    // 1. First create/join the table (POST request)
+    const response = await fetch('https://localhost:5051/api/Tables/join-or-create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + userToken,
-            'Accept': 'text/plain'
+            'Accept': 'application/json' // Changed to expect JSON response
         },
         body: JSON.stringify(userData)
-    })
-        .then(async response => {
-            const text = await response.text; // Eerst als tekst lezen
-        })
+    });
 
-        .then(response => {
-            const form = document.querySelector('.form');
-            form.style.display = 'hidden';
-        })
-        
-        .catch(error => {
-            showError('form', error.message);
-            console.error('Registration failed:', error);
-        });
+    if (!response.ok) {
+        throw new Error('Registration failed');
+    }
+
+    const result = await response.json();
+    console.log('Table created/joined:', result);
+
+    // 2. Get the table ID from the response and fetch table details
+    const tableId = result.id; // Adjust this based on your API response structure
+    await fetchTableDetails(tableId);
+
+    // 3. Redirect to table.html with the table ID
+    window.location.href = `table.html?tableId=${tableId}`;
+
+    return result;
 }
 
-//function delay(ms) {
-//    return new Promise(resolve => setTimeout(resolve, ms));
-//}
+async function fetchTableDetails(tableId) {
+    const userToken = sessionStorage.getItem('userToken');
 
-//async function processWithDelay() {
+    try {
+        const response = await fetch(`https://localhost:5051/api/Tables/${tableId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + userToken,
+                'Accept': 'application/json'
+            }
+        });
 
-//    const overlay = document.getElementById('loaderOverlay');
-//    const loadingMsg = document.getElementById('loading_msg');
-//    overlay.style.display = 'flex';
-//    loadingMsg.style.display = 'block';
-//    submitButton.style.display = 'none';
+        if (!response.ok) {
+            console.warn('Failed to fetch table details, but continuing anyway');
+            return;
+        }
 
-//    document.span.style.filter = 'brightness(0.7)';
+        const tableDetails = await response.json();
+        console.log('Table details:', tableDetails);
+        // You can store these details or use them as needed
+        sessionStorage.setItem('currentTable', JSON.stringify(tableDetails));
 
-//    await delay(5000);
+    } catch (error) {
+        console.error('Error fetching table details:', error);
+        // Even if this fails, we'll still proceed with the redirect
+    }
+}
 
-//    overlay.style.display = 'none';
-//    loadingMsg.style.display = 'none';
-//    document.span.style.filter = 'brightness(1)';
+function getRandomDelay(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
+async function showLoader() {
+    const overlay = document.getElementById('loaderOverlay');
+    const loadingMsg = document.getElementById('loading_msg');
+    const submitButton = document.querySelector('.submit');
 
-//}
+    // Show loader
+    overlay.style.display = 'flex';
+    loadingMsg.style.display = 'block';
+    submitButton.style.display = 'none';
 
+    // Apply dimming effect to the page
+    document.body.style.filter = 'brightness(0.7)';
 
+    // Wait for random time between 5-10 seconds
+    const delayTime = getRandomDelay(5000, 10000);
+    await delay(delayTime);
+}
+
+function hideLoader() {
+    const overlay = document.getElementById('loaderOverlay');
+    const loadingMsg = document.getElementById('loading_msg');
+    const submitButton = document.querySelector('.submit');
+
+    // Hide loader
+    overlay.style.display = 'none';
+    loadingMsg.style.display = 'none';
+    submitButton.style.display = 'block';
+
+    // Remove dimming effect
+    document.body.style.filter = 'brightness(1)';
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
