@@ -76,12 +76,13 @@ async function sendRegistration(userData) {
     const userToken = sessionStorage.getItem('userToken');
     console.log('Sending to backend:', userToken);
 
+    // 1. First create/join the table (POST request)
     const response = await fetch('https://localhost:5051/api/Tables/join-or-create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + userToken,
-            'Accept': 'text/plain'
+            'Accept': 'application/json' // Changed to expect JSON response
         },
         body: JSON.stringify(userData)
     });
@@ -90,8 +91,45 @@ async function sendRegistration(userData) {
         throw new Error('Registration failed');
     }
 
-    const text = await response.text();
-    return text;
+    const result = await response.json();
+    console.log('Table created/joined:', result);
+
+    // 2. Get the table ID from the response and fetch table details
+    const tableId = result.id; // Adjust this based on your API response structure
+    await fetchTableDetails(tableId);
+
+    // 3. Redirect to table.html with the table ID
+    window.location.href = `table.html?tableId=${tableId}`;
+
+    return result;
+}
+
+async function fetchTableDetails(tableId) {
+    const userToken = sessionStorage.getItem('userToken');
+
+    try {
+        const response = await fetch(`https://localhost:5051/api/Tables/${tableId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + userToken,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            console.warn('Failed to fetch table details, but continuing anyway');
+            return;
+        }
+
+        const tableDetails = await response.json();
+        console.log('Table details:', tableDetails);
+        // You can store these details or use them as needed
+        sessionStorage.setItem('currentTable', JSON.stringify(tableDetails));
+
+    } catch (error) {
+        console.error('Error fetching table details:', error);
+        // Even if this fails, we'll still proceed with the redirect
+    }
 }
 
 function getRandomDelay(min, max) {
