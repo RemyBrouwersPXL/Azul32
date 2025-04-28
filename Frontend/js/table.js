@@ -14,6 +14,43 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize the page with table ID
     document.getElementById('table-id-display').textContent = tableId;
 
+   /** 
+    * HIER IS DIE CODE
+    * 
+    * fetch gaat ophalen van de huidige gegevens van de speelers via de API en token
+    * 3000 gekozen omdat het moet herhalen elke 3 seconden
+    * voorwaarden worden gecheckt seatedPlayers >= totalSets om te zien of tafel vol is
+    * window.location.href is dan doorsturen naar game.html
+    * await res.json omdat die dan een response zal halen uit json-body
+    * 
+    * 
+    *
+    * setInterval(async function () {
+        try {
+            const token = sessionStorage.getItem('userToken');
+            const res = await fetch(
+                'https://localhost:5051/api/Tables/' + tableId, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/json'
+                }
+            }
+            );
+            if (!res.ok) return;
+            const data = await res.json();
+            const seated = data.seatedPlayers;
+            const total = data.numberOfPlayers + data.numberOfArtificialPlayers;
+
+            if (seated >= total) {
+                window.location.href = 'game.html?tableId=' + tableId;
+            }
+        } catch (e) {
+            console.error('Poll error:', e);
+        }
+    }, 3000); */
+
+
     // Setup leave button
     const leaveButton = document.getElementById('leave-button');
     leaveButton.addEventListener('click', () => handleLeaveTable(tableId));
