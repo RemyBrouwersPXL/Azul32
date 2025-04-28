@@ -97,6 +97,8 @@ async function sendRegistration(userData) {
     // 2. Get the table ID from the response and fetch table details
     const tableId = result.id; // Adjust this based on your API response structure
     await fetchTableDetails(tableId);
+    sessionStorage.setItem('hasAvailableSeat', result.hasAvailableSeat);
+    sessionStorage.setItem('aantal', result.seatedPlayers);
 
     // 3. Redirect to table.html with the table ID
     window.location.href = `table.html?tableId=${tableId}`;
@@ -125,6 +127,7 @@ async function fetchTableDetails(tableId) {
         console.log('Table details:', tableDetails);
         // You can store these details or use them as needed
         sessionStorage.setItem('currentTable', JSON.stringify(tableDetails));
+        
 
     } catch (error) {
         console.error('Error fetching table details:', error);

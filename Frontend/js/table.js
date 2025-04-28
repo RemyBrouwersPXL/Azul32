@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    
+
     // Initialize the page with table ID
     document.getElementById('table-id-display').textContent = tableId;
 
@@ -71,3 +73,15 @@ function showError(message) {
         errorContainer.style.display = 'none';
     }, 5000);
 }
+
+
+//const hasAvailableSeat = sessionStorage.getItem('hasAvailableSeat');
+
+
+//if (hasAvailableSeat === 'false') {
+//    window.location.href = './game.html?gameId=';
+//}
+
+const tekst = document.getElementById('aantal');
+const aantal = sessionStorage.getItem('aantal');
+tekst.textContent = aantal.length;
