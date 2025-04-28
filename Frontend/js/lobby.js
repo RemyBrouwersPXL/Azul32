@@ -82,7 +82,7 @@ async function sendRegistration(userData) {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + userToken,
-            'Accept': 'application/json' // Changed to expect JSON response
+            'Accept': 'text/plain' // Changed to expect JSON response
         },
         body: JSON.stringify(userData)
     });
@@ -114,7 +114,7 @@ async function fetchTableDetails(tableId) {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + userToken,
-                'Accept': 'application/json'
+                'Accept': 'text/plain'
             }
         });
 

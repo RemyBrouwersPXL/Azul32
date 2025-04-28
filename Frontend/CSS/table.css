@@ -1,3 +1,74 @@
+body {
+    font-family: Arial;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('../Images/register_background.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.border {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 500px;
+    padding: 20px;
+    border-radius: 20px;
+    position: relative;
+    background-color: #f7ebd6;
+    color: #1d7cb6;
+    border: 3px solid #c3baa9;
+    margin: 20px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-left: 30px;
+    color: #1d7cb6;
+}
+    .title::before {
+        width: 18px;
+        height: 18px;
+    }
+
+    .title::after {
+        width: 18px;
+        height: 18px;
+        animation: pulse 1s linear infinite;
+    }
+
+    .title::before,
+    .title::after {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        left: 0px;
+        background-color: #1d7cb6;
+    }
+
+@keyframes pulse {
+    from {
+        transform: scale(0.9);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
+
 #error-container {
     display: none;
     color: red;

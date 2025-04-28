@@ -8,11 +8,61 @@ document.addEventListener('DOMContentLoaded', function () {
         showError('Table ID missing');
         return;
     }
-
     
+    
+    function getTableRegistry() {
+        return JSON.parse(localStorage.getItem('tableRegistrys')) || {};
+    }
+
+    function setTableRegistry(registrys) {
+        localStorage.setItem('tableRegistrys', JSON.stringify(registrys));
+    }
+
+    function getTableCounter() {
+        return parseInt(localStorage.getItem('tableCounters')) || 1;
+    }
+
+    function setTableCounter(counters) {
+        localStorage.setItem('tableCounters', counters.toString());
+    }
+
+    function getTableNumberFromLocalStorage(tableId) {
+        let tableRegistrys = getTableRegistry();
+        let tableCounters = getTableCounter();
+
+        if (tableRegistrys[tableId] !== undefined) {
+            return tableRegistrys[tableId];
+        }
+
+        const newNumber = tableCounters;
+        tableRegistrys[tableId] = newNumber;
+
+        setTableRegistry(tableRegistrys);
+        setTableCounter(tableCounters + 1);
+
+        return newNumber;
+    }
+
+    function removeTableId(tableId) {
+        let tableRegistrys = getTableRegistry();
+
+        if (tableRegistrys[tableId] !== undefined) {
+            delete tableRegistrys[tableId];
+            setTableRegistry(tableRegistrys);
+        }
+    }
+
+    // --- Gebruiksvoorbeeld ---
+    
+    const tableNumber = getTableNumberFromLocalStorage(tableId);
+
+    document.getElementById('table-id-display').textContent = tableNumber;
+
 
     // Initialize the page with table ID
-    document.getElementById('table-id-display').textContent = tableId;
+    //document.getElementById('table-id-display').textContent = tableId;
+
+  
 
    /** 
     * HIER IS DIE CODE
@@ -24,8 +74,8 @@ document.addEventListener('DOMContentLoaded', function () {
     * await res.json omdat die dan een response zal halen uit json-body
     * 
     * 
-    *
-    * setInterval(async function () {
+    * */
+    setInterval(async function () {
         try {
             const token = sessionStorage.getItem('userToken');
             const res = await fetch(
@@ -33,22 +83,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token,
-                    'Accept': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/plain'
                 }
             }
             );
             if (!res.ok) return;
             const data = await res.json();
-            const seated = data.seatedPlayers;
-            const total = data.numberOfPlayers + data.numberOfArtificialPlayers;
+            const seated = data.seatedPlayers.length;
+            const total = data.hasAvailableSeat;
+            const aiPlayersCount = data.preferences.numberOfArtificialPlayers;
 
-            if (seated >= total) {
+            let contentPlayers = document.getElementById('aantal')
+            contentPlayers.innerText = `Players: ${seated} (of which AI: ${aiPlayersCount})`;
+
+            if (total == false) {
                 window.location.href = 'game.html?tableId=' + tableId;
             }
+            if (seated === 0) {
+                // Geen spelers meer -> verwijderen uit localStorage
+                removeTableId(tableId);
+            }
+
+            
         } catch (e) {
             console.error('Poll error:', e);
         }
-    }, 3000); */
+    }, 3000); 
 
 
     // Setup leave button
@@ -85,6 +146,7 @@ async function handleLeaveTable(tableId) {
 
         // Clear table-related data from storage
         sessionStorage.removeItem('currentTable');
+        
 
         // Redirect back to main page or wherever appropriate
         window.location.href = 'index.html';
@@ -118,7 +180,3 @@ function showError(message) {
 //if (hasAvailableSeat === 'false') {
 //    window.location.href = './game.html?gameId=';
 //}
-
-const tekst = document.getElementById('aantal');
-const aantal = sessionStorage.getItem('aantal');
-tekst.textContent = aantal.length;
