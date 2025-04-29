@@ -65,14 +65,8 @@ document.addEventListener('DOMContentLoaded', function () {
   
 
    /** 
-    * HIER IS DIE CODE
-    * 
-    * fetch gaat ophalen van de huidige gegevens van de speelers via de API en token
-    * 3000 gekozen omdat het moet herhalen elke 3 seconden
-    * voorwaarden worden gecheckt seatedPlayers >= totalSets om te zien of tafel vol is
-    * window.location.href is dan doorsturen naar game.html
-    * await res.json omdat die dan een response zal halen uit json-body
-    * 
+   
+    * fetch van table
     * 
     * */
     setInterval(async function () {

@@ -1,6 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const tableId = urlParams.get('tableId');
-
+//
 // Setup leave button
 const leaveButton = document.getElementById('leave-button');
 leaveButton.addEventListener('click', () => handleLeaveTable(tableId));
@@ -49,3 +49,39 @@ async function handleLeaveTable(tableId) {
         leaveButton.textContent = 'Leave Table';
     }
 }
+
+
+//try catch if in interval 5sec fetch moet tableid te pakken staat in de url. table.js url
+//variabek data met const data zijn
+
+const params = new URLSearchParams(window.location.search);
+const tableId = params.get('tableId');
+
+setInterval(async () => {
+    try {
+        const token = sessionStorage.getItem('userToken');
+        const res = await fetch(
+            `https://localhost:5051/api/Tables/${tableId}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }
+        );
+
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+
+        const data = await res.json();
+
+        if (data.hasAvailableSeat === false) {
+            window.location.href = `game.html?tableId=${tableId}`;
+        }
+
+    } catch (err) {
+        console.error('Fout bij polling van tafel:', err);
+
+    }
+}, 5000);
