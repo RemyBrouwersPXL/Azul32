@@ -81,3 +81,5 @@ const intervalId = setInterval(async () => {
         console.error('Fout bij polling van tafel:', err);
     }
 }, 5000);
+
+
