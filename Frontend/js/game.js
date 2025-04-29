@@ -57,7 +57,7 @@ async function handleLeaveTable(tableId) {
 const params = new URLSearchParams(window.location.search);
 const tableId = params.get('tableId');
 
-setInterval(async () => {
+const intervalId = setInterval(async () => {
     try {
         const token = sessionStorage.getItem('userToken');
         const res = await fetch(
@@ -71,13 +71,12 @@ setInterval(async () => {
                 }
             }
         );
-
         if (!res.ok) throw new Error(`Status ${res.status}`);
-
         const data = await res.json();
 
     } catch (err) {
         console.error('Fout bij polling van tafel:', err);
-
     }
 }, 5000);
+
+
