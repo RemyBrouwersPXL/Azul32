@@ -55,7 +55,6 @@ async function handleLeaveTable(tableId) {
 //variabek data met const data zijn
 
 const params = new URLSearchParams(window.location.search);
-const tableId = params.get('tableId');
 
 const intervalId = setInterval(async () => {
     try {
