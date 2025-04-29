@@ -1,6 +1,7 @@
 ﻿using Azul.Core.GameAggregate.Contracts;
 using Azul.Core.PlayerAggregate;
 using Azul.Core.PlayerAggregate.Contracts;
+using Azul.Core.TableAggregate;
 using Azul.Core.TileFactoryAggregate;
 using Azul.Core.TileFactoryAggregate.Contracts;
 
@@ -23,6 +24,9 @@ internal class Game : IGame
         Id = id;
         TileFactory = tileFactory;
         Players = players;
+        TileFactory.TableCenter.AddStartingTile();
+        TileFactory.FillDisplays();
+
     }
 
     

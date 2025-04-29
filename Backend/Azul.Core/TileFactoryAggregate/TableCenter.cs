@@ -11,7 +11,7 @@ internal class TableCenter : ITableCenter
 
     public IReadOnlyList<TileType> Tiles => _tiles;
 
-    public bool IsEmpty => !_tiles.Any();
+    public bool IsEmpty => _tiles.Count == 0;
 
     public void AddStartingTile()
     {
