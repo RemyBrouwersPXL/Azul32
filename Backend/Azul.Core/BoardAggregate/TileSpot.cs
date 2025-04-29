@@ -1,4 +1,5 @@
-﻿using Azul.Core.TileFactoryAggregate.Contracts;
+﻿using Azul.Core.BoardAggregate.Contracts;
+using Azul.Core.TileFactoryAggregate.Contracts;
 
 namespace Azul.Core.BoardAggregate;
 
@@ -21,16 +22,31 @@ public class TileSpot
 
     public TileSpot(TileType? type = null)
     {
-        
+        Type = type;
+        HasTile = false;
     }
 
     public void PlaceTile(TileType type)
     {
-        throw new NotImplementedException();
+        {
+            if (HasTile)
+            {
+                throw new InvalidOperationException("Spot already has a tile.");
+            }
+
+            if (Type.HasValue && Type.Value != type)
+            {
+                throw new InvalidOperationException($"This spot only accepts tiles of type {Type.Value}.");
+            }
+
+            HasTile = true;
+            Type = type;
+        }
     }
 
     public void Clear()
     {
-        throw new NotImplementedException();
+        Type = null;
+        HasTile = false;
     }
 }

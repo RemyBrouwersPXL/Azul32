@@ -14,6 +14,9 @@ internal class PlayerBase : IPlayer
         Id = id;
         Name = name;
         LastVisitToPortugal = lastVisitToPortugal;
+        Board = new Board();
+        HasStartingTile = false;
+        TilesToPlace = new List<TileType>();
     }
 
     public Guid Id { get; }
@@ -22,7 +25,7 @@ internal class PlayerBase : IPlayer
 
     public DateOnly? LastVisitToPortugal { get; }
 
-    public IBoard Board { get; } //=> throw new NotImplementedException();
+    public IBoard Board { get; }
 
     public bool HasStartingTile { get; set; } //{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
