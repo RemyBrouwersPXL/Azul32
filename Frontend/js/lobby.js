@@ -174,3 +174,27 @@ function hideLoader() {
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+const playerSelect = document.getElementById('player');
+const botsSelect = document.getElementById('bots');
+
+function updateBotOptions() {
+    const selectedPlayers = parseInt(playerSelect.value);
+    const botOptions = botsSelect.options;
+
+    for (let i = 0; i < botOptions.length; i++) {
+        if (botOptions[i].value === "2") {
+            if (selectedPlayers === 2) {
+                botOptions[i].disabled = true;
+                if (botsSelect.value === "2") {
+                    botsSelect.value = "1";
+                }
+            } else {
+                botOptions[i].disabled = false;
+            }
+        }
+    }
+}
+
+updateBotOptions();
+playerSelect.addEventListener('change', updateBotOptions);
