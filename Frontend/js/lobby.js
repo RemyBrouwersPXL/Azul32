@@ -15,14 +15,9 @@ async function handleSubmitButtonClick(event) {
     const player = parseInt(players);
     const bot = parseInt(bots);
     const people = player + bot;
-    console.log('people:', people);
 
     let isValid = true;
-    if (people > 4) {
-        showError('player', 'Too many people');
-        isValid = false;
-    }
-
+    
     const form = document.querySelectorAll('.form')[0];
     form.style.display = 'none';
 
