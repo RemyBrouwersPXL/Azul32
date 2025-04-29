@@ -67,6 +67,7 @@ internal class TableManager : ITableManager
         ITable table = _tableRepository.Get(tableId);
         if (table.HasAvailableSeat)
         {
+            table.GameId = Guid.Empty;
             throw new InvalidOperationException("not enough");
         }
         else

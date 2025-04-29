@@ -33,14 +33,7 @@ internal class Table : ITable
         get => _gameId;
         set
         {
-            if (!HasAvailableSeat)
-            {
-                _gameId = Guid.Empty;
-            }
-            else
-            {
-                _gameId = value;
-            }
+            _gameId = value;
         }
 
     }
