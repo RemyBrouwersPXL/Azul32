@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const aiPlayersCount = data.preferences.numberOfArtificialPlayers;
 
             let contentPlayers = document.getElementById('aantal')
-            contentPlayers.innerText = `Players: ${seated} (of which AI: ${aiPlayersCount})`;
+            contentPlayers.innerText = `Players: ${seated + aiPlayersCount} (of which AI: ${aiPlayersCount})`;
 
             if (total == false) {
                 window.location.href = 'game.html?tableId=' + tableId;
