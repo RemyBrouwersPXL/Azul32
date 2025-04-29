@@ -4,7 +4,7 @@ namespace Azul.Core.TileFactoryAggregate;
 
 internal class TileFactory: ITileFactory
 {
-    private readonly ITileBag _bag;
+    
     private readonly IList<IFactoryDisplay> _displays;
     private readonly ITableCenter _tableCenter;
     private readonly List<TileType> _usedTiles;
@@ -13,7 +13,7 @@ internal class TileFactory: ITileFactory
         if (numberOfDisplays <= 0)
             throw new ArgumentOutOfRangeException(nameof(numberOfDisplays), "Number of displays must be positive");
 
-        _bag = bag;
+        Bag = bag;
         _tableCenter = new TableCenter();
         _displays = new List<IFactoryDisplay>(numberOfDisplays);
         _usedTiles = new List<TileType>();
@@ -27,7 +27,7 @@ internal class TileFactory: ITileFactory
 
     }
 
-    public ITileBag Bag => _bag;
+    public ITileBag Bag { get; }
 
     public IReadOnlyList<IFactoryDisplay> Displays => _displays.AsReadOnly();
 
@@ -35,7 +35,8 @@ internal class TileFactory: ITileFactory
 
     public IReadOnlyList<TileType> UsedTiles => _usedTiles;
 
-    public bool IsEmpty => _displays.All(d => d.IsEmpty);
+    public bool IsEmpty => _displays.All(d => !d.Tiles.Any());
+
 
     public void AddToUsedTiles(TileType tile)
     {
@@ -53,41 +54,75 @@ internal class TileFactory: ITileFactory
             var groupedTiles = _usedTiles.GroupBy(t => t);
             foreach (var group in groupedTiles)
             {
-                _bag.AddTiles(group.Count(), group.Key);
+                Bag.AddTiles(group.Count(), group.Key);
             }
             _usedTiles.Clear();
         }
+       
 
-        // 2. Fill each display that is empty
-        foreach (var display in _displays)
+        int displayCount = _displays.Count;
+
+
+        for (int count = 0; count < displayCount; count++)
         {
-            if (!display.IsEmpty)
+            // 2. Fill each display that is empty
+            if (!_displays[count].IsEmpty)
                 continue;
 
             List<TileType> displayTiles = new List<TileType>();
+            int tilesNeeded = 4;
 
-            // Try to take exactly 4 tiles (this is what the test expects)
-            if (_bag.TryTakeTiles(4, out IReadOnlyList<TileType> firstBatch))
+            // Try to take tiles from the bag
+            if (Bag.TryTakeTiles(tilesNeeded, out IReadOnlyList<TileType> tiles))
             {
-                displayTiles.AddRange(firstBatch);
+                displayTiles.AddRange(tiles);
             }
+            else
+            {
 
-            // Add whatever tiles we got (even if less than 4)
+                // Not enough tiles in the bag, take what is available
+                if (Bag.TryTakeTiles(2, out IReadOnlyList<TileType> twoTiles))
+                {
+                    displayTiles.AddRange(twoTiles);
+                }
+
+                // Add used tiles back to the bag
+                if (_usedTiles.Count > 0)
+                {
+                    var groupedTiles = _usedTiles.GroupBy(t => t);
+                    foreach (var group in groupedTiles)
+                    {
+                        Bag.AddTiles(group.Count(), group.Key);
+                    }
+                    _usedTiles.Clear();
+                }
+
+                // Calculate remaining tiles needed and try again
+                int remainingTiles = tilesNeeded - 2;
+                if (remainingTiles > 0 && Bag.TryTakeTiles(remainingTiles, out IReadOnlyList<TileType> additionalTiles))
+                {
+                    displayTiles.AddRange(additionalTiles);
+                }
+            }
             if (displayTiles.Count > 0)
             {
-                display.AddTiles(displayTiles);
+                _displays[count].AddTiles(displayTiles);
             }
+
+
         }
 
-        // 3. Add starting player tile to center
-        TableCenter.AddStartingTile();
+        //if (TableCenter.IsEmpty)
+        //{
+        //    TableCenter.AddStartingTile();
+        //}
     }
 
     public IReadOnlyList<TileType> TakeTiles(Guid displayId, TileType tileType)
     {
         // 1. Valideer tileType
         if (tileType == TileType.StartingTile)
-            throw new ArgumentException("Cannot take StartingTile from displays", nameof(tileType));
+            _tableCenter.TakeTiles(TileType.StartingTile);
 
         // 2. Zoek display of geef fout
         var display = _displays.FirstOrDefault(d => d.Id == displayId);
@@ -100,7 +135,7 @@ internal class TileFactory: ITileFactory
 
         // 4. Check of het gevraagde type aanwezig is
         if (!display.Tiles.Contains(tileType))
-            throw new InvalidOperationException($"Tile type {tileType} is not in display {displayId}");
+            throw new InvalidOperationException($"tile type {tileType} is not in display {displayId}");
 
         // 5. Neem alle tegels van het type
         var takenTiles = display.TakeTiles(tileType);

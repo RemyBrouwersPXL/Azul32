@@ -5,8 +5,11 @@ namespace Azul.Core.TileFactoryAggregate;
 internal class FactoryDisplay : IFactoryDisplay
 {
     private readonly List<TileType> _tiles = new List<TileType>();
+    private readonly ITableCenter _tableCenter;
     public FactoryDisplay(ITableCenter tableCenter)
     {
+        _tableCenter = tableCenter;
+        _tiles = new List<TileType>();
         //FYI: The table center is injected to be able to move tiles (that were not taken by a player) to the center
     }
 
@@ -14,7 +17,7 @@ internal class FactoryDisplay : IFactoryDisplay
 
     public IReadOnlyList<TileType> Tiles => _tiles;
 
-    public bool IsEmpty { get; }
+    public bool IsEmpty => !_tiles.Any();
 
     public void AddTiles(IReadOnlyList<TileType> tilesToAdd)
     {

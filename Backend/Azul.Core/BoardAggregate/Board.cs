@@ -144,8 +144,40 @@ internal class Board : IBoard
 
     public void AddTilesToPatternLine(IReadOnlyList<TileType> tilesToAdd, int patternLineIndex, ITileFactory tileFactory)
     {
-        throw new NotImplementedException();
+        if (patternLineIndex < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(patternLineIndex), "Invalid pattern line index.");
+        }
+
+        
+
+        if (tilesToAdd == null || tilesToAdd.Count == 0)
+        {
+            return;
+        }
+
+
+        var tileType = tilesToAdd[0];
+        if (tilesToAdd.Any(t => t != tileType))
+        {
+            throw new ArgumentException("All tiles must be of the same type.");
+        }
+
+
+
+        var patternLine = PatternLines[patternLineIndex];
+
+        // Try to add tiles to pattern line
+        patternLine.TryAddTiles(tileType, tilesToAdd.Count, out int remainingTiles);
+
+        if (remainingTiles > 0)
+        {
+            // Get the excess tiles (all of same type)
+            var excessTiles = Enumerable.Repeat(tileType, remainingTiles).ToList();
+            AddTilesToFloorLine(excessTiles, tileFactory);
+        }
     }
+
 
     public void CalculateFinalBonusScores()
     {

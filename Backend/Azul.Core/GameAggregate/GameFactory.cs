@@ -32,8 +32,13 @@ internal class GameFactory : IGameFactory
 
 
             // 2. Create tile factory with displays from table preferences
+
             int displayCount = table.Preferences.NumberOfFactoryDisplays;
             ITileFactory tileFactory = new TileFactory(displayCount, tileBag);
+
+            
+
+
 
             // 3. Generate game ID
             Guid guid = Guid.NewGuid();

@@ -37,7 +37,7 @@ internal class Game : IGame
 
     public IPlayer[] Players { get; }
 
-    public Guid PlayerToPlayId => throw new NotImplementedException();
+    public Guid PlayerToPlayId { get; }
 
     public int RoundNumber => throw new NotImplementedException();
 
