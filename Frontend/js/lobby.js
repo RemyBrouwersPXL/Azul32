@@ -147,8 +147,8 @@ async function showLoader() {
     // Apply dimming effect to the page
     document.body.style.filter = 'brightness(0.7)';
 
-    // Wait for random time between 5-10 seconds
-    const delayTime = getRandomDelay(5000, 10000);
+    // Wait for random time between 3-5 seconds
+    const delayTime = getRandomDelay(3000, 5000);
     await delay(delayTime);
 }
 
