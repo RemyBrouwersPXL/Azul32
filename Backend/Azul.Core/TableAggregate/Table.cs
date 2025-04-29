@@ -26,7 +26,7 @@ internal class Table : ITable
 
     public IReadOnlyList<IPlayer> SeatedPlayers => _seatedPlayers;
 
-    public bool HasAvailableSeat =>  _seatedPlayers.Count < Preferences.NumberOfPlayers;
+    public bool HasAvailableSeat =>  (_seatedPlayers.Count + Preferences.NumberOfArtificialPlayers) < Preferences.NumberOfPlayers;
 
     public Guid GameId
     {
