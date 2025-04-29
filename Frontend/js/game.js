@@ -73,10 +73,7 @@ const intervalId = setInterval(async () => {
         );
         if (!res.ok) throw new Error(`Status ${res.status}`);
         const data = await res.json();
-        if (data.hasAvailableSeat === false) {
-            clearInterval(intervalId);
-            window.location.href = `game.html?tableId=${tableId}`;
-        }
+
     } catch (err) {
         console.error('Fout bij polling van tafel:', err);
     }
