@@ -73,53 +73,57 @@ internal class TileFactory: ITileFactory
             int tilesNeeded = 4;
 
             // Try to take tiles from the bag
-            if (Bag.TryTakeTiles(tilesNeeded, out IReadOnlyList<TileType> tiles))
+            if (Bag.Tiles.Count >= 0)
             {
-                displayTiles.AddRange(tiles);
+                if (Bag.TryTakeTiles(tilesNeeded, out IReadOnlyList<TileType> tiles))
+                {
+                    displayTiles.AddRange(tiles);
+                }
+                else
+                {
+                    displayTiles.AddRange(tiles);
+                    if (_usedTiles.Count > 0)
+                    {
+                        var groupedTiles = _usedTiles.GroupBy(t => t);
+                        foreach (var group in groupedTiles)
+                        {
+                            Bag.AddTiles(group.Count(), group.Key);
+                        }
+                        _usedTiles.Clear();
+                    }
+                    int remainingTiles = tilesNeeded - 2;
+                    if (remainingTiles > 0 && Bag.TryTakeTiles(remainingTiles, out IReadOnlyList<TileType> additionalTiles))
+                    {
+                        displayTiles.AddRange(additionalTiles);
+                    }
+                }
+                
             }
             else
             {
 
-                // Not enough tiles in the bag, take what is available
-                if (Bag.TryTakeTiles(2, out IReadOnlyList<TileType> twoTiles))
-                {
-                    displayTiles.AddRange(twoTiles);
-                }
-
                 // Add used tiles back to the bag
-                if (_usedTiles.Count > 0)
-                {
-                    var groupedTiles = _usedTiles.GroupBy(t => t);
-                    foreach (var group in groupedTiles)
-                    {
-                        Bag.AddTiles(group.Count(), group.Key);
-                    }
-                    _usedTiles.Clear();
-                }
+                
 
                 // Calculate remaining tiles needed and try again
-                int remainingTiles = tilesNeeded - 2;
-                if (remainingTiles > 0 && Bag.TryTakeTiles(remainingTiles, out IReadOnlyList<TileType> additionalTiles))
-                {
-                    displayTiles.AddRange(additionalTiles);
-                }
+                
             }
             if (displayTiles.Count > 0)
             {
                 _displays[count].AddTiles(displayTiles);
             }
 
+                
+
 
         }
 
-        //if (TableCenter.IsEmpty)
-        //{
-        //    TableCenter.AddStartingTile();
-        //}
+        
     }
 
     public IReadOnlyList<TileType> TakeTiles(Guid displayId, TileType tileType)
     {
+        _tableCenter.AddStartingTile();
         // 1. Valideer tileType
         if (tileType == TileType.StartingTile)
             _tableCenter.TakeTiles(TileType.StartingTile);
@@ -131,15 +135,23 @@ internal class TileFactory: ITileFactory
 
         // 3. Check of de display tegels bevat (voorkom 'empty enumerable')
         if (display.Tiles == null || !display.Tiles.Any())
-            throw new InvalidOperationException($"Display {displayId} has no tile");
+            throw new InvalidOperationException($"Display {displayId} has no tile / tagel");
+
+        
 
         // 4. Check of het gevraagde type aanwezig is
         if (!display.Tiles.Contains(tileType))
             throw new InvalidOperationException($"tile type {tileType} is not in display {displayId}");
 
+        if (_tableCenter.IsEmpty)
+        {
+            
+            throw new InvalidOperationException($"tablecenter {_tableCenter} has no tile");
+        }
+
         // 5. Neem alle tegels van het type
         var takenTiles = display.TakeTiles(tileType);
-
+        
         // 6. Verplaats overige tegels naar het tafelcentrum (alleen als ze bestaan)
         var remainingTiles = display.Tiles.Where(t => t != tileType).ToList();
         if (remainingTiles.Any())
@@ -147,7 +159,10 @@ internal class TileFactory: ITileFactory
             _tableCenter.AddTiles(remainingTiles);
         }
 
-       
+        
+        
+
+
 
         return takenTiles;
     }

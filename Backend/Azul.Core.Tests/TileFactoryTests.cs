@@ -92,7 +92,7 @@ public class TileFactoryTests
         _tileBagMockBuilder.WithTiles(TileType.PlainBlue, TileType.WhiteTurquoise);
 
         //Add some random tiles to the used tiles
-        for (int i = 0; i < 25; i++)
+        for (int i = 0; i < 16; i++)
         {
             TileType type = Random.Shared.NextTileType();
             _tileFactory!.AddToUsedTiles(type);

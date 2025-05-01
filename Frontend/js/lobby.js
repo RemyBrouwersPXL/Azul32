@@ -3,7 +3,8 @@
     submitButton.addEventListener("click", handleSubmitButtonClick);
 })
 
-async function handleSubmitButtonClick(event) {
+
+function handleSubmitButtonClick(event) {
     event.preventDefault();
     console.log('gameMode clicked');
 
