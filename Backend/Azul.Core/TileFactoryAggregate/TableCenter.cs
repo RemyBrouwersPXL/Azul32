@@ -7,7 +7,7 @@ internal class TableCenter : ITableCenter
     private readonly List<TileType> _tiles = new List<TileType>();
     private const TileType StartingTile = TileType.StartingTile;
 
-    public Guid Id { get; }
+    public Guid Id { get; } = Guid.NewGuid();
 
     public IReadOnlyList<TileType> Tiles => _tiles;
 

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azul Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .game-info {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .factory-displays {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .factory-display {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 8px;
+            vertical-align: top;
+        }
+
+        .player-boards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .player-board {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .starting-tile {
+            color: gold;
+            font-size: 1.2em;
+        }
+
+        .pattern-lines {
+            margin-bottom: 15px;
+        }
+
+        .pattern-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .line-label {
+            width: 30px;
+            font-weight: bold;
+        }
+
+        .wall {
+            margin-bottom: 15px;
+        }
+
+        .wall-row {
+            display: flex;
+            margin-bottom: 3px;
+        }
+
+        .wall-cell {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            margin-right: 3px;
+            border-radius: 3px;
+        }
+
+            .wall-cell.occupied {
+                background-color: #ddd;
+            }
+
+        .floor-line {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 8px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+
+            .floor-line .label {
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+        .tile {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .tile-blue {
+            background-color: #1976d2;
+        }
+
+        .tile-yellow {
+            background-color: #ffd600;
+        }
+
+        .tile-red {
+            background-color: #d32f2f;
+        }
+
+        .tile-black {
+            background-color: #212121;
+        }
+
+        .tile-white {
+            background-color: #f5f5f5;
+            border: 1px solid #bdbdbd;
+        }
+
+        .empty {
+            background-color: #f9f9f9;
+            border: 1px dashed #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-info">
+        <h1>Azul</h1>
+        <div id="game-id"></div>
+        <div id="player-count"></div>
+        <div id="factory-count"></div>
+    </div>
+
+    <div id="factory-displays" class="factory-displays"></div>
+
+    <div id="player-boards" class="player-boards"></div>
+
+
+    <script src="js/game2.js"></script>
+</body>
+</html>

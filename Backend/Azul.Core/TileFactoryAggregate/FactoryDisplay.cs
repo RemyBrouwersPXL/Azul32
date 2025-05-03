@@ -10,6 +10,7 @@ internal class FactoryDisplay : IFactoryDisplay
     {
         _tableCenter = tableCenter;
         _tiles = new List<TileType>();
+        Id = Guid.NewGuid();
         //FYI: The table center is injected to be able to move tiles (that were not taken by a player) to the center
     }
 

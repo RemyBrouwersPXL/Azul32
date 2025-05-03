@@ -92,7 +92,8 @@ document.addEventListener('DOMContentLoaded', function () {
             contentPlayers.innerText = `Players: ${seated + aiPlayersCount} (of which AI: ${aiPlayersCount})`;
 
             if (total == false) {
-                window.location.href = 'game.html?tableId=' + tableId;
+                
+                window.location.href = 'game2.html?tableId=' + tableId;
             }
             if (seated === 0) {
                 // Geen spelers meer -> verwijderen uit localStorage
