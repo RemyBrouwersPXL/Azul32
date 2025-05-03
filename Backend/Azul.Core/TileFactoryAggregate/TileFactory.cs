@@ -58,7 +58,7 @@ internal class TileFactory: ITileFactory
             }
             _usedTiles.Clear();
         }
-       
+
 
         int displayCount = _displays.Count;
 
@@ -97,29 +97,89 @@ internal class TileFactory: ITileFactory
                         displayTiles.AddRange(additionalTiles);
                     }
                 }
-                
+
             }
             else
             {
 
                 // Add used tiles back to the bag
-                
+
 
                 // Calculate remaining tiles needed and try again
-                
+
             }
             if (displayTiles.Count > 0)
             {
                 _displays[count].AddTiles(displayTiles);
             }
 
-                
+
 
 
         }
 
-        
+
     }
+
+    //public void FillDisplays()
+    //{
+    //    if (_displays == null) throw new InvalidOperationException("Displays not initialized");
+    //    if (Bag == null) throw new InvalidOperationException("Tile bag not initialized");
+
+    //    var pendingDisplays = new List<(IFactoryDisplay display, List<TileType> alreadyTaken, int stillNeeded)>();
+
+    //    foreach (var display in _displays)
+    //    {
+    //        if (!display.IsEmpty)
+    //            continue;
+
+    //        if (Bag.Tiles.Count != 0)
+    //        {
+    //            if (Bag.TryTakeTiles(4, out var tilesTaken) && tilesTaken.Count == 4)
+    //            {
+    //                display.AddTiles(tilesTaken);
+    //            }
+    //            else
+    //            {
+    //                var taken = tilesTaken?.ToList() ?? new List<TileType>();
+    //                int needed = 4 - taken.Count;
+    //                pendingDisplays.Add((display, taken, needed));
+    //            }
+    //        }
+
+
+
+    //    }
+
+    //    if (pendingDisplays.Count > 0)
+    //    {
+    //        ReturnUsedTilesToBag();
+
+    //        foreach (var (display, alreadyTaken, stillNeeded) in pendingDisplays)
+    //        {
+    //            if (Bag.TryTakeTiles(stillNeeded, out var remainingTiles))
+    //            {
+    //                alreadyTaken.AddRange(remainingTiles);
+    //            }
+
+    //            // Voeg pas nu alle tegels in één keer toe
+    //            display.AddTiles(alreadyTaken);
+    //        }
+    //    }
+    //}
+
+    //private void ReturnUsedTilesToBag()
+    //{
+    //    if (_usedTiles == null || _usedTiles.Count == 0)
+    //        return;
+
+    //    var groupedTiles = _usedTiles.GroupBy(t => t);
+    //    foreach (var group in groupedTiles)
+    //    {
+    //        Bag.AddTiles(group.Count(), group.Key);
+    //    }
+    //    _usedTiles.Clear();
+    //}
 
     public IReadOnlyList<TileType> TakeTiles(Guid displayId, TileType tileType)
     {

@@ -4,7 +4,7 @@
 })
 
 
-function handleSubmitButtonClick(event) {
+async function handleSubmitButtonClick(event) {
     event.preventDefault();
     console.log('gameMode clicked');
 

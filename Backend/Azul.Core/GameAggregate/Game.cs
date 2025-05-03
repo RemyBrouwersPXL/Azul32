@@ -79,7 +79,7 @@ internal class Game : IGame
 
     public void TakeTilesFromFactory(Guid playerId, Guid displayId, TileType tileType)
     {
-        {
+        
             // 1. Validate the player
             var player = Players.FirstOrDefault(p => p.Id == playerId);
             if (player == null)
@@ -109,6 +109,6 @@ internal class Game : IGame
 
             
             
-        }
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using Azul.Core.GameAggregate.Contracts;
+﻿using System.Collections;
+using Azul.Core.GameAggregate.Contracts;
 using Azul.Core.PlayerAggregate;
 using Azul.Core.PlayerAggregate.Contracts;
 using Azul.Core.TileFactoryAggregate.Contracts;
@@ -16,13 +17,12 @@ internal class GameService : IGameService
     }
     public IGame GetGame(Guid gameId)
     {
-        {
             if (gameId == Guid.Empty)
             {
                 throw new ArgumentException("Game ID cannot be empty", nameof(gameId));
             }
 
-            var game = _gameRepository.GetById(gameId);
+            IGame game = _gameRepository.GetById(gameId);
 
             if (game == null)
             {
@@ -30,7 +30,6 @@ internal class GameService : IGameService
             }
 
             return game;
-        }
     }
     public void TakeTilesFromFactory(Guid gameId, Guid playerId, Guid displayId, TileType tileType)
     {
