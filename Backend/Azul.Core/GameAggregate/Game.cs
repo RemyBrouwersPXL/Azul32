@@ -1,4 +1,5 @@
-﻿using Azul.Core.GameAggregate.Contracts;
+﻿using System.ComponentModel;
+using Azul.Core.GameAggregate.Contracts;
 using Azul.Core.PlayerAggregate;
 using Azul.Core.PlayerAggregate.Contracts;
 using Azul.Core.TableAggregate;
@@ -10,7 +11,7 @@ namespace Azul.Core.GameAggregate;
 /// <inheritdoc cref="IGame"/>
 internal class Game : IGame
 {
-    
+    private int _roundNumber;
 
 
     /// <summary>
@@ -33,7 +34,11 @@ internal class Game : IGame
             if (newplayer.LastVisitToPortugal > firstplayer.LastVisitToPortugal)
             {
                 firstplayer = newplayer;
+            } else if (newplayer.LastVisitToPortugal != null && firstplayer.LastVisitToPortugal == null)
+            {
+                firstplayer = newplayer;
             }
+            
             
         }
         Id = id;
@@ -43,6 +48,7 @@ internal class Game : IGame
         PlayerToPlayId = firstplayer.Id; 
         TileFactory.TableCenter.AddStartingTile();
         TileFactory.FillDisplays();
+        _roundNumber = 1;
 
     }
 
@@ -56,9 +62,10 @@ internal class Game : IGame
 
     public Guid PlayerToPlayId { get; }
 
-    public int RoundNumber => throw new NotImplementedException();
 
-    public bool HasEnded => throw new NotImplementedException();
+    public int RoundNumber => _roundNumber;
+
+    public bool HasEnded { get; }
 
     public void PlaceTilesOnFloorLine(Guid playerId)
     {
