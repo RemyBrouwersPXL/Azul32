@@ -109,79 +109,155 @@ function renderFactoryDisplays(count, tileFactory) {
     }
 }
 
-    function renderPlayerBoards(players) {
-        const container = document.getElementById('player-boards');
-       //container.innerHTML = '<h2>Player Boards</h2>';
+function renderPlayerBoards(players) {
+    const container = document.getElementById('player-boards');
+    const tileImages = {
+        blue: '../Frontend/Images/Tiles/plainblue.png',
+        yellow: '../Frontend/Images/Tiles/yellowred.png',
+        red: '../Frontend/Images/Tiles/plainred.png',
+        black: '../Frontend/Images/Tiles/blackblue.png',
+        white: '../Frontend/Images/Tiles/whiteturquoise.png'
+    };
 
-        players.forEach(player => {
-            const board = document.createElement('div');
-            board.className = 'player-board';
+    players.forEach(player => {
+        const board = document.createElement('div');
+        board.className = 'player-board';
 
-            // Player header
-            const header = document.createElement('div');
-            header.className = 'player-header';
-            header.innerHTML = `
-                <h3>${player.name}</h3>
-                <div class="score">Score: ${player.board.score}</div>
-                ${player.hasStartingTile ? '<div class="starting-tile">⭐</div>' : ''}
-            `;
-            board.appendChild(header);
+        // Player header
+        const header = document.createElement('div');
+        header.className = 'player-header';
+        header.innerHTML = `
+            <h3>${player.name}</h3>
+            <div class="score">Score: ${player.board.score}</div>
+            ${player.hasStartingTile ? '<div class="starting-tile">⭐</div>' : ''}
+        `;
+        board.appendChild(header);
 
-            // Pattern lines
-            const patternLines = document.createElement('div');
-            patternLines.className = 'pattern-lines';
-            player.board.patternLines.forEach(line => {
-                if (line.length > 0) { // Only show active lines
-                    const lineDiv = document.createElement('div');
-                    lineDiv.className = 'pattern-line';
-                    lineDiv.innerHTML = `<span class="line-label">${line.length}:</span>`;
+        // Create main board content container
+        const boardContent = document.createElement('div');
+        boardContent.className = 'player-board-content';
 
-                    for (let i = 0; i < line.length; i++) {
-                        const tile = document.createElement('div');
-                        tile.className = `tile ${i < line.numberOfTiles ? `tile-${getTileColor(line.tileType)}` : 'empty'}`;
-                        lineDiv.appendChild(tile);
-                    }
+        // Pattern lines
+        const patternLines = document.createElement('div');
+        patternLines.className = 'pattern-lines';
+        player.board.patternLines.forEach(line => {
+            if (line.length > 0) {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'pattern-line';
 
-                    patternLines.appendChild(lineDiv);
-                }
-            });
-            board.appendChild(patternLines);
+                const tilesContainer = document.createElement('div');
+                tilesContainer.className = 'tiles-container';
 
-            // Wall
-            const wall = document.createElement('div');
-            wall.className = 'wall';
-            player.board.wall.forEach(row => {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'wall-row';
+                lineDiv.innerHTML = `<span class="line-label">${line.length}:</span>`;
+                lineDiv.appendChild(tilesContainer);
 
-                for (let i = 0; i < row.length; i++) {
-                    const cell = document.createElement('div');
-                    cell.className = `wall-cell ${row[i] === '1' ? 'occupied' : 'empty'}`;
-                    rowDiv.appendChild(cell);
+                for (let i = 0; i < line.length; i++) {
+                    const tile = document.createElement('div');
+                    tile.className = `tile ${i < line.numberOfTiles ? `tile-${getTileColor(line.tileType)}` : 'empty'}`;
+                    tilesContainer.appendChild(tile);
                 }
 
-                wall.appendChild(rowDiv);
-            });
-            board.appendChild(wall);
-
-            // Floor line
-            const floorLine = document.createElement('div');
-            floorLine.className = 'floor-line';
-            floorLine.innerHTML = '<span class="label">Floor:</span>';
-
-            player.board.floorLine.forEach(tile => {
-                if (tile.hasTile) {
-                    const tileDiv = document.createElement('div');
-                    tileDiv.className = `tile tile-${getTileColor(tile.type)}`;
-                    floorLine.appendChild(tileDiv);
-                }
-            });
-            board.appendChild(floorLine);
-
-            container.appendChild(board);
+                patternLines.appendChild(lineDiv);
+            }
         });
-    }
+        boardContent.appendChild(patternLines);
 
+        // Wall with tile images
+        const wall = document.createElement('div');
+        wall.className = 'wall';
+
+        // Create wall rows based on Azul's pattern
+        for (let row = 0; row < 5; row++) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'wall-row';
+
+            for (let col = 0; col < 5; col++) {
+                const cell = document.createElement('div');
+                cell.className = 'wall-cell';
+
+                // Determine color based on Azul's offset pattern
+                let color;
+                switch (row) {
+                    case 0: color = ['blue', 'yellow', 'red', 'black', 'white'][col]; break;
+                    case 1: color = ['white', 'blue', 'yellow', 'red', 'black'][col]; break;
+                    case 2: color = ['black', 'white', 'blue', 'yellow', 'red'][col]; break;
+                    case 3: color = ['red', 'black', 'white', 'blue', 'yellow'][col]; break;
+                    case 4: color = ['yellow', 'red', 'black', 'white', 'blue'][col]; break;
+                }
+
+                // Check if tile is placed (1) or not (0)
+                const isOccupied = player.board.wall[row][col] === '1';
+
+                cell.style.backgroundImage = `url(${tileImages[color]})`;
+                cell.style.opacity = isOccupied ? '1' : '0.4';
+                cell.className += isOccupied ? ' occupied' : ' empty';
+
+                rowDiv.appendChild(cell);
+            }
+            wall.appendChild(rowDiv);
+        }
+        boardContent.appendChild(wall);
+
+        board.appendChild(boardContent);
+
+        // Floor line with 7 positions
+        const floorLine = document.createElement('div');
+        floorLine.className = 'floor-line';
+        floorLine.innerHTML = '<span class="label">Floor:</span>';
+
+        // Create all 7 floor positions with penalty indicators
+        for (let i = 0; i < 7; i++) {
+            const floorPos = document.createElement('div');
+            floorPos.className = 'floor-position';
+
+            const hasTile = player.board.floorLine[i] && player.board.floorLine[i].hasTile;
+            const tileType = hasTile ? player.board.floorLine[i].type : null;
+
+            if (hasTile) {
+                const tile = document.createElement('div');
+                tile.className = `tile tile-${getTileColor(tileType)}`;
+                floorPos.appendChild(tile);
+            } else {
+                floorPos.classList.add('empty');
+            }
+
+            // Add penalty indicator
+            const penaltyBadge = document.createElement('div');
+            penaltyBadge.className = 'penalty-badge';
+            penaltyBadge.textContent = getFloorPenalty(i);
+            floorPos.appendChild(penaltyBadge);
+
+            floorLine.appendChild(floorPos);
+        }
+
+        board.appendChild(floorLine);
+        container.appendChild(board);
+    });
+}
+
+// Helper function for floor penalties
+function getFloorPenalty(position) {
+    const penalties = ['-1', '-1', '-2', '-2', '-2', '-3', '-3'];
+    return penalties[position] || '0';
+}
+
+// Helper function to get tile color name
+function getTileColor(tileType) {
+    const colors = {
+        11: 'blue',
+        12: 'yellow',
+        13: 'red',
+        14: 'black',
+        15: 'white'
+    };
+    return colors[tileType] || 'unknown';
+}
+
+// Helper function for floor penalties
+function getFloorPenalty(position) {
+    const penalties = ['-1', '-1', '-2', '-2', '-2', '-3', '-3'];
+    return penalties[position] || '0';
+}
     function getTileColor(tileType) {
         const colors = {
             11: 'blue',
