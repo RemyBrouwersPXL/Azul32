@@ -3,7 +3,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('../Images/register_background.png') no-repeat center center fixed;
+    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('../Images/wooden background.png') no-repeat center center fixed;
     background-size: cover;
 }
 
