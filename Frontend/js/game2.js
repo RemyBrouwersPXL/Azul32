@@ -1,40 +1,45 @@
 ﻿document.addEventListener('DOMContentLoaded', async function () {
-    try {
-        // Haal tableId uit de URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const tableId = urlParams.get('tableId');
+    setInterval(async function () {
+        try {
+            // Haal tableId uit de URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const tableId = urlParams.get('tableId');
 
-        if (!tableId) {
-            console.error('Table ID not found in URL');
-            return;
-        }
-
-        const token = sessionStorage.getItem('userToken');
-        const res = await fetch(`https://localhost:5051/api/Tables/${tableId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Accept': 'text/plain'
+            if (!tableId) {
+                console.error('Table ID not found in URL');
+                return;
             }
-        });
 
-        if (!res.ok) {
-            console.error('API request failed:', res.status);
-            return;
+            const token = sessionStorage.getItem('userToken');
+            const res = await fetch(`https://localhost:5051/api/Tables/${tableId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/plain'
+                }
+            });
+
+            if (!res.ok) {
+                console.error('API request failed:', res.status);
+                return;
+            }
+
+            const data = await res.json();
+            const gameId = data.gameId;
+            sessionStorage.setItem('count', data.preferences.numberOfFactoryDisplays);
+            renderGame(data);
+            gameInfo(gameId)// Verwerk de ontvangen data
+            return gameId; // Return the gameId for further use
+
+        } catch (e) {
+            console.error('Error:', e);
         }
-
-        const data = await res.json();
-        const gameId = data.gameId;
-        sessionStorage.setItem('count', data.preferences.numberOfFactoryDisplays); // Sla gameId op in sessionStorage
-        renderGame(data);
-        gameInfo(gameId)// Verwerk de ontvangen data
-        return gameId; // Return the gameId for further use
-
-    } catch (e) {
-        console.error('Error:', e);
-    }
+    }, 1000); // Poll every 3 seconds
+    
 });
+
+
 
 function renderGame(data) {
     // Render game info
@@ -44,10 +49,12 @@ function renderGame(data) {
     document.getElementById('factory-count').textContent =
         `Factory Displays: ${data.preferences.numberOfFactoryDisplays}`;
 
-    // Render factory displays
-    
+    // Clear existing player boards before rendering new ones
+    const playerBoardsContainer = document.getElementById('player-boards');
+    playerBoardsContainer.innerHTML = '';
 
-    // Render player boards
+    // Haal de currentPlayerId op uit sessionStorage
+    
     renderPlayerBoards(data.seatedPlayers);
 }
 function gameInfo(gameId) {
@@ -67,14 +74,26 @@ function gameInfo(gameId) {
             const data = await res.json();
 
             const tileFactory = data.tileFactory;
-            renderFactoryDisplays(sessionStorage.getItem('count'), tileFactory)
-            return tileFactory;
+            const currentPlayerId = data.playerToPlayId;
+
+            document.querySelectorAll('.player-board').forEach(board => {
+                // Verwijder eerst de current-player class van alle boards
+                board.classList.remove('current-player');
+
+                // Voeg de class alleen toe aan het board van de huidige speler
+                if (board.dataset.playerId === currentPlayerId) {
+                    board.classList.add('current-player');
+                }
+            });
+            renderFactoryDisplays(sessionStorage.getItem('count'), tileFactory);
+
+            return tileFactory; // Return the tileFactory for further use
 
 
         } catch (e) {
             console.error('Poll error:', e);
         }
-    }, 3000);
+    }, 1000);
 }
 
 function renderFactoryDisplays(count, tileFactory) {
@@ -111,6 +130,7 @@ function renderFactoryDisplays(count, tileFactory) {
 
 function renderPlayerBoards(players) {
     const container = document.getElementById('player-boards');
+    container.innerHTML = '';
     const tileImages = {
         blue: '../Frontend/Images/Tiles/plainblue.png',
         yellow: '../Frontend/Images/Tiles/yellowred.png',
@@ -123,7 +143,9 @@ function renderPlayerBoards(players) {
         const board = document.createElement('div');
         board.className = 'player-board';
 
-        // Player header
+        board.dataset.playerId = player.id;
+
+        
         const header = document.createElement('div');
         header.className = 'player-header';
         header.innerHTML = `
@@ -267,6 +289,66 @@ function getFloorPenalty(position) {
             15: 'white'
         };
         return colors[tileType] || 'unknown';
+}
+
+document.addEventListener('DOMContentLoaded', async function () {
+    const tableId = new URLSearchParams(window.location.search).get('tableId');
+    const leaveButton = document.getElementById('leave-button');
+    leaveButton.addEventListener('click', () => handleLeaveTable(tableId));
+});
+
+async function handleLeaveTable(tableId) {
+    const userToken = sessionStorage.getItem('userToken');
+
+    if (!userToken) {
+        showError('User not authenticated');
+        return;
     }
 
-  
+    try {
+        // Show loading state
+        const leaveButton = document.getElementById('leave-button');
+        leaveButton.disabled = true;
+        leaveButton.textContent = 'Leaving...';
+
+        // Make POST request to leave table
+        const response = await fetch(`https://localhost:5051/api/Tables/${tableId}/leave`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${userToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to leave table: ${response.status}`);
+        }
+
+        // Clear table-related data from storage
+        sessionStorage.removeItem('currentTable');
+
+
+        // Redirect back to main page or wherever appropriate
+        window.location.href = 'index.html';
+
+    } catch (error) {
+        console.error('Error leaving table:', error);
+        showError(error.message);
+
+        // Reset button state
+        const leaveButton = document.getElementById('leave-button');
+        leaveButton.disabled = false;
+        leaveButton.textContent = 'Leave Table';
+    }
+}
+
+function showError(message) {
+    const errorContainer = document.getElementById('error-container');
+    errorContainer.textContent = message;
+    errorContainer.style.display = 'block';
+
+    // Hide error after 5 seconds
+    setTimeout(() => {
+        errorContainer.style.display = 'none';
+    }, 5000);
+}

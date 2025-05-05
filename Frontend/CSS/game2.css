@@ -6,6 +6,19 @@ body {
     background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url('../Images/wooden background.png') no-repeat center center fixed;
     background-size: cover;
 }
+#leave-button {
+    padding: 10px 20px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    #leave-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
 
 .game-info {
     background-color: #f7ebd6;
@@ -46,17 +59,6 @@ h1 {
         animation: pulse 1s linear infinite;
     }
 
-@keyframes pulse {
-    from {
-        transform: scale(0.9);
-        opacity: 1;
-    }
-
-    to {
-        transform: scale(1.8);
-        opacity: 0;
-    }
-}
 .section-title {
     font-size: 24px;
     font-weight: bold;
@@ -130,10 +132,49 @@ h1 {
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
 }
+.current-player::before {
+    content: "Aan de beurt";
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    background: #1d7cb6;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+/* Voeg deze toe in plaats daarvan: */
+.player-header h3 {
+    position: relative;
+    padding-left: 30px;
+}
+
+    .player-header h3::before,
+    .player-header h3::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #1d7cb6;
+    }
+
+    .player-header h3::before {
+        z-index: 1;
+    }
+
+.current-player .player-header h3::after {
+    z-index: 0;
+    animation: pulse 1s linear infinite;
+
+}
 
 .starting-tile {
     color: gold;
     font-size: 1.2em;
+    margin-left: 10px;
 }
 
 .pattern-lines {
@@ -263,4 +304,15 @@ h1 {
     color: #d32f2f;
     font-weight: bold;
     margin-top: 2px;
+}
+@keyframes pulse {
+    from {
+        transform: scale(0.9);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(1.8);
+        opacity: 0;
+    }
 }
