@@ -111,7 +111,7 @@ function renderFactoryDisplays(count, tileFactory) {
 
     function renderPlayerBoards(players) {
         const container = document.getElementById('player-boards');
-        container.innerHTML = '<h2>Player Boards</h2>';
+       //container.innerHTML = '<h2>Player Boards</h2>';
 
         players.forEach(player => {
             const board = document.createElement('div');
