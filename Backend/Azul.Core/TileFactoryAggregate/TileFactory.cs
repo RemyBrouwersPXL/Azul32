@@ -48,16 +48,7 @@ internal class TileFactory: ITileFactory
 
     public void FillDisplays()
     {
-        // 1. Return used tiles to the bag
-        if (_usedTiles.Count > 0)
-        {
-            var groupedTiles = _usedTiles.GroupBy(t => t);
-            foreach (var group in groupedTiles)
-            {
-                Bag.AddTiles(group.Count(), group.Key);
-            }
-            _usedTiles.Clear();
-        }
+        
 
 
         int displayCount = _displays.Count;
