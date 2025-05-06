@@ -133,7 +133,7 @@ h1 {
     border-bottom: 1px solid #eee;
 }
 .current-player::before {
-    content: "Aan de beurt";
+    content: "";
     position: absolute;
     top: -10px;
     right: 10px;
