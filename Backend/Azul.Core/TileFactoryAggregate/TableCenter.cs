@@ -45,7 +45,11 @@ internal class TableCenter : ITableCenter
         {
             // Normal tiles: take all tiles of the specified type
             var takenTiles = _tiles.Where(t => t == tileType).ToList();
-            _tiles.RemoveAll(t => t == tileType);
+            foreach (var tile in takenTiles)
+            {
+                _tiles.RemoveAll(t => t == tileType);
+            }
+            
             return takenTiles;
         }
     }

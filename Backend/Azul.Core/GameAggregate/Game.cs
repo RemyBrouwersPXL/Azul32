@@ -48,6 +48,7 @@ internal class Game : IGame
         PlayerToPlayId = firstplayer.Id; 
         TileFactory.TableCenter.AddStartingTile();
         TileFactory.FillDisplays();
+
         _roundNumber = 1;
 
     }
@@ -79,36 +80,35 @@ internal class Game : IGame
 
     public void TakeTilesFromFactory(Guid playerId, Guid displayId, TileType tileType)
     {
+       
+        if (PlayerToPlayId != playerId)
+            throw new InvalidOperationException("It's not this player's turn.");
+
+       
+        IPlayer player = Players.FirstOrDefault(p => p.Id == playerId);
+        if (player == null)
+            throw new InvalidOperationException($"Player with ID {playerId} does not exist.");
+
+        if (player.TilesToPlace.Any())
+            throw new InvalidOperationException("Player already has tiles to place. Place them first before taking new ones.");
+
         
-            // 1. Validate the player
-            var player = Players.FirstOrDefault(p => p.Id == playerId);
-            if (player == null)
-                throw new InvalidOperationException($"Player with ID {playerId} does not exist.");
 
-            // 2. Validate the display
-            var display = TileFactory.Displays.FirstOrDefault(d => d.Id == displayId);
-            if (display == null)
-                throw new InvalidOperationException($"Display with ID {displayId} does not exist.");
+        IReadOnlyList<TileType> takenTiles = TileFactory.TakeTiles(displayId, tileType);
+        var remainingTiles = TileFactory.TableCenter.Tiles;
+        
 
-            // 3. Validate the tile type
-            if (!display.Tiles.Contains(tileType))
-                throw new InvalidOperationException($"Tile type {tileType} is not available in display {displayId}.");
 
-            // 4. Take tiles from the display
-            var takenTiles = TileFactory.TakeTiles(displayId, tileType);
 
-            // 5. Handle the starting tile
-            if (takenTiles.Contains(TileType.StartingTile))
-            {
-                player.HasStartingTile = true;
-                
-            }
-
-            // 6. Add the taken tiles to the player's tiles to place
-            player.TilesToPlace.AddRange(takenTiles);
-
+        if (takenTiles.Contains(TileType.StartingTile))
+        {
+            player.HasStartingTile = true;
             
-            
+        }
+
+
+        player.TilesToPlace.AddRange(takenTiles);
+
         
     }
 }

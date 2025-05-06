@@ -33,6 +33,22 @@ internal class FactoryDisplay : IFactoryDisplay
 
     public IReadOnlyList<TileType> TakeTiles(TileType tileType)
     {
-        throw new NotImplementedException();
+        var takenTiles = _tiles.Where(t => t == tileType).ToList();
+        foreach (var tile in takenTiles)
+        {
+            _tiles.RemoveAll(t => t == tileType);
+        }
+        var remainingTiles = _tiles.Where(t => t != tileType).ToList();
+        foreach (var tile in remainingTiles)
+        {
+            _tableCenter.AddTiles(new List<TileType> { tile });
+            _tiles.Remove(tile);
+        }
+        // Remove them from the display
+
+
+        return takenTiles;
+
+       
     }
 }

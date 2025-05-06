@@ -112,109 +112,59 @@ internal class TileFactory: ITileFactory
 
     }
 
-    //public void FillDisplays()
-    //{
-    //    if (_displays == null) throw new InvalidOperationException("Displays not initialized");
-    //    if (Bag == null) throw new InvalidOperationException("Tile bag not initialized");
 
-    //    var pendingDisplays = new List<(IFactoryDisplay display, List<TileType> alreadyTaken, int stillNeeded)>();
-
-    //    foreach (var display in _displays)
-    //    {
-    //        if (!display.IsEmpty)
-    //            continue;
-
-    //        if (Bag.Tiles.Count != 0)
-    //        {
-    //            if (Bag.TryTakeTiles(4, out var tilesTaken) && tilesTaken.Count == 4)
-    //            {
-    //                display.AddTiles(tilesTaken);
-    //            }
-    //            else
-    //            {
-    //                var taken = tilesTaken?.ToList() ?? new List<TileType>();
-    //                int needed = 4 - taken.Count;
-    //                pendingDisplays.Add((display, taken, needed));
-    //            }
-    //        }
-
-
-
-    //    }
-
-    //    if (pendingDisplays.Count > 0)
-    //    {
-    //        ReturnUsedTilesToBag();
-
-    //        foreach (var (display, alreadyTaken, stillNeeded) in pendingDisplays)
-    //        {
-    //            if (Bag.TryTakeTiles(stillNeeded, out var remainingTiles))
-    //            {
-    //                alreadyTaken.AddRange(remainingTiles);
-    //            }
-
-    //            // Voeg pas nu alle tegels in één keer toe
-    //            display.AddTiles(alreadyTaken);
-    //        }
-    //    }
-    //}
-
-    //private void ReturnUsedTilesToBag()
-    //{
-    //    if (_usedTiles == null || _usedTiles.Count == 0)
-    //        return;
-
-    //    var groupedTiles = _usedTiles.GroupBy(t => t);
-    //    foreach (var group in groupedTiles)
-    //    {
-    //        Bag.AddTiles(group.Count(), group.Key);
-    //    }
-    //    _usedTiles.Clear();
-    //}
 
     public IReadOnlyList<TileType> TakeTiles(Guid displayId, TileType tileType)
     {
-        _tableCenter.AddStartingTile();
-        // 1. Valideer tileType
-        if (tileType == TileType.StartingTile)
-            _tableCenter.TakeTiles(TileType.StartingTile);
-
-        // 2. Zoek display of geef fout
-        var display = _displays.FirstOrDefault(d => d.Id == displayId);
-        if (display == null)
-            throw new InvalidOperationException($"Display with id {displayId} not exist");
-
-        // 3. Check of de display tegels bevat (voorkom 'empty enumerable')
-        if (display.Tiles == null || !display.Tiles.Any())
-            throw new InvalidOperationException($"Display {displayId} has no tile / tagel");
-
-        
-
-        // 4. Check of het gevraagde type aanwezig is
-        if (!display.Tiles.Contains(tileType))
-            throw new InvalidOperationException($"tile type {tileType} is not in display {displayId}");
-
-        if (_tableCenter.IsEmpty)
+        // 1. Check if it's the table center
+        if (_tableCenter.Id == displayId)
         {
-            
-            throw new InvalidOperationException($"tablecenter {_tableCenter} has no tile");
+            // Special handling for table center
+            var centerTakenTiles = new List<TileType>();
+
+            if (tileType != TileType.StartingTile && !_tableCenter.Tiles.Contains(tileType))
+            {
+                throw new InvalidOperationException($"Tile type {tileType} is not in table center");
+            }// Renamed to avoid conflict
+
+            // Take requested tiles
+            centerTakenTiles.AddRange(_tableCenter.TakeTiles(tileType));
+
+            // Always take starting tile if present
+            if (_tableCenter.Tiles.Contains(TileType.StartingTile))
+            {
+                centerTakenTiles.AddRange(_tableCenter.TakeTiles(TileType.StartingTile));
+            }
+
+
+
+            return centerTakenTiles;
         }
 
-        // 5. Neem alle tegels van het type
-        var takenTiles = display.TakeTiles(tileType);
+        // 2. Handle factory displays
+        IFactoryDisplay display = _displays.FirstOrDefault(d => d.Id == displayId);
+        if (display == null)
+            if (_tableCenter.Id != displayId)
+            {
+                throw new InvalidOperationException($"Display with id {displayId} not exist tile");
+            }
         
-        // 6. Verplaats overige tegels naar het tafelcentrum (alleen als ze bestaan)
+
+        if (display.Tiles == null || !display.Tiles.Any())
+            throw new InvalidOperationException($"Display {displayId} has no tiles");
+
+        if (!display.Tiles.Contains(tileType))
+            throw new InvalidOperationException($"Tile type {tileType} is not in display {displayId}");
+
+        var displayTakenTiles = display.TakeTiles(tileType); // Renamed to avoid conflict
+
+        // Move remaining tiles to table center
         var remainingTiles = display.Tiles.Where(t => t != tileType).ToList();
         if (remainingTiles.Any())
         {
             _tableCenter.AddTiles(remainingTiles);
         }
 
-        
-        
-
-
-
-        return takenTiles;
+        return displayTakenTiles;
     }
 }

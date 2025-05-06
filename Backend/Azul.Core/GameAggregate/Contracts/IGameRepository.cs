@@ -7,4 +7,5 @@ public interface IGameRepository
 {
     void Add(IGame newGame);
     IGame GetById(Guid id);
+    
 }
