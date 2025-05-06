@@ -10,8 +10,9 @@ body {
 
 .banner-pattern {
     background: url('../Images/TeamBanner.png') repeat-x top center;
-    height: 80px; 
+    height: 50px; 
     width: 100%;
+    object-fit: fill;
 }
 .nav {
     text-decoration: none;
@@ -107,7 +108,7 @@ footer {
     background: #1d7cb6;
     color: white;
     text-align: center;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
     margin-top: 2rem;
     position: fixed;
     bottom: 0;
