@@ -2,3 +2,4 @@ Mogelijke toevoegingen:
 -Wachtwoord moet minstens 1 special karakter, 1 hoofdletter en 1 kleine letter bevatten.
 -Indien fout bij registratie -> foutcode en email user opslaan in aparte table (?)
 -Foutcodes bij login worden nu getoond aan user (bv 401). Misschien in "begrijpbare taal voor user" uitleggen wat de fout is.
+-Zie foto (winner en retry) einde van het spel kunnen wij eventueel dit tonen.
