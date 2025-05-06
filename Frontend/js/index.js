@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Controleer op succesvolle registratie
     const urlParams = new URLSearchParams(window.location.search);
     const registrationSuccess = urlParams.get('registration');
+    const instructionsButton = document.getElementById('leave-button');
+    if (instructionsButton) {
+        instructionsButton.addEventListener('click', function () {
+            window.open('Azul Game Instructions.pdf', '_blank');
+        });
+    }
 
     if (registrationSuccess === 'success') {
         // Opgeslagen email ophalen

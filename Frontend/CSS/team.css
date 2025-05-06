@@ -10,8 +10,9 @@ body {
 
 .banner-pattern {
     background: url('../Images/TeamBanner.png') repeat-x top center;
-    height: 80px; 
+    height: 50px; 
     width: 100%;
+    object-fit: fill;
 }
 .nav {
     text-decoration: none;
@@ -63,6 +64,7 @@ h1 {
     margin: 2rem auto;
     padding: 0 20px;
     flex: 1;
+    color: #1d7cb6;
 }
 
 .team {
@@ -95,7 +97,7 @@ h1 {
 
     .team-member h3 {
         margin: 1rem 0 0.5rem;
-        color: #2c3e50;
+        color: ##1d7cb6;
     }
 
     .team-member p {
@@ -107,7 +109,7 @@ footer {
     background: #1d7cb6;
     color: white;
     text-align: center;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
     margin-top: 2rem;
     position: fixed;
     bottom: 0;

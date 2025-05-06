@@ -1,4 +1,6 @@
-﻿document.addEventListener('DOMContentLoaded', async function () {
+﻿// game.js
+
+document.addEventListener('DOMContentLoaded', async function () {
     setInterval(async function () {
         try {
             // Haal tableId uit de URL
@@ -36,10 +38,8 @@
             console.error('Error:', e);
         }
     }, 1000); // Poll every 3 seconds
-    
+
 });
-
-
 
 function renderGame(data) {
     // Render game info
@@ -53,9 +53,10 @@ function renderGame(data) {
     const playerBoardsContainer = document.getElementById('player-boards');
     playerBoardsContainer.innerHTML = '';
 
-    // Haal de currentPlayerId op uit sessionStorage
-    
-    renderPlayerBoards(data.seatedPlayers);
+    // Haal de userId uit de token
+    const currentUserId = getUserIdFromToken();
+
+    renderPlayerBoards(data.seatedPlayers, currentUserId);
 }
 function gameInfo(gameId) {
     setInterval(async function () {
@@ -103,15 +104,15 @@ function renderFactoryDisplays(count, tileFactory) {
     const tileImages = {
         11: '../Images/Tiles/plainblue.png',    // Blue
         12: '../Images/Tiles/yellowred.png',  // Yellow
-        13: '../Images/Tiles/plainred.png',     // Red
-        14: '../Images/Tiles/blackblue.png',   // Black
-        15: '../Images/Tiles/whiteturquoise.png'    // White
+        13: '../Images/Tiles/plainred.png',    // Red
+        14: '../Images/Tiles/blackblue.png',    // Black
+        15: '../Images/Tiles/whiteturquoise.png'     // White
     };
 
     for (let i = 0; i < count; i++) {
         const display = document.createElement('div');
         display.className = 'factory-display';
-        display.innerHTML = `<h3>Display ${i + 1}</h3><div class="tiles"></div>`;
+        display.innerHTML = `<div class="tiles"></div>`;
 
         const tilesContainer = display.querySelector('.tiles');
 
@@ -128,7 +129,7 @@ function renderFactoryDisplays(count, tileFactory) {
     }
 }
 
-function renderPlayerBoards(players) {
+function renderPlayerBoards(players, currentUserId) {
     const container = document.getElementById('player-boards');
     container.innerHTML = '';
     const tileImages = {
@@ -143,9 +144,14 @@ function renderPlayerBoards(players) {
         const board = document.createElement('div');
         board.className = 'player-board';
 
+        // Voeg een extra class toe als dit de eigen speler is
+        if (player.id === currentUserId) {
+            board.classList.add('own-player'); // Je kunt deze class gebruiken om de styling aan te passen
+        }
+
         board.dataset.playerId = player.id;
 
-        
+
         const header = document.createElement('div');
         header.className = 'player-header';
         header.innerHTML = `
@@ -257,6 +263,29 @@ function renderPlayerBoards(players) {
     });
 }
 
+// Helper function om de userId uit de JWT token te extraheren
+function getUserIdFromToken() {
+    const token = sessionStorage.getItem('userToken');
+    if (!token) {
+        return null;
+    }
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const payload = JSON.parse(jsonPayload);
+        // **BELANGRIJK:** Controleer de naam van de user ID claim in jouw token.
+        // Vervang 'id' door de juiste naam als het anders is.
+        return payload.nameid;
+    } catch (error) {
+        console.error('Error decoding JWT token:', error);
+        return null;
+    }
+}
+
 // Helper function for floor penalties
 function getFloorPenalty(position) {
     const penalties = ['-1', '-1', '-2', '-2', '-2', '-3', '-3'];
@@ -275,21 +304,6 @@ function getTileColor(tileType) {
     return colors[tileType] || 'unknown';
 }
 
-// Helper function for floor penalties
-function getFloorPenalty(position) {
-    const penalties = ['-1', '-1', '-2', '-2', '-2', '-3', '-3'];
-    return penalties[position] || '0';
-}
-    function getTileColor(tileType) {
-        const colors = {
-            11: 'blue',
-            12: 'yellow',
-            13: 'red',
-            14: 'black',
-            15: 'white'
-        };
-        return colors[tileType] || 'unknown';
-}
 
 document.addEventListener('DOMContentLoaded', async function () {
     const tableId = new URLSearchParams(window.location.search).get('tableId');
