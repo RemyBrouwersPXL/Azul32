@@ -125,6 +125,27 @@ body {
         background-color: #1d7cb6;
     }
 
+#leave-button {
+    border: none;
+    outline: none;
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    transform: .3s ease;
+    background-color: #1d7cb6;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.leave-button:hover {
+    background-color: #1f2523;
+}
+
+
+
 .message,
 .signin {
     font-size: 20px;
@@ -227,6 +248,7 @@ body {
     .team:hover {
         text-decoration: underline;
     }
+
 
 .site-footer {
     margin-top: auto;
