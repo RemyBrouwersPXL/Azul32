@@ -12,7 +12,8 @@ namespace Azul.Core.GameAggregate;
 internal class Game : IGame
 {
     private int _roundNumber;
-
+    private Guid _playerToPlayId;
+    private bool _hasEnded;
 
     /// <summary>
     /// Creates a new game and determines the player to play first.
@@ -44,11 +45,11 @@ internal class Game : IGame
         Id = id;
         TileFactory = tileFactory;
         Players = players;
-        
-        PlayerToPlayId = firstplayer.Id; 
+
+        _playerToPlayId = firstplayer.Id; 
         TileFactory.TableCenter.AddStartingTile();
         TileFactory.FillDisplays();
-
+        _hasEnded = false;
         _roundNumber = 1;
 
     }
@@ -61,21 +62,153 @@ internal class Game : IGame
 
     public IPlayer[] Players { get; }
 
-    public Guid PlayerToPlayId { get; }
+    // Modify the PlayerToPlayId property to make it writable by adding a private setter.
+    public Guid PlayerToPlayId => _playerToPlayId;
 
 
     public int RoundNumber => _roundNumber;
 
-    public bool HasEnded { get; }
+    public bool HasEnded => _hasEnded;
 
     public void PlaceTilesOnFloorLine(Guid playerId)
     {
-        throw new NotImplementedException();
+        if (PlayerToPlayId != playerId)
+            throw new InvalidOperationException("It's not this player's turn.");
+        // Get the player
+        IPlayer player = Players.FirstOrDefault(p => p.Id == playerId);
+        if (player == null)
+            throw new InvalidOperationException($"Player with ID {playerId} does not exist.");
+        // Check if player has tiles to place
+        if (player.TilesToPlace.Count == 0)
+            throw new InvalidOperationException("Player has no tiles to place.");
+        // Get the player's board
+        if (player.Board == null)
+            throw new InvalidOperationException("Player has no board initialized.");
+        // Place tiles on the floor line
+        try
+        {
+            player.Board.AddTilesToFloorLine(player.TilesToPlace, TileFactory);
+            // Clear the player's tiles to place
+            player.TilesToPlace.Clear();
+            // End the player's turn
+            _playerToPlayId = Players.First(p => p.Id != playerId).Id;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Failed to place tiles on floor line: {ex.Message}", ex);
+        }
     }
 
     public void PlaceTilesOnPatternLine(Guid playerId, int patternLineIndex)
     {
-        throw new NotImplementedException();
+        // Validate it's the player's turn
+        if (PlayerToPlayId != playerId)
+            throw new InvalidOperationException("It's not this player's turn.");
+
+        // Get the player
+        IPlayer player = Players.FirstOrDefault(p => p.Id == playerId);
+        if (player == null)
+            throw new InvalidOperationException($"Player with ID {playerId} does not exist.");
+
+        // Check if player has tiles to place
+        if (player.TilesToPlace.Count == 0)
+            throw new InvalidOperationException("Player has no tiles to place.");
+
+        // Validate pattern line index
+        if (patternLineIndex < 0 || patternLineIndex > 4)
+            throw new ArgumentOutOfRangeException(nameof(patternLineIndex), "Pattern line index must be between 0 and 4");
+
+        TileType? tileType = null;
+        foreach (var tile in player.TilesToPlace)
+        {
+            if (tile != TileType.StartingTile)
+            {
+                if (tileType == null)
+                {
+                    tileType = tile;
+                }
+                else if (tile != tileType.Value)
+                {
+                    throw new InvalidOperationException("All non-starting tiles must be of the same type.");
+                }
+            }
+        }
+        // Get the tile type (all tiles should be same type)
+        
+
+        // Get the player's board
+        if (player.Board == null)
+            throw new InvalidOperationException("Player has no board initialized.");
+
+        try
+        {
+            bool tookStartingTile = player.TilesToPlace.Contains(TileType.StartingTile);
+
+            // Plaats tegels
+            player.Board.AddTilesToPatternLine(player.TilesToPlace, patternLineIndex, TileFactory);
+            player.TilesToPlace.Clear();
+
+
+
+            // Verwerk wall tiling en scores
+            
+
+            // Bepaal of nieuwe ronde moet starten
+            bool shouldStartNewRound = TileFactory.IsEmpty;
+
+            if (shouldStartNewRound)
+            {
+                foreach (IPlayer p in Players)
+                {
+                    p.Board.DoWallTiling(TileFactory);
+                    p.Board.CalculateFinalBonusScores();
+
+                    if (p.Board.HasCompletedHorizontalLine)
+                    {
+                        _hasEnded = true;
+                    }
+                }
+                _roundNumber++;
+                TileFactory.FillDisplays();
+                TileFactory.TableCenter.AddStartingTile();
+
+                // Reset starting tile status
+                foreach (var p in Players)
+                {
+                    p.HasStartingTile = false;
+                }
+
+                // Zoek speler met starting tile op floor line
+                var startingPlayer = Players.FirstOrDefault(p =>
+                    p.Board.FloorLine.Any(t => t.HasTile && t.Type == TileType.StartingTile));
+
+                if (startingPlayer != null)
+                {
+                    _playerToPlayId = startingPlayer.Id;
+                    startingPlayer.HasStartingTile = true;
+                    var startingTileSpot = startingPlayer.Board.FloorLine
+                        .First(t => t.HasTile && t.Type == TileType.StartingTile);
+                    startingTileSpot.Clear();
+                }
+            }
+
+            // BEURTWISSELING LOGICA
+            if (!shouldStartNewRound)
+            {
+                
+                    
+                    var playersList = Players.ToList();
+                    int currentIndex = playersList.FindIndex(p => p.Id == playerId);
+                    int nextIndex = (currentIndex + 1) % playersList.Count;
+                    _playerToPlayId = playersList[nextIndex].Id;
+                    
+                
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Failed to place tiles: {ex.Message}", ex);
+        }
     }
 
     public void TakeTilesFromFactory(Guid playerId, Guid displayId, TileType tileType)

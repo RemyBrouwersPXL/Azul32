@@ -50,11 +50,23 @@ internal class GameService : IGameService
 
     public void PlaceTilesOnPatternLine(Guid gameId, Guid playerId, int patternLineIndex)
     {
-        throw new NotImplementedException();
+        IGame game = _gameRepository.GetById(gameId);
+        if (game == null)
+        {
+            throw new InvalidOperationException($"Game with ID {gameId} could not be retrieved or is of an invalid type.");
+        }
+        // Call PlaceTilesOnPatternLine on the game
+        game.PlaceTilesOnPatternLine(playerId, patternLineIndex);
     }
 
     public void PlaceTilesOnFloorLine(Guid gameId, Guid playerId)
     {
-        throw new NotImplementedException();
+        IGame game = _gameRepository.GetById(gameId);
+        if (game == null)
+        {
+            throw new InvalidOperationException($"Game with ID {gameId} could not be retrieved or is of an invalid type.");
+        }
+        // Call PlaceTilesOnFloorLine on the game
+        game.PlaceTilesOnFloorLine(playerId);
     }
 }
