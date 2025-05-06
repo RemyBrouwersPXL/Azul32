@@ -111,7 +111,7 @@ function renderFactoryDisplays(count, tileFactory) {
     for (let i = 0; i < count; i++) {
         const display = document.createElement('div');
         display.className = 'factory-display';
-        display.innerHTML = `<h3>Display ${i + 1}</h3><div class="tiles"></div>`;
+        display.innerHTML = `<div class="tiles"></div>`;
 
         const tilesContainer = display.querySelector('.tiles');
 
