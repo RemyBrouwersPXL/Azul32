@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const seated = data.seatedPlayers.length;
             const total = data.hasAvailableSeat;
             const aiPlayersCount = data.preferences.numberOfArtificialPlayers;
-
+            sessionStorage.setItem('gameId', data.gameId);
             let contentPlayers = document.getElementById('aantal')
             contentPlayers.innerText = `Players: ${seated + aiPlayersCount} (of which AI: ${aiPlayersCount})`;
 

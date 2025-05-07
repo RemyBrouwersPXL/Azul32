@@ -1,6 +1,7 @@
 ﻿// game.js
 
 document.addEventListener('DOMContentLoaded', async function () {
+    
     setInterval(async function () {
         try {
             // Haal tableId uit de URL
@@ -31,15 +32,23 @@ document.addEventListener('DOMContentLoaded', async function () {
             const gameId = data.gameId;
             sessionStorage.setItem('count', data.preferences.numberOfFactoryDisplays);
             renderGame(data);
-            gameInfo(gameId)// Verwerk de ontvangen data
+            gameInfo(gameId);
+            if (data.seatedPlayers[sessionStorage.getItem('playerIndex')].tilesToPlace.length === 0) {
+                takeTiles();
+            }
+            // Verwerk de ontvangen data
+            
             return gameId; // Return the gameId for further use
 
         } catch (e) {
             console.error('Error:', e);
         }
-    }, 1000); // Poll every 3 seconds
-
+    }, 1000); 
+    
+    
 });
+
+
 
 function renderGame(data) {
     // Render game info
@@ -76,7 +85,11 @@ function gameInfo(gameId) {
 
             const tileFactory = data.tileFactory;
             const currentPlayerId = data.playerToPlayId;
-
+            const playerIndex = Number(data.players.findIndex(
+                player => player.id == currentPlayerId
+            ));
+            sessionStorage.setItem('playerIndex', playerIndex);
+            
             document.querySelectorAll('.player-board').forEach(board => {
                 // Verwijder eerst de current-player class van alle boards
                 board.classList.remove('current-player');
@@ -84,12 +97,13 @@ function gameInfo(gameId) {
                 // Voeg de class alleen toe aan het board van de huidige speler
                 if (board.dataset.playerId === currentPlayerId) {
                     board.classList.add('current-player');
+                    
                 }
             });
             renderFactoryDisplays(sessionStorage.getItem('count'), tileFactory);
 
             return tileFactory; // Return the tileFactory for further use
-
+            
 
         } catch (e) {
             console.error('Poll error:', e);
@@ -97,9 +111,13 @@ function gameInfo(gameId) {
     }, 1000);
 }
 
+let selectedTile = null;
+let selectedTileInt = null; // Om de geselecteerde tegel op te slaan
+let selectedFactory = null;
+
 function renderFactoryDisplays(count, tileFactory) {
     const container = document.getElementById('factory-displays');
-    container.innerHTML = `<h2>Factory Displays (${count})</h2>`;
+    container.innerHTML = ``;
 
     const tileImages = {
         11: '../Images/Tiles/plainblue.png',    // Blue
@@ -113,21 +131,95 @@ function renderFactoryDisplays(count, tileFactory) {
         const display = document.createElement('div');
         display.className = 'factory-display';
         display.innerHTML = `<div class="tiles"></div>`;
+        display.dataset.displayId = `${i}`; // Unieke ID voor elke display
 
         const tilesContainer = display.querySelector('.tiles');
-
+        
         // Loop door de tiles van dit display
         tileFactory.displays[i].tiles.forEach(tileType => {
+            const tile = document.createElement('div');
+            tile.className = `tile`;
+            const tileButton = document.createElement('button');
+            tileButton.className = `tile-button`;
+            tileButton.dataset.tileId = `${tileType}`;
+            tileButton.dataset.displayId = `${i}`;
+            
+            // Geef de button een unieke ID
+            if (selectedTile && selectedTile.dataset.tileId === tileButton.dataset.tileId && selectedTile.dataset.displayId === tileButton.dataset.displayId) {
+                tileButton.classList.add('selected');
+            }
+            
+
+            tileButton.addEventListener('click', function () {
+                // Verwijder selectie van vorige tegel
+                if (selectedTile) {
+                    selectedTile.classList.remove('selected');
+                }
+
+                // Als niet dezelfde tegel opnieuw geklikt
+                if (selectedTile !== this) {
+                    this.classList.add('selected');
+                    selectedTile = this;
+                    selectedTileInt = Number(selectedTile.dataset.tileId);
+                } else {
+                    selectedTile = null;
+                }
+                if (selectedFactory !== tileFactory.displays[i].id) {
+                    selectedFactory = tileFactory.displays[i].id;
+                } else {
+                    selectedFactory = null;
+                } 
+                
+
+            });
             const tileImg = document.createElement('img');
             tileImg.src = `images/${tileImages[tileType]}`;
             tileImg.className = 'tile';
             tileImg.alt = `Tile ${tileType}`;
-            tilesContainer.appendChild(tileImg);
+            tileButton.appendChild(tileImg);
+            tile.appendChild(tileButton);
+            tilesContainer.appendChild(tile);
+            
+            
         });
+        
 
         container.appendChild(display);
     }
+    
 }
+
+function takeTiles() {
+    if (selectedTileInt !== null && selectedFactory !== null) {
+        try {
+            const token = sessionStorage.getItem('userToken');
+            const gameId = sessionStorage.getItem('gameId');
+
+            const res = fetch(`https://localhost:5051/api/Games/${gameId}/take-tiles`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/plain'
+                },
+                body: JSON.stringify({
+                    displayId: selectedFactory,
+                    tileType: selectedTileInt,
+                })
+            });
+            if (!res.ok) {
+                console.error('API request failed:', res.status);
+                return;
+            }
+
+        }
+        catch (e) {
+            console.error('Error:', e);
+        }
+
+    }
+}
+
 
 function renderPlayerBoards(players, currentUserId) {
     const container = document.getElementById('player-boards');
@@ -306,6 +398,7 @@ function getTileColor(tileType) {
 
 
 document.addEventListener('DOMContentLoaded', async function () {
+    
     const tableId = new URLSearchParams(window.location.search).get('tableId');
     const leaveButton = document.getElementById('leave-button');
     leaveButton.addEventListener('click', () => handleLeaveTable(tableId));
@@ -366,3 +459,4 @@ function showError(message) {
         errorContainer.style.display = 'none';
     }, 5000);
 }
+;

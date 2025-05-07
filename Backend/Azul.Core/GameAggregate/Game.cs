@@ -158,6 +158,7 @@ internal class Game : IGame
 
             if (shouldStartNewRound)
             {
+                
                 foreach (IPlayer p in Players)
                 {
                     p.Board.DoWallTiling(TileFactory);
@@ -168,7 +169,8 @@ internal class Game : IGame
                         _hasEnded = true;
                     }
                 }
-                _roundNumber++;
+                
+                
                 TileFactory.FillDisplays();
                 TileFactory.TableCenter.AddStartingTile();
 
@@ -182,28 +184,43 @@ internal class Game : IGame
                 var startingPlayer = Players.FirstOrDefault(p =>
                     p.Board.FloorLine.Any(t => t.HasTile && t.Type == TileType.StartingTile));
 
-                if (startingPlayer != null)
+                if (startingPlayer != null )
                 {
+                    
+
                     _playerToPlayId = startingPlayer.Id;
                     startingPlayer.HasStartingTile = true;
                     var startingTileSpot = startingPlayer.Board.FloorLine
                         .First(t => t.HasTile && t.Type == TileType.StartingTile);
                     startingTileSpot.Clear();
                 }
+                
+                
+                _roundNumber++;
+            }
+            else
+            {
+                var nextPlayer = Players.First(p => p.Id != _playerToPlayId);
+
+                var playersList = Players.ToList();
+                int currentIndex = playersList.FindIndex(p => p.Id == playerId);
+                int nextIndex = (currentIndex + 1) % playersList.Count;
+                _playerToPlayId = nextPlayer.Id;
             }
 
             // BEURTWISSELING LOGICA
-            if (!shouldStartNewRound)
-            {
+            //if (!shouldStartNewRound)
+            //{
+
                 
-                    
-                    var playersList = Players.ToList();
-                    int currentIndex = playersList.FindIndex(p => p.Id == playerId);
-                    int nextIndex = (currentIndex + 1) % playersList.Count;
-                    _playerToPlayId = playersList[nextIndex].Id;
-                    
-                
-            }
+
+            //    var playersList = Players.ToList();
+            //    int currentIndex = playersList.FindIndex(p => p.Id == playerId);
+            //    int nextIndex = (currentIndex + 1) % playersList.Count;
+            //    _playerToPlayId = playersList[nextIndex].Id;
+
+
+            //}
         }
         catch (Exception ex)
         {

@@ -124,7 +124,7 @@ internal class TileFactory: ITileFactory
 
             if (tileType != TileType.StartingTile && !_tableCenter.Tiles.Contains(tileType))
             {
-                throw new InvalidOperationException($"Tile type {tileType} is not in table center");
+                throw new InvalidOperationException($" type tile {tileType} is not in table center");
             }// Renamed to avoid conflict
 
             // Take requested tiles
