@@ -384,6 +384,10 @@ internal class Board : IBoard
         }
 
         _score += penalty;
+        if (_score < 0)
+        {
+            _score = 0;
+        }
 
     }
 

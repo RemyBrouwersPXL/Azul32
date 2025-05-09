@@ -143,8 +143,10 @@ internal class Game : IGame
         try
         {
             bool tookStartingTile = player.TilesToPlace.Contains(TileType.StartingTile);
+            var playerHasStartingTile = Players.FirstOrDefault(p => p.HasStartingTile == true);
 
             // Plaats tegels
+            
             player.Board.AddTilesToPatternLine(player.TilesToPlace, patternLineIndex, TileFactory);
             player.TilesToPlace.Clear();
 
@@ -154,7 +156,7 @@ internal class Game : IGame
             
 
             // Bepaal of nieuwe ronde moet starten
-            bool shouldStartNewRound = TileFactory.IsEmpty;
+            bool shouldStartNewRound = TileFactory.IsEmpty && TileFactory.TableCenter.IsEmpty;
 
             if (shouldStartNewRound)
             {
@@ -172,7 +174,7 @@ internal class Game : IGame
                 
                 
                 TileFactory.FillDisplays();
-                TileFactory.TableCenter.AddStartingTile();
+                
 
                 // Reset starting tile status
                 foreach (var p in Players)
@@ -184,19 +186,26 @@ internal class Game : IGame
                 var startingPlayer = Players.FirstOrDefault(p =>
                     p.Board.FloorLine.Any(t => t.HasTile && t.Type == TileType.StartingTile));
 
-                if (startingPlayer != null )
+                if (playerHasStartingTile != null )
                 {
                     
 
-                    _playerToPlayId = startingPlayer.Id;
-                    startingPlayer.HasStartingTile = true;
-                    var startingTileSpot = startingPlayer.Board.FloorLine
-                        .First(t => t.HasTile && t.Type == TileType.StartingTile);
-                    startingTileSpot.Clear();
+                    _playerToPlayId = playerHasStartingTile.Id;
+                    
+                    
+                } else
+                {
+                    var nextPlayer = Players.First(p => p.Id != _playerToPlayId);
+
+                    var playersList = Players.ToList();
+                    int currentIndex = playersList.FindIndex(p => p.Id == playerId);
+                    int nextIndex = (currentIndex + 1) % playersList.Count;
+                    _playerToPlayId = nextPlayer.Id;
                 }
+
                 
-                
-                _roundNumber++;
+                    _roundNumber++;
+                TileFactory.TableCenter.AddStartingTile();
             }
             else
             {
