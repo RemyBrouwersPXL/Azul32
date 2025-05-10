@@ -1,17 +1,20 @@
-﻿// game.js
+﻿document.addEventListener('DOMContentLoaded', async function () {
+    // — your Instructions button —
+    const instructionsButton = document.getElementById('instructions-button');
+    instructionsButton.addEventListener('click', () => {
+        window.open('Azul Game Instructions.pdf', '_blank');
+    });
 
-document.addEventListener('DOMContentLoaded', async function () {
-    
+    // — your Leave Table button —
+    const leaveButton = document.getElementById('leave-button');
+    leaveButton.addEventListener('click', () => handleLeaveTable(tableId));
+
+    // — now start polling & rendering the game —
     setInterval(async function () {
         try {
-            // Haal tableId uit de URL
             const urlParams = new URLSearchParams(window.location.search);
             const tableId = urlParams.get('tableId');
-
-            if (!tableId) {
-                console.error('Table ID not found in URL');
-                return;
-            }
+            if (!tableId) return console.error('Table ID not found');
 
             const token = sessionStorage.getItem('userToken');
             const res = await fetch(`https://localhost:5051/api/Tables/${tableId}`, {
@@ -22,40 +25,19 @@ document.addEventListener('DOMContentLoaded', async function () {
                     'Accept': 'text/plain'
                 }
             });
-
-            if (!res.ok) {
-                console.error('API request failed:', res.status);
-                return;
-            }
+            if (!res.ok) return console.error('API request failed:', res.status);
 
             const data = await res.json();
-            const gameId = data.gameId;
             sessionStorage.setItem('count', data.preferences.numberOfFactoryDisplays);
             renderGame(data);
-            gameInfo(gameId);
-            const index = Number(sessionStorage.getItem('playerIndex'));
-            if (typeof index !== 'undefined') {
-                if (data.seatedPlayers[index].tilesToPlace.length == 0) {
-                    if (sessionStorage.getItem('currentUserId') == sessionStorage.getItem('playerStart')) {
-                        takeTiles();
-                    }
-
-                }
-            } 
-                
-            
-            
-           
-            
-            return gameId; // Return the gameId for further use
+            gameInfo(data.gameId);
 
         } catch (e) {
             console.error('Error:', e);
         }
-    }, 1000); 
-    
-    
-});
+    }, 1000);
+});  // ← only one closing here, matching the addEventListener
+
 
 
 
@@ -115,7 +97,8 @@ function gameInfo(gameId) {
             ));
             sessionStorage.setItem('playerIndex', playerIndex);
             sessionStorage.setItem('playerStart', currentPlayerId);
-            
+            sessionStorage.setItem('currentPlayerId', currentPlayerId);
+
             document.querySelectorAll('.player-board').forEach(board => {
                 // Verwijder eerst de current-player class van alle boards
                 board.classList.remove('current-player');
