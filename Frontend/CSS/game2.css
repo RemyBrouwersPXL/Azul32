@@ -7,13 +7,30 @@
     background-size: cover;
 }
 
+/* blue “Instructions” button */
+#instructions-button {
+    padding: 8px 16px;
+    background-color: #1d7cb6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+    #instructions-button:hover {
+        background-color: #084e79;
+    }
+
+/* red “Leave Table” button (you already have this, just add a left margin) */
 #leave-button {
-    padding: 10px 20px;
+    padding: 8px 16px;
     background-color: #ff4444;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1em;
 }
 
     #leave-button:disabled {
@@ -21,9 +38,28 @@
         cursor: not-allowed;
     }
 
+
+/* === show the toolbar (was display:none) === */
 .game-info {
-    display: none
+    display: flex; /* show the bar */
+    justify-content: space-between;
+    align-items: center;
+    /* remove the background and border */
+    background: none;
+    border: none;
+    box-shadow: none;
+    /* you can keep padding if you like the spacing around the text/buttons */
+    padding: 10px 20px;
 }
+
+
+/* === hide only the unwanted bits inside the bar === */
+#game-id,
+#player-count,
+#factory-count {
+    display: none;
+}
+
 
 h1 {
     font-size: 28px;
@@ -139,6 +175,7 @@ h1 {
         position: relative;
         box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
+
 
 .player-boards {
     display: flex;
