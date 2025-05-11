@@ -36,7 +36,7 @@
             console.error('Error:', e);
         }
     }, 1000);
-});  // ← only one closing here, matching the addEventListener
+}); 
 
 
 
@@ -54,7 +54,7 @@ function renderGame(data) {
     playerBoardsContainer.innerHTML = '';
 
     // Haal de userId uit de token
-    let hadTakenTile = false;
+    let hadTakenTile = data.seatedPlayers[Number(sessionStorage.getItem('playerIndex'))]?.tilesToPlace.length > 0;
     const currentUserId = getUserIdFromToken();
     sessionStorage.setItem('currentUserId', currentUserId);
     if (typeof Number(sessionStorage.getItem('playerIndex')) !== 'undefined') {
@@ -66,14 +66,14 @@ function renderGame(data) {
         }
 
     }
-    
-        
-        renderPlayerBoards(data.seatedPlayers, currentUserId, hadTakenTile);
-    
-    
-    
+    window.hadTakenTile = hadTakenTile;
+    renderPlayerBoards(data.seatedPlayers, currentUserId, hadTakenTile);
     console.log(hadTakenTile);
 }
+
+
+
+
 function gameInfo(gameId) {
     setInterval(async function () {
         try {
@@ -106,14 +106,14 @@ function gameInfo(gameId) {
                 // Voeg de class alleen toe aan het board van de huidige speler
                 if (board.dataset.playerId === currentPlayerId) {
                     board.classList.add('current-player');
-                    
+
                 }
             });
             renderFactoryDisplays(sessionStorage.getItem('count'), tileFactory);
             renderTableCenter(tileFactory);
 
             return tileFactory; // Return the tileFactory for further use
-            
+
 
         } catch (e) {
             console.error('Poll error:', e);
@@ -122,7 +122,7 @@ function gameInfo(gameId) {
 }
 
 let selectedTile = null;
-let selectedTileInt = null; 
+let selectedTileInt = null;
 let selectedFactory = null;
 
 function renderFactoryDisplays(count, tileFactory) {
@@ -144,7 +144,7 @@ function renderFactoryDisplays(count, tileFactory) {
         display.dataset.displayId = `${i}`; // Unieke ID voor elke display
 
         const tilesContainer = display.querySelector('.tiles');
-        
+
         // Loop door de tiles van dit display
         tileFactory.displays[i].tiles.forEach(tileType => {
             const tile = document.createElement('div');
@@ -153,41 +153,48 @@ function renderFactoryDisplays(count, tileFactory) {
             tileButton.className = `tile-button`;
             tileButton.dataset.tileId = `${tileType}`;
             tileButton.dataset.displayId = `${i}`;
-            
+
             // Geef de button een unieke ID
             if (selectedTile && selectedTile.dataset.tileId === tileButton.dataset.tileId && selectedTile.dataset.displayId === tileButton.dataset.displayId) {
                 tileButton.classList.add('selected');
             }
-            
+
 
             tileButton.addEventListener('click', function () {
+                const currentUserId = sessionStorage.getItem('currentUserId');
+                const currentPlayerId = sessionStorage.getItem('currentPlayerId');
+                if (currentUserId !== currentPlayerId) {
+                    console.log("It is not your turn to pick a tile.");
+                    // Optioneel: geef hier visuele feedback aan de gebruiker, bijv. een tijdelijke melding
+                    return; // Stop de functie als het niet de beurt is
+                }
                 // Verwijder selectie van vorige tegel
                 if (selectedTile) {
                     selectedTile.classList.remove('selected');
                 }
 
-                
-                    // Verwijder eerst de current-player class van alle boards
-                    
+                if (window.hadTakenTile) {
+                    alert('You still have tiles to place before you can take new ones.');
+                    return;
+                }
+                // Verwijder eerst de current-player class van alle boards
 
-                    // Voeg de class alleen toe aan het board van de huidige speler
-                    
-                        
-                        if (selectedTile !== this) {
-                            this.classList.add('selected');
-                            selectedTile = this;
-                            selectedTileInt = Number(selectedTile.dataset.tileId);
-                        } else {
-                            selectedTile = null;
-                        }
-                        if (selectedFactory !== tileFactory.displays[i].id) {
-                            selectedFactory = tileFactory.displays[i].id;
-                        } else {
-                            selectedFactory = null;
-                        } 
-                
-                
-                
+
+                // Voeg de class alleen toe aan het board van de huidige speler
+
+
+                if (selectedTile !== this) {
+                    this.classList.add('selected');
+                    selectedTile = this;
+                    selectedTileInt = Number(selectedTile.dataset.tileId);
+                } else {
+                    selectedTile = null;
+                }
+                if (selectedFactory !== tileFactory.displays[i].id) {
+                    selectedFactory = tileFactory.displays[i].id;
+                } else {
+                    selectedFactory = null;
+                }
 
             });
             const tileImg = document.createElement('img');
@@ -197,21 +204,16 @@ function renderFactoryDisplays(count, tileFactory) {
             tileButton.appendChild(tileImg);
             tile.appendChild(tileButton);
             tilesContainer.appendChild(tile);
-            
-            
         });
-        
+
 
         container.appendChild(display);
     }
-    
-}
 
+}
 function renderTableCenter(tileFactory) {
     const container = document.getElementById('central-factory');
     container.innerHTML = '';
-    
-
     const tileImages = {
         0: '../Images/Tiles/startingtile.png',
         11: '../Images/Tiles/plainblue.png',    // Blue
@@ -237,35 +239,39 @@ function renderTableCenter(tileFactory) {
             tileButton.classList.add('selected');
         }
 
-
         tileButton.addEventListener('click', function () {
+            const currentUserId = sessionStorage.getItem('currentUserId');
+            const currentPlayerId = sessionStorage.getItem('currentPlayerId');
+            if (currentUserId !== currentPlayerId) {
+                console.log("Het is niet jouw beurt om tegels te pakken.");
+                // Optioneel: geef hier visuele feedback aan de gebruiker, bijv. een tijdelijke melding
+                return; // Stop de functie als het niet de beurt is
+            }
+
             // Verwijder selectie van vorige tegel
             if (selectedTile) {
                 selectedTile.classList.remove('selected');
             }
 
-
-
-       
             // Verwijder eerst de current-player class van alle boards
 
 
             // Voeg de class alleen toe aan het board van de huidige speler
-            
 
-                if (selectedTile !== this) {
-                    this.classList.add('selected');
-                    selectedTile = this;
-                    selectedTileInt = Number(selectedTile.dataset.tileId);
-                } else {
-                    selectedTile = null;
-                }
-                if (selectedFactory !== tileFactory.displays[i].id) {
-                    selectedFactory = tileFactory.displays[i].id;
-                } else {
-                    selectedFactory = null;
-                }
-            
+
+            if (selectedTile !== this) {
+                this.classList.add('selected');
+                selectedTile = this;
+                selectedTileInt = Number(selectedTile.dataset.tileId);
+            } else {
+                selectedTile = null;
+            }
+            if (selectedFactory !== tileFactory.displays[i].id) {
+                selectedFactory = tileFactory.displays[i].id;
+            } else {
+                selectedFactory = null;
+            }
+
         });
         const tileImg = document.createElement('img');
         tileImg.src = `images/${tileImages[tileType]}`;
@@ -304,9 +310,6 @@ function takeTiles() {
             hasTakenTile = true;
 
             return hasTakenTile;
-
-
-
         }
         catch (e) {
             console.error('Error:', e);
@@ -314,8 +317,6 @@ function takeTiles() {
 
     }
 }
-
-
 const playerSart = sessionStorage.getItem('playerStart');
 function renderPlayerBoards(players, currentUserId, hadTakenTile) {
     const container = document.getElementById('player-boards');
@@ -356,7 +357,7 @@ function renderPlayerBoards(players, currentUserId, hadTakenTile) {
             ${player.hasStartingTile ? '<div class="starting-tile">⭐</div>' : ''}
         `;
         }
-        
+
         board.appendChild(header);
 
         // Create main board content container
@@ -373,7 +374,7 @@ function renderPlayerBoards(players, currentUserId, hadTakenTile) {
 
                 const tilesContainer = document.createElement('div');
                 tilesContainer.className = 'tiles-container';
-                
+
                 if (player.id === currentUserId && player.id === playerSart) {
                     if (hadTakenTile) {
                         lineDiv.innerHTML = `<span class="line-label">${line.length} -->:</span>`;
@@ -386,7 +387,7 @@ function renderPlayerBoards(players, currentUserId, hadTakenTile) {
                 } else {
                     lineDiv.innerHTML = `<span class="line-label">${line.length}:</span>`;
                 }
-                
+
                 lineDiv.appendChild(tilesContainer);
 
                 for (let i = 0; i < line.length; i++) {
@@ -493,9 +494,6 @@ function placeTileOnPatternline(line) {
             console.error('API request failed:', res.status);
             return;
         }
-        
-
-
 
     }
     catch (e) {
@@ -503,8 +501,6 @@ function placeTileOnPatternline(line) {
     }
 
 }
-
-
 function getUserIdFromToken() {
     const token = sessionStorage.getItem('userToken');
     if (!token) {
@@ -513,7 +509,7 @@ function getUserIdFromToken() {
     try {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
 
@@ -544,10 +540,8 @@ function getTileColor(tileType) {
     };
     return colors[tileType] || 'unknown';
 }
-
-
 document.addEventListener('DOMContentLoaded', async function () {
-    
+
     const tableId = new URLSearchParams(window.location.search).get('tableId');
     const leaveButton = document.getElementById('leave-button');
     leaveButton.addEventListener('click', () => handleLeaveTable(tableId));
@@ -597,7 +591,6 @@ async function handleLeaveTable(tableId) {
         leaveButton.textContent = 'Leave Table';
     }
 }
-
 function showError(message) {
     const errorContainer = document.getElementById('error-container');
     errorContainer.textContent = message;
@@ -608,4 +601,3 @@ function showError(message) {
         errorContainer.style.display = 'none';
     }, 5000);
 };
-
