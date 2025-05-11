@@ -410,6 +410,10 @@ h1 {
         object-fit: contain;
     }
 
+.tile-startingTile {
+    background-image: url('../Images/Tiles/startingtile.png');
+}
+
 .tile-blue {
     background-image: url('../Images/Tiles/plainblue.png');
 }

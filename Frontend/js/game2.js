@@ -195,6 +195,7 @@ function renderFactoryDisplays(count, tileFactory) {
                 } else {
                     selectedFactory = null;
                 }
+                takeTiles();
 
             });
             const tileImg = document.createElement('img');
@@ -266,11 +267,17 @@ function renderTableCenter(tileFactory) {
             } else {
                 selectedTile = null;
             }
-            if (selectedFactory !== tileFactory.displays[i].id) {
-                selectedFactory = tileFactory.displays[i].id;
+            if (selectedFactory !== tileFactory.tableCenter.id) {
+                selectedFactory = tileFactory.tableCenter.id;
             } else {
                 selectedFactory = null;
             }
+           
+            if (window.hadTakenTile) {
+                alert('You still have tiles to place before you can take new ones.');
+                return;
+            }
+            takeTiles();
 
         });
         const tileImg = document.createElement('img');
@@ -444,6 +451,17 @@ function renderPlayerBoards(players, currentUserId, hadTakenTile) {
         floorLine.className = 'floor-line';
         floorLine.innerHTML = '<span class="label">Floor:</span>';
 
+        floorLine.addEventListener('click', function () {
+            if (player.id === currentUserId && player.id === playerSart) {
+                if (hadTakenTile) {
+                    placeTileOnFloorline();
+                } else {
+                    alert('You still have tiles to place before you can take new ones.');
+                    return;
+                }
+            }
+        })
+
         // Create all 7 floor positions with penalty indicators
         for (let i = 0; i < 7; i++) {
             const floorPos = document.createElement('div');
@@ -501,6 +519,32 @@ function placeTileOnPatternline(line) {
     }
 
 }
+
+function placeTileOnFloorline() {
+    try {
+        const token = sessionStorage.getItem('userToken');
+        const gameId = sessionStorage.getItem('gameId');
+
+        const res = fetch(`https://localhost:5051/api/Games/${gameId}/place-tiles-on-floorline`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'text/plain'
+            },
+            
+        });
+        if (!res.ok) {
+            console.error('API request failed:', res.status);
+            return;
+        }
+
+    }
+    catch (e) {
+        console.error('Error:', e);
+    }
+
+}
 function getUserIdFromToken() {
     const token = sessionStorage.getItem('userToken');
     if (!token) {
@@ -532,6 +576,7 @@ function getFloorPenalty(position) {
 // Helper function to get tile color name
 function getTileColor(tileType) {
     const colors = {
+        0: 'startingTile', 
         11: 'blue',
         12: 'yellow',
         13: 'red',
