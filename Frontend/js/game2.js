@@ -393,6 +393,7 @@ function renderPlayerBoards(players, currentUserId, hadTakenTile) {
                     })
                 } else {
                     lineDiv.innerHTML = `<span class="line-label">${line.length}:</span>`;
+                    lineDiv.id
                 }
 
                 lineDiv.appendChild(tilesContainer);
