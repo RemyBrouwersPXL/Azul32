@@ -112,7 +112,51 @@ function gameInfo(gameId) {
             renderFactoryDisplays(sessionStorage.getItem('count'), tileFactory);
             renderTableCenter(tileFactory);
 
-            return tileFactory; // Return the tileFactory for further use
+            const round = document.getElementById('round');
+            const roundNumber = data.roundNumber;
+
+            // Maak of update het round-number element
+            let roundNumberText = round.querySelector('.round-number');
+            if (!roundNumberText) {
+                roundNumberText = document.createElement('span');
+                roundNumberText.className = 'round-number';
+                round.appendChild(roundNumberText);
+            }
+            roundNumberText.textContent = `Round: ${roundNumber}`;
+
+            // Maak een container voor de tegels (als deze nog niet bestaat)
+            let tilesContainer = round.querySelector('.tiles-container');
+            if (!tilesContainer) {
+                tilesContainer = document.createElement('div');
+                tilesContainer.className = 'tiles-container';
+                round.appendChild(tilesContainer);
+            }
+
+            // Wis oude tegels (zodat we niet dubbele tegels krijgen)
+            tilesContainer.innerHTML = '';
+
+            // Mapping van tegels naar afbeeldingspaden
+            const colors = {
+                0: '../Images/Tiles/startingtile.png',
+                11: '../Images/Tiles/plainblue.png',    // Blue
+                12: '../Images/Tiles/yellowred.png',    // Yellow
+                13: '../Images/Tiles/plainred.png',     // Red
+                14: '../Images/Tiles/blackblue.png',    // Black
+                15: '../Images/Tiles/whiteturquoise.png'
+            };
+
+            // Voeg nieuwe tegels toe voor de huidige speler
+            for (const tile of data.players[playerIndex].tilesToPlace) {
+                const tileImg = document.createElement('div');
+                
+                tileImg.className = `tile tile-${getTileColor(tile)}`;
+                tilesContainer.appendChild(tileImg);
+            }
+
+            const hasEnded = data.hasEnded;
+            if (hasEnded) {
+                window.location.href = `game-over.html?gameId=${gameId}`;
+            }
 
 
         } catch (e) {
@@ -398,7 +442,7 @@ function renderPlayerBoards(players, currentUserId, hadTakenTile) {
 
                 lineDiv.appendChild(tilesContainer);
 
-                for (let i = 0; i < line.length; i++) {
+                for (let i = line.length - 1; i >= 0; i--) {
                     const tile = document.createElement('div');
                     tile.className = `tile ${i < line.numberOfTiles ? `tile-${getTileColor(line.tileType)}` : 'empty'}`;
                     tilesContainer.appendChild(tile);
@@ -433,7 +477,7 @@ function renderPlayerBoards(players, currentUserId, hadTakenTile) {
                 }
 
                 // Check if tile is placed (1) or not (0)
-                const isOccupied = player.board.wall[row][col] === '1';
+                const isOccupied = player.board.wall[row][col].hasTile === true;
 
                 cell.style.backgroundImage = `url(${tileImages[color]})`;
                 cell.style.opacity = isOccupied ? '1' : '0.4';
