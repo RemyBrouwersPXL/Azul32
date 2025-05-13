@@ -161,9 +161,7 @@ internal class Board : IBoard
         if (tilesToAdd.Any(t => t == TileType.StartingTile))
         {
             // Move starting tile directly to floor line
-            var startingTiles = tilesToAdd.Where(t => t == TileType.StartingTile).ToList();
-            AddTilesToFloorLine(startingTiles, tileFactory);
-
+            
             // Continue with only non-starting tiles
             var nonStartingTiles = tilesToAdd.Where(t => t != TileType.StartingTile).ToList();
             if (nonStartingTiles.Count == 0)
@@ -184,6 +182,9 @@ internal class Board : IBoard
                     throw new InvalidOperationException("Cannot add tiles to pattern line - wall already contains this tile type in the corresponding row.");
                 }
             }
+            var startingTiles = tilesToAdd.Where(t => t == TileType.StartingTile).ToList();
+            AddTilesToFloorLine(startingTiles, tileFactory);
+
 
             var patternLine = PatternLines[patternLineIndex];
 
