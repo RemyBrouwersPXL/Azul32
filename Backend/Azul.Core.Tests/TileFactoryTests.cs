@@ -92,12 +92,12 @@ public class TileFactoryTests
         _tileBagMockBuilder.WithTiles(TileType.PlainBlue, TileType.WhiteTurquoise);
 
         //Add some random tiles to the used tiles
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 25; i++)
         {
             TileType type = Random.Shared.NextTileType();
             _tileFactory!.AddToUsedTiles(type);
         }
-        
+
         // Act
         _tileFactory!.FillDisplays();
 
@@ -121,7 +121,7 @@ public class TileFactoryTests
         // Arrange
         _tileFactory!.FillDisplays();
         IFactoryDisplay display = Random.Shared.NextItem(_tileFactory!.Displays);
-        
+
         Assert.That(display.Tiles.Count, Is.EqualTo(4), "There should be 4 tiles on each display (after calling 'FillDisplays')");
 
         TileType tileType = Random.Shared.NextItem(display.Tiles);
@@ -158,7 +158,7 @@ public class TileFactoryTests
         }
         Assert.That(_tileFactory.TableCenter.Tiles.Count > 1, Is.True,
             "There should be more than 1 tile in the table center (after taking tiles from all displays)");
-        TileType tileType = Random.Shared.NextItem(_tileFactory.TableCenter.Tiles.Where(t => t!= TileType.StartingTile));
+        TileType tileType = Random.Shared.NextItem(_tileFactory.TableCenter.Tiles.Where(t => t != TileType.StartingTile));
 
         List<TileType> expectedTakenTiles = _tileFactory.TableCenter.Tiles.Where(t => t == tileType).ToList();
         List<TileType> expectedRemainingTiles = _tileFactory.TableCenter.Tiles.Where(t => t != tileType && t != TileType.StartingTile).ToList();
