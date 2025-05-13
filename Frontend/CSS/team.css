@@ -1,4 +1,4 @@
-body {
+﻿body {
     font-family: 'Arial';
     margin: 0;
     padding: 0;
@@ -28,13 +28,10 @@ body {
 
     .nav a {
         text-decoration: none;
-        color: #fff
+        color: #fff;
+        font-weight: bold;
     }
 
-        .nav a:visited {
-            text-decoration: none;
-            color: #fff;
-        }
 
     .nav a:hover {
         text-decoration: underline;
@@ -103,6 +100,35 @@ h1 {
         color: #666;
         padding: 0 1rem 1rem;
     }
+
+.card-img-container {
+    position: relative;
+    width: 100%;
+    height: 200px; 
+    overflow: hidden;
+    border-bottom: 4px solid #4a6491;
+}
+
+    .card-img-container img {
+        position: absolute;
+        inset: 0; 
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+.back-img {
+    opacity: 0;
+}
+
+.card-img-container:hover .front-img {
+    opacity: 0;
+}
+
+.card-img-container:hover .back-img {
+    opacity: 1;
+}
 
 footer {
     background: #1d7cb6;
