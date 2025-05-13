@@ -8,6 +8,31 @@
     flex-direction: column;
 }
 
+header .title h1 {
+    position: relative;
+    display: inline-block;
+    padding: 0 32px;
+}
+
+header .title h1::before,
+header .title h1::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 32px;
+    height: 32px;
+    background: url('../Images/Tiles/white.png') no-repeat center/contain;
+    transform: translateY(-50%);
+}
+
+header .title h1::before {
+    left: 1px;
+}
+
+header .title h1::after {
+    right: 1px;
+}
+
 .banner-pattern {
     background: url('../Images/TeamBanner.png') repeat-x top center;
     height: 50px; 
