@@ -12,6 +12,7 @@ header .title h1 {
     position: relative;
     display: inline-block;
     padding: 0 32px;
+    cursor: pointer;
 }
 
 header .title h1::before,
@@ -25,12 +26,15 @@ header .title h1::after {
     transform: translateY(-50%);
 }
 
-header .title h1::before {
-    left: 1px;
-}
+header .title h1::before {left: 4px}
+header .title h1::after {right: 4px;}
 
-header .title h1::after {
-    right: 1px;
+.confetti-overlay {
+    position: fixed;
+    inset: 0;
+    background: url('../Images/confetti.gif') center/cover no-repeat;
+    pointer-events: none;
+    z-index: 1000;
 }
 
 .banner-pattern {

@@ -11,69 +11,42 @@ body {
     background-size: cover;
 }
 
-.welcome {
+#easter-egg-modal {
+    display: none;
     position: fixed;
-    top: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    z-index: 999;
+    font-size: 1.2rem;
     text-align: center;
-    padding: 20px;
-    color: #084e79;
-    text-shadow: 3px 3px #c3baa9;
-    font-size: 28px;
-    font-family: Courier New;
-    animation: netflix_style 3.5s forwards;
-    outline: none;
-    white-space: nowrap;
-    z-index: 2;
 }
 
-    .welcome h1 {
-        margin: 0;
-        font-size: 36px;
-        line-height: 1.2;
-        text-shadow: grey;
-        letter-spacing: 2px;
-    }
 
-
-@keyframes netflix_style {
+.welcome-logo {
+    max-width: 300px;
+    width: 150%;
+    height: auto;
+    z-index: 2;
+    animation: float-zoom 2s ease-in-out 1 forwards;
+}
+@keyframes float-zoom {
     0% {
-        color: #f3f3f3;
-        transform: scale(1.5, 1.5);
+        transform: translateY(0) scale(1);
     }
 
-    10% {
-        color: #f3f3f3;
-        transform: scale(1.5, 1.5);
-    }
-
-    15% {
-        color: #f3f3f3;
-    }
-
-    20% {
-        color: #084e79;
-        text-shadow: none;
-        transform: scale(1.1, 1.1);
-    }
-
-    75% {
-        opacity: 1;
-    }
-
-    80% {
-        opacity: 1;
-        color: #084e79;
-        transform: scale(1, 1);
+    50% {
+        transform: translateY(-10px) scale(1.05);
     }
 
     100% {
-        opacity: 1;
-        color: #084e79;
-        transform: scale(1, 1);
+        transform: translateY(0) scale(1);
     }
 }
-
-
 
 .form {
     display: flex;
