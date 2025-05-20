@@ -1,6 +1,4 @@
-﻿// ✅ COMBINED CODE WITH SMART POLLING AND ALL FUNCTIONALITY
-
-let polling = false;
+﻿let polling = false;
 let lastGameStateHash = '';
 let pollTimeoutId = null;
 let selectedTile = null;
