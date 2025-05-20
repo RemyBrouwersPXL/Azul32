@@ -29,6 +29,7 @@ h1 {
     justify-content: flex-end;
     align-items: center;
     transition: transform 0.3s ease;
+    position: relative;
 }
 
     .podium-player h2 {
@@ -60,12 +61,38 @@ h1 {
     background-color: red;
 }
 
-
-#leave-button {
-    padding: 10px 20px;
-    background-color: #ff4444;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.crown {
+    position: absolute;
+    top: -1.5rem; 
+    left: 50%; 
+    width: 2rem;
+    height: 2rem;
+    transform: translateX(-50%);
+    background: url('../Images/crown.png') no-repeat center/contain;
+    pointer-events: none; 
+    animation: bounce 1s ease;
 }
+@keyframes bounce {
+    0%, 100% {
+        transform: translate(-50%, 0);
+    }
+
+    50% {
+        transform: translate(-50%, -10px);
+    }
+}
+
+@keyframes bounce {
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.podium-player {
+    position: relative;
+}
+

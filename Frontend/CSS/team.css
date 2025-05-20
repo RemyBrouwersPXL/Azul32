@@ -1,4 +1,49 @@
-﻿body {
+﻿#theme-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #f7ebd6;
+}
+
+    #theme-toggle:hover {
+        opacity: 0.8;
+    }
+
+body.dark-mode {
+    background-color: #222;
+    color: #eee;
+}
+
+    body.dark-mode header {
+        background-color: #0b3a66;
+        color: #f7ebd6;
+    }
+
+    body.dark-mode .nav a {
+        color: #f7ebd6;
+    }
+
+    body.dark-mode .team-member {
+        background: #333;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+
+        body.dark-mode .team-member h3,
+        body.dark-mode .team-member p {
+            color: #f7ebd6;
+        }
+
+    body.dark-mode footer {
+        background-color: #0b3a66;
+        color: #f7ebd6;
+    }
+
+body {
     font-family: 'Arial';
     margin: 0;
     padding: 0;
