@@ -1,18 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Login to Azul</title>
     <link href="CSS/index.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="./Images/logo.jpg">
+    <img src="./Images/Untitled design.png" alt="Welcome to Azul" class="welcome-logo" />
 </head>
+
 <body>
-    <div class="welcome">
-        <h1>WELCOME TO AZUL</h1>
-    </div>
     <form class="form">
-        <p class="title">Log in</p>
+        <p class="title">Log In</p>
         </div>
-        <p class="message">Sign in now and start playing our game. </p>
+        <p class="message">Sign in now to start playing</p>
         <span>Email</span>
         <label>
             <input class="input" type="email" id="email" name="email" placeholder="" required="">
@@ -25,13 +24,29 @@
             <span>Enter your password</span>
         </label>
 
-        <button class="submit" type="submit">Sign in</button>
-        <p class="signin">Don't have an account yet? <a href="register.html">Sign up</a> </p>
-            <button id="leave-button">Instructions</button>
+        <button class="submit" type="submit">Sign In</button>
+        <p class="signin">Don't have an account yet? <a href="register.html">Sign Up</a> </p>
+        <button id="leave-button">Instructions</button>
 
     </form>
+
+    <div id="easter-egg-modal" style="
+     display: none;
+     position: fixed;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     background: #fff;
+     padding: 2rem;
+     border-radius: 1rem;
+     box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+     z-index: 999;
+     font-size: 1.2rem;
+     text-align: center;">
+        Congratulations! You just found our Azul Game egg!
+    </div>
     <div>
-        <a class="team" href="./team.html"><p>About us</p></a>
+        <a class="team" href="./team.html"><p>About Us</p></a>
     </div>
 </body>
 <script src="js/index.js"></script>
