@@ -657,3 +657,127 @@ function showError(message) {
         errorContainer.style.display = 'none';
     }, 5000);
 };
+
+// -------- Chatbox Functionaliteit --------
+
+// DOM Elements
+const chatIcon = document.getElementById('chat-icon');
+const chatContainer = document.getElementById('chat-container');
+const chatMessages = document.getElementById('chat-messages');
+const messageInput = document.getElementById('chat-message');
+const sendButton = document.getElementById('send-message');
+
+// Add event listener for send button
+sendButton.addEventListener('click', sendMessage);
+
+// Also allow sending with Enter key
+messageInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+// Get player name from your existing game state
+function getCurrentPlayerName() {
+    const token = sessionStorage.getItem('userToken');
+    if (!token) return "Player";
+
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const payload = JSON.parse(jsonPayload);
+        console.log('JWT Payload:', payload);  // <-- Add this line
+
+        return payload.unique_name || payload.name || payload.username || payload.sub || "Player";
+    } catch (error) {
+        console.error('Error decoding JWT token:', error);
+        return "Player";
+    }
+}
+
+
+// Enhanced loadMessages() with player names and timestamps
+function loadMessages() {
+    const messages = JSON.parse(localStorage.getItem('azul-chat') || '[]');
+    chatMessages.innerHTML = messages.map(msg => `
+        <div class="message">
+            <span class="sender">${msg.sender}:</span>
+            <span class="text">${msg.text}</span>
+            <span class="time">${msg.time}</span>
+        </div>
+    `).join('');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Enhanced sendMessage() with real-time sync
+function sendMessage() {
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    const newMessage = {
+        sender: getCurrentPlayerName(),
+        text: text,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    // Save to session storage
+    const messages = JSON.parse(localStorage.getItem('azul-chat') || '[]');
+    messages.push(newMessage);
+    localStorage.setItem('azul-chat', JSON.stringify(messages));
+
+    // Update UI immediately
+    loadMessages();
+
+    // Clear input
+    messageInput.value = '';
+    messageInput.focus();
+}
+
+// Clear chat when new game starts
+function checkForNewGame() {
+    const currentGameId = sessionStorage.getItem('gameId');
+    const lastGameId = localStorage.getItem('lastGameId');
+
+    if (currentGameId && currentGameId !== lastGameId) {
+        // New game detected, clear chat
+        localStorage.removeItem('azul-chat');
+        localStorage.setItem('lastGameId', currentGameId);
+        loadMessages(); // Refresh chat to show it's empty
+    }
+}
+
+// Enhanced storage listener for instant updates
+window.addEventListener('storage', (e) => {
+    if (e.key === 'azul-chat') {
+        loadMessages();
+
+        // Flash chat icon on new message (if chat is closed)
+        if (chatContainer.style.display !== 'block') {
+            chatIcon.classList.add('new-message');
+            setTimeout(() => chatIcon.classList.remove('new-message'), 500);
+        }
+    }
+});
+
+// Toggle Chat
+chatIcon.addEventListener('click', () => {
+    const isVisible = chatContainer.style.display === 'block';
+    chatContainer.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) {
+        messageInput.focus();
+        chatIcon.classList.remove('new-message');
+    }
+});
+
+// Initialize chat
+function initializeChat() {
+    checkForNewGame();
+    loadMessages();
+}
+
+// Call initializeChat when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeChat);
