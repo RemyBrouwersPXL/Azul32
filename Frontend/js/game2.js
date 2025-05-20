@@ -22,6 +22,24 @@ document.addEventListener('DOMContentLoaded', async function () {
     const leaveButton = document.getElementById('leave-button');
     leaveButton.addEventListener('click', () => handleLeaveTable(tableId));
 
+    
+    const token = sessionStorage.getItem('userToken');
+    if (!tableId || !token) return;
+
+    // Fetch table data
+    const tableRes = await fetch(`https://localhost:5051/api/Tables/${tableId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('userToken'),
+            'Content-Type': 'application/json',
+            'Accept': 'text/plain'
+        }
+    });
+
+    const tableData = await tableRes.json();
+    sessionStorage.setItem('count', tableData.preferences.numberOfFactoryDisplays);
+    sessionStorage.setItem('gameId', tableData.gameId);
+
     // Start polling
     pollGameState();
 });
@@ -31,24 +49,13 @@ async function pollGameState() {
     polling = true;
 
     try {
-        const tableId = new URLSearchParams(window.location.search).get('tableId');
+        
+            
+        
+        
+
         const token = sessionStorage.getItem('userToken');
-        if (!tableId || !token) return;
-
-        // Fetch table data
-        const tableRes = await fetch(`https://localhost:5051/api/Tables/${tableId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Accept': 'text/plain'
-            }
-        });
-        if (!tableRes.ok) throw new Error('Failed to fetch table data');
-        const tableData = await tableRes.json();
-
-        // Fetch game data
-        const gameId = tableData.gameId;
+        const gameId = sessionStorage.getItem('gameId');
         const gameRes = await fetch(`https://localhost:5051/api/Games/${gameId}`, {
             method: 'GET',
             headers: {
@@ -70,23 +77,23 @@ async function pollGameState() {
         sessionStorage.setItem('currentPlayerId', currentPlayerId);
         sessionStorage.setItem('currentUserId', currentUserId);
         sessionStorage.setItem('gameId', gameId);
-        sessionStorage.setItem('count', tableData.preferences.numberOfFactoryDisplays);
+        
 
         // Check if game state has changed
-        const newHash = hashGameState(gameData, tableData);
+        const newHash = hashGameState(gameData);
         if (newHash !== lastGameStateHash) {
             lastGameStateHash = newHash;
 
             // Render game with all your original functionality
-            renderGame(tableData);
+            renderGame(gameData);
 
             // Determine if player has taken tiles
             const playerIndex = Number(sessionStorage.getItem('playerIndex'));
-            let hadTakenTile = tableData.seatedPlayers[playerIndex]?.tilesToPlace.length > 0;
+            let hadTakenTile = gameData.players[playerIndex]?.tilesToPlace.length > 0;
             window.hadTakenTile = hadTakenTile;
 
             // Render factory displays and table center with your original click handlers
-            renderFactoryDisplays(tableData.preferences.numberOfFactoryDisplays, gameData.tileFactory);
+            renderFactoryDisplays(sessionStorage.getItem('count'), gameData.tileFactory);
             renderTableCenter(gameData.tileFactory);
 
             // Update round information
@@ -144,9 +151,9 @@ function renderGame(data) {
     // Render game info (your original implementation)
     document.getElementById('game-id').textContent = `Game ID: ${data.id}`;
     document.getElementById('player-count').textContent =
-        `Players: ${data.seatedPlayers.length} (${data.preferences.numberOfArtificialPlayers} AI)`;
-    document.getElementById('factory-count').textContent =
-        `Factory Displays: ${data.preferences.numberOfFactoryDisplays}`;
+        `Players: ${data.players.length})`;
+    
+        
 
     // Clear existing player boards before rendering new ones
     const playerBoardsContainer = document.getElementById('player-boards');
@@ -155,11 +162,11 @@ function renderGame(data) {
     // Get current player info
     const playerIndex = Number(sessionStorage.getItem('playerIndex'));
     const currentUserId = sessionStorage.getItem('currentUserId');
-    let hadTakenTile = data.seatedPlayers[playerIndex]?.tilesToPlace.length > 0;
+    let hadTakenTile = data.players[playerIndex]?.tilesToPlace.length > 0;
     window.hadTakenTile = hadTakenTile;
 
     // Render player boards with all your original functionality
-    renderPlayerBoards(data.seatedPlayers, currentUserId, hadTakenTile);
+    renderPlayerBoards(data.players, currentUserId, hadTakenTile);
 }
 
 function renderFactoryDisplays(count, tileFactory) {
@@ -553,9 +560,9 @@ function placeTileOnFloorline() {
     }
 }
 
-function hashGameState(gameData, tableData) {
+function hashGameState(gameData) {
     return JSON.stringify({
-        players: tableData.seatedPlayers.map(p => ({
+        players: gameData.players.map(p => ({
             id: p.id,
             board: p.board,
             tilesToPlace: p.tilesToPlace

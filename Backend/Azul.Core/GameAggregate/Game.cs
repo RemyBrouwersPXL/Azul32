@@ -129,6 +129,10 @@ internal class Game : IGame
 
 
                     _playerToPlayId = playerHasStartingTile.Id;
+                    if (playerHasStartingTile is ComputerPlayer computer)
+                    {
+                        computer.PlayTurn(this);
+                    }
 
 
                 }
@@ -266,8 +270,12 @@ internal class Game : IGame
                     
 
                     _playerToPlayId = playerHasStartingTile.Id;
-                    
-                    
+                    if (playerHasStartingTile is ComputerPlayer computer)
+                    {
+                        computer.PlayTurn(this);
+                    }
+
+
                 } else
                 {
                     var nextPlayer = Players.First(p => p.Id != _playerToPlayId);
