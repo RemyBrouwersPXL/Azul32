@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             if (index === 0) div.classList.add('podium-1');
             else if (index === 1) div.classList.add('podium-2');
             else if (index === 2) div.classList.add('podium-3');
+            else if (index === 3) div.classList.add('podium-4');
             else div.style.height = `${100 - index * 10}px`; // lagere spelers
 
             div.innerHTML = `
