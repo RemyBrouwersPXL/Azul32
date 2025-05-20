@@ -1,4 +1,5 @@
 ﻿using Azul.Core.GameAggregate.Contracts;
+using Azul.Core.PlayerAggregate;
 using Azul.Core.PlayerAggregate.Contracts;
 using Azul.Core.TableAggregate.Contracts;
 using Azul.Core.UserAggregate;
@@ -35,12 +36,18 @@ internal class TableManager : ITableManager
         {
             var newTable = _tableFactory.CreateNewForUser(user, preferences);
             _tableRepository.Add(newTable);
+            if (newTable.Preferences.NumberOfArtificialPlayers > 0)
+            {
+                FillWithArtificialPlayers(newTable.Id, user);
+            }
             return newTable;
         }
         else 
         {
             ITable table = listTables[0];
             table.Join(user);
+            
+            
             return table;
         }
         
@@ -53,12 +60,14 @@ internal class TableManager : ITableManager
         if (table.SeatedPlayers.Count > 1)
         {
             table.Leave(user.Id);
+            
         }
         else
         {
             table.Leave(user.Id);
             _tableRepository.Remove(tableId);
         }
+        
     }
 
 
@@ -81,7 +90,22 @@ internal class TableManager : ITableManager
 
     public void FillWithArtificialPlayers(Guid tableId, User user)
     {
-        //TODO: Implement this method when you are working on the EXTRA requirement 'Play against AI'
-        throw new NotImplementedException();
+        ITable table = _tableRepository.Get(tableId);
+
+        if (!table.HasAvailableSeat)
+        {
+            throw new InvalidOperationException("Table is already full");
+        }
+
+        // Verify the requesting user is at the table
+        if (!table.SeatedPlayers.Any(p => p.Id == user.Id))
+        {
+            throw new InvalidOperationException("User is not seated at this table");
+        }
+
+        // Fill remaining seats with AI players
+        table.FillWithArtificialPlayers(_gamePlayStrategy);
+
+        
     }
 }

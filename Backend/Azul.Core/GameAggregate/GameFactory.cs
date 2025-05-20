@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using Azul.Core.GameAggregate.Contracts;
+using Azul.Core.PlayerAggregate;
 using Azul.Core.PlayerAggregate.Contracts;
 using Azul.Core.TableAggregate;
 using Azul.Core.TableAggregate.Contracts;
@@ -14,6 +15,7 @@ internal class GameFactory : IGameFactory
     public IGame CreateNewForTable(ITable table)
     {
         {
+            GamePlayStrategy strategy = new GamePlayStrategy();
             if (table == null)
                 throw new ArgumentNullException(nameof(table), "Table cannot be null.");
 
@@ -30,23 +32,18 @@ internal class GameFactory : IGameFactory
                 }
             }
 
-
             // 2. Create tile factory with displays from table preferences
-
             int displayCount = table.Preferences.NumberOfFactoryDisplays;
             ITileFactory tileFactory = new TileFactory(displayCount, tileBag);
-
-            
-
-
 
             // 3. Generate game ID
             Guid guid = Guid.NewGuid();
             var id = guid.ToString();
+
+            // Fix for CS0411: Explicitly specify the type arguments for Select
             IPlayer[] Players = table.SeatedPlayers.ToArray();
             // 4. Create and return the game
             return new Game(guid, tileFactory, Players);
         }
-
     }
 }

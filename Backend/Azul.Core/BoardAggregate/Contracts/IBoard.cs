@@ -51,4 +51,5 @@ public interface IBoard
     /// - completed colors (10 points).
     /// </summary>
     void CalculateFinalBonusScores();
+    bool IsColorInWallRow(int row, TileType color);
 }

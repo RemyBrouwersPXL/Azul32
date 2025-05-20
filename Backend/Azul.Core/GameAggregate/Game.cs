@@ -45,7 +45,7 @@ internal class Game : IGame
         Id = id;
         TileFactory = tileFactory;
         Players = players;
-
+        GamePlayStrategy strategy = new GamePlayStrategy();
         _playerToPlayId = firstplayer.Id; 
         TileFactory.TableCenter.AddStartingTile();
         TileFactory.FillDisplays();
@@ -141,6 +141,10 @@ internal class Game : IGame
                     int nextIndex = (currentIndex + 1) % playersList.Count;
                     IPlayer player1 = playersList[nextIndex];
                     _playerToPlayId = player1.Id;
+                    if (player1 is ComputerPlayer computer)
+                    {
+                        computer.PlayTurn(this);
+                    }
                 }
 
 
@@ -156,6 +160,10 @@ internal class Game : IGame
                 int nextIndex = (currentIndex + 1) % playersList.Count;
                 IPlayer player1 = playersList[nextIndex];
                 _playerToPlayId = player1.Id;
+                if (player1 is ComputerPlayer computer)
+                {
+                    computer.PlayTurn(this);
+                }
             }
             
             
@@ -269,6 +277,10 @@ internal class Game : IGame
                     int nextIndex = (currentIndex + 1) % playersList.Count;
                     IPlayer player1 = playersList[nextIndex];
                     _playerToPlayId = player1.Id;
+                    if (player1 is ComputerPlayer computer)
+                    {
+                        computer.PlayTurn(this);
+                    }
                 }
 
                 
@@ -284,6 +296,10 @@ internal class Game : IGame
                 int nextIndex = (currentIndex + 1) % playersList.Count;
                 IPlayer player1 = playersList[nextIndex];
                 _playerToPlayId = player1.Id;
+                if(player1 is ComputerPlayer computer)
+{
+                    computer.PlayTurn(this);
+                }
             }
 
             // BEURTWISSELING LOGICA
@@ -319,6 +335,7 @@ internal class Game : IGame
 
         if (player.TilesToPlace.Any())
             throw new InvalidOperationException("Player already has tiles to place. Place them first before taking new ones.");
+
 
         
 

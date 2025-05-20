@@ -26,7 +26,7 @@ internal class Table : ITable
 
     public IReadOnlyList<IPlayer> SeatedPlayers => _seatedPlayers;
 
-    public bool HasAvailableSeat =>  (_seatedPlayers.Count + Preferences.NumberOfArtificialPlayers) < Preferences.NumberOfPlayers;
+    public bool HasAvailableSeat =>  (_seatedPlayers.Count) < Preferences.NumberOfPlayers;
 
     public Guid GameId
     {
@@ -40,7 +40,20 @@ internal class Table : ITable
 
     public void FillWithArtificialPlayers(IGamePlayStrategy gamePlayStrategy)
     {
-        throw new NotImplementedException();
+        
+
+        if (HasAvailableSeat == false)
+        {
+            throw new InvalidOperationException("The table is full");
+        }
+        for (int i=0; i < Preferences.NumberOfArtificialPlayers; i++)
+        {
+            IPlayer bot = new ComputerPlayer(gamePlayStrategy);
+            _seatedPlayers.Add(bot);
+        }
+        
+        
+        
     }
 
     public void Join(User user)

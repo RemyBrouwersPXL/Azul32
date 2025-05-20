@@ -43,7 +43,7 @@ internal class InMemoryTableRepository : ITableRepository
         int _count = 0;
         while (_count < tables.Count) 
         { 
-            if (tables[_count].HasAvailableSeat == true)
+            if (tables[_count].HasAvailableSeat == true && tables[_count].GameId == Guid.Empty)
             {
                 if (tables[_count].Preferences.NumberOfPlayers == preferences.NumberOfPlayers && tables[_count].Preferences.NumberOfArtificialPlayers == preferences.NumberOfArtificialPlayers)
                 {

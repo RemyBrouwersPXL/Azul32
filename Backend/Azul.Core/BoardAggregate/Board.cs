@@ -116,8 +116,20 @@ internal class Board : IBoard
             return false;
         }
     }
+    private static readonly Dictionary<TileType, int[]> WallPattern = new()
+    {
+        [TileType.PlainBlue] = new[] { 0, 1, 2, 3, 4 },
+        [TileType.YellowRed] = new[] { 1, 2, 3, 4, 0 },
+        [TileType.PlainRed] = new[] { 2, 3, 4, 0, 1 },
+        [TileType.BlackBlue] = new[] { 3, 4, 0, 1, 2 },
+        [TileType.WhiteTurquoise] = new[] { 4, 0, 1, 2, 3 }
+    };
 
-
+    public bool IsColorInWallRow(int row, TileType color)
+    {
+        int col = WallPattern[color][row];
+        return Wall[row, col].HasTile;
+    }
     public void AddTilesToFloorLine(IReadOnlyList<TileType> tilesToAdd, ITileFactory tileFactory)
     {
         if (tilesToAdd == null || tilesToAdd.Count == 0)

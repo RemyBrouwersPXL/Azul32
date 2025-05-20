@@ -40,7 +40,7 @@ internal class GameService : IGameService
         {
             throw new InvalidOperationException($"Game with ID {gameId} could not be retrieved or is of an invalid type.");
         }
-
+        
         // Call TakeTilesFromFactory on the game
         game.TakeTilesFromFactory(playerId, displayId, tileType);
 
@@ -68,5 +68,16 @@ internal class GameService : IGameService
         }
         // Call PlaceTilesOnFloorLine on the game
         game.PlaceTilesOnFloorLine(playerId);
+    }
+    public void ProcessAITurn(Guid gameId)
+    {
+        var game = GetGame(gameId);
+        var currentPlayer = game.Players.First(p => p.Id == game.PlayerToPlayId);
+
+        if (currentPlayer is ComputerPlayer aiPlayer)
+        {
+            aiPlayer.PlayTurn(game);
+            
+        }
     }
 }
