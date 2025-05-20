@@ -43,7 +43,32 @@ document.addEventListener("DOMContentLoaded", async function() {
                 `;
             podium.appendChild(div);
         });
+
+        const fanfare = new Audio('music/fanfare.mp3');
+        fanfare.play().catch(err => {
+            console.warn("Couldn't autoplay fanfare:", err);
+        });
+
+
+        const firstPlaceDiv = document.querySelector('.podium-1');
+        if (firstPlaceDiv) {
+            firstPlaceDiv.addEventListener('click', () => {
+                if (!firstPlaceDiv.querySelector('.crown')) {
+-                    const crown = document.createElement('div');
+                    crown.className = 'crown';
+                    firstPlaceDiv.appendChild(crown);
+                    new Audio('music/fanfare.mp3').play().catch(() => { });
+                }
+            });
+        }
+
+
     } catch (e) {
         console.error('Polling error:', e);
     }    
+});
+
+const leaveButton = document.getElementById('leave-button');
+leaveButton.addEventListener('click', async () => {
+    window.location.href = "index.html";
 });

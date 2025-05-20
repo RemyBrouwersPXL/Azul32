@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+﻿document.addEventListener('DOMContentLoaded', function () {
     // Controleer op succesvolle registratie
     const urlParams = new URLSearchParams(window.location.search);
     const registrationSuccess = urlParams.get('registration');
@@ -31,7 +31,27 @@ document.addEventListener('DOMContentLoaded', function () {
     submitButton.addEventListener("click", handleSubmitButtonClick);
 });
 
+(function () {
+    const sequence = ['a', 'z', 'u', 'l'];
+    let position = 0;
+    const modal = document.getElementById('easter-egg-modal');
 
+    document.addEventListener('keydown', e => {
+        const key = e.key.toLowerCase();
+        if (key === sequence[position]) {
+            position++;
+            if (position === sequence.length) {
+                modal.style.display = 'block';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 2000);
+                position = 0;
+            }
+        } else {
+            position = (key === sequence[0]) ? 1 : 0;
+        }
+    });
+})();
 
 
 function handleSubmitButtonClick(event) {
