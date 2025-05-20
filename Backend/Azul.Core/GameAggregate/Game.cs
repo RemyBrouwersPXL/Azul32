@@ -139,7 +139,8 @@ internal class Game : IGame
                     var playersList = Players.ToList();
                     int currentIndex = playersList.FindIndex(p => p.Id == playerId);
                     int nextIndex = (currentIndex + 1) % playersList.Count;
-                    _playerToPlayId = nextPlayer.Id;
+                    IPlayer player1 = playersList[nextIndex];
+                    _playerToPlayId = player1.Id;
                 }
 
 
@@ -153,7 +154,8 @@ internal class Game : IGame
                 var playersList = Players.ToList();
                 int currentIndex = playersList.FindIndex(p => p.Id == playerId);
                 int nextIndex = (currentIndex + 1) % playersList.Count;
-                _playerToPlayId = nextPlayer.Id;
+                IPlayer player1 = playersList[nextIndex];
+                _playerToPlayId = player1.Id;
             }
             
             
@@ -265,7 +267,8 @@ internal class Game : IGame
                     var playersList = Players.ToList();
                     int currentIndex = playersList.FindIndex(p => p.Id == playerId);
                     int nextIndex = (currentIndex + 1) % playersList.Count;
-                    _playerToPlayId = nextPlayer.Id;
+                    IPlayer player1 = playersList[nextIndex];
+                    _playerToPlayId = player1.Id;
                 }
 
                 
@@ -279,7 +282,8 @@ internal class Game : IGame
                 var playersList = Players.ToList();
                 int currentIndex = playersList.FindIndex(p => p.Id == playerId);
                 int nextIndex = (currentIndex + 1) % playersList.Count;
-                _playerToPlayId = nextPlayer.Id;
+                IPlayer player1 = playersList[nextIndex];
+                _playerToPlayId = player1.Id;
             }
 
             // BEURTWISSELING LOGICA
