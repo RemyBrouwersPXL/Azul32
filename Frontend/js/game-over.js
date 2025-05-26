@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (firstPlaceDiv) {
             firstPlaceDiv.addEventListener('click', () => {
                 if (!firstPlaceDiv.querySelector('.crown')) {
--                    const crown = document.createElement('div');
+                    const crown = document.createElement('div');
                     crown.className = 'crown';
                     firstPlaceDiv.appendChild(crown);
                     new Audio('music/fanfare.mp3').play().catch(() => { });
