@@ -14,6 +14,10 @@ using Azul.Bootstrapper;
 using Azul.Core.BoardAggregate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace Azul.Api
 {
@@ -118,7 +122,8 @@ namespace Azul.Api
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddSingleton<ITokenFactory>(new JwtTokenFactory(tokenSettings));
             builder.Services.AddCore(configuration);
-            builder.Services.AddInfrastructure(configuration);
+            builder.Services.AddDbContext<DbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
 
             //////////////////////////////////////////////
             //Create database (if it does not exist yet)//
@@ -131,17 +136,16 @@ namespace Azul.Api
                 app.UseSwaggerUI();
             }
 
-            app.EnsureDatabaseIsCreated();
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<DbContext>();
+                db.Database.Migrate(); // Voert automatisch pending migrations uit
+            }
 
             ////////////////////////
             // Middleware pipeline//
             ////////////////////////
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
 
             app.UseCors(policyName: "AllowAll");
 
@@ -151,7 +155,8 @@ namespace Azul.Api
 
             app.MapControllers();
 
-            app.Run();
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+            app.Run($"http://0.0.0.0:{port}");
         }
     }
 }
