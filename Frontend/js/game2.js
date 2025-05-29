@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (!tableId || !token) return;
 
     // Fetch table data
-    const tableRes = await fetch(`https://localhost:5051/api/Tables/${tableId}`, {
+    const tableRes = await fetch(`https://azul32.onrender.com/api/Tables/${tableId}`, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + sessionStorage.getItem('userToken'),
@@ -56,7 +56,7 @@ async function pollGameState() {
 
         const token = sessionStorage.getItem('userToken');
         const gameId = sessionStorage.getItem('gameId');
-        const gameRes = await fetch(`https://localhost:5051/api/Games/${gameId}`, {
+        const gameRes = await fetch(`https://azul32.onrender.com/api/Games/${gameId}`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -331,7 +331,7 @@ function takeTiles() {
             const token = sessionStorage.getItem('userToken');
             const gameId = sessionStorage.getItem('gameId');
 
-            fetch(`https://localhost:5051/api/Games/${gameId}/take-tiles`, {
+            fetch(`https://azul32.onrender.com/api/Games/${gameId}/take-tiles`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -518,7 +518,7 @@ function placeTileOnPatternline(line) {
         const token = sessionStorage.getItem('userToken');
         const gameId = sessionStorage.getItem('gameId');
 
-        fetch(`https://localhost:5051/api/Games/${gameId}/place-tiles-on-patternline`, {
+        fetch(`https://azul32.onrender.com/api/Games/${gameId}/place-tiles-on-patternline`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -543,7 +543,7 @@ function placeTileOnFloorline() {
         const token = sessionStorage.getItem('userToken');
         const gameId = sessionStorage.getItem('gameId');
 
-        fetch(`https://localhost:5051/api/Games/${gameId}/place-tiles-on-floorline`, {
+        fetch(`https://azul32.onrender.com/api/Games/${gameId}/place-tiles-on-floorline`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -626,7 +626,7 @@ async function handleLeaveTable(tableId) {
         leaveButton.textContent = 'Leaving...';
 
         // Make POST request to leave table
-        const response = await fetch(`https://localhost:5051/api/Tables/${tableId}/leave`, {
+        const response = await fetch(`https://azul32.onrender.com/api/Tables/${tableId}/leave`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${userToken}`,

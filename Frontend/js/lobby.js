@@ -73,7 +73,7 @@ async function sendRegistration(userData) {
     console.log('Sending to backend:', userToken);
 
     // 1. First create/join the table (POST request)
-    const response = await fetch('https://localhost:5051/api/Tables/join-or-create', {
+    const response = await fetch('https://azul32.onrender.com/api/Tables/join-or-create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ async function fetchTableDetails(tableId) {
     const userToken = sessionStorage.getItem('userToken');
 
     try {
-        const response = await fetch(`https://localhost:5051/api/Tables/${tableId}`, {
+        const response = await fetch(`https://azul32.onrender.com/api/Tables/${tableId}`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + userToken,

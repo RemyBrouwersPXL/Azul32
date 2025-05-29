@@ -112,7 +112,7 @@ function clearErrors() {
 function sendRegistration(userData) {
     console.log('Sending to backend:', userData);
 
-    fetch('https://localhost:5051/api/authentication/token', {
+    fetch('https://azul32.onrender.com/api/authentication/token', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -96,7 +96,7 @@ function sendRegistration(userData) {
     
 
 
-    fetch('https://localhost:5051/api/authentication/register', {
+    fetch('https://azul32.onrender.com/api/authentication/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

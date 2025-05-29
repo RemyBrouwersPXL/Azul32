@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const token = sessionStorage.getItem('userToken');
             const res = await fetch(
-                'https://localhost:5051/api/Tables/' + tableId, {
+                'https://azul32.onrender.com/api/Tables/' + tableId, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -127,7 +127,7 @@ async function handleLeaveTable(tableId) {
         leaveButton.textContent = 'Leaving...';
 
         // Make POST request to leave table
-        const response = await fetch(`https://localhost:5051/api/Tables/${tableId}/leave`, {
+        const response = await fetch(`https://azul32.onrender.com/api/Tables/${tableId}/leave`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${userToken}`,

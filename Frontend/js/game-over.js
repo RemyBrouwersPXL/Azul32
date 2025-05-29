@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         const gameId = urlParams.get('gameId');
         const token = sessionStorage.getItem('userToken');
 
-        const gameRes = await fetch(`https://localhost:5051/api/Games/${gameId}`, {
+        const gameRes = await fetch(`https://azul32.onrender.com/api/Games/${gameId}`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token,
