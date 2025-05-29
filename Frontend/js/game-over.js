@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     }    
 });
 
+
 const leaveButton = document.getElementById('leave-button');
 leaveButton.addEventListener('click', async () => {
     window.location.href = "index.html";
