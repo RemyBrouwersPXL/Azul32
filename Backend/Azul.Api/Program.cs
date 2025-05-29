@@ -26,6 +26,9 @@ namespace Azul.Api
             ///////////////////////////////////
             // Dependency injection container//
             ///////////////////////////////////
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
 
             builder.Services.AddSingleton(provider =>
                 new AzulExceptionFilterAttribute(provider.GetRequiredService<ILogger<Program>>()));
@@ -122,6 +125,12 @@ namespace Azul.Api
             //////////////////////////////////////////////
 
             var app = builder.Build();
+            if (app.Environment.IsDevelopment() || app.Environment.IsProduction()) // Wijziging hier
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
             app.EnsureDatabaseIsCreated();
 
             ////////////////////////
