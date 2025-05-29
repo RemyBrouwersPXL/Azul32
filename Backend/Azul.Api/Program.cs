@@ -122,8 +122,9 @@ namespace Azul.Api
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddSingleton<ITokenFactory>(new JwtTokenFactory(tokenSettings));
             builder.Services.AddCore(configuration);
-            builder.Services.AddDbContext<DbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-
+            builder.Services.AddInfrastructure(configuration);
+            builder.Services.AddDbContext<DbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             //////////////////////////////////////////////
             //Create database (if it does not exist yet)//
