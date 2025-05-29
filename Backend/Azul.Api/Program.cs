@@ -136,11 +136,7 @@ namespace Azul.Api
                 app.UseSwaggerUI();
             }
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<DbContext>();
-                db.Database.Migrate(); // Voert automatisch pending migrations uit
-            }
+            app.EnsureDatabaseIsCreated();
 
             ////////////////////////
             // Middleware pipeline//
