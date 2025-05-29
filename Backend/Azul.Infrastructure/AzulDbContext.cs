@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Azul.Infrastructure;
 
 //DO NOT TOUCH THIS FILE!!
-internal class AzulDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+public class AzulDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public AzulDbContext(DbContextOptions options) : base(options) { }
 

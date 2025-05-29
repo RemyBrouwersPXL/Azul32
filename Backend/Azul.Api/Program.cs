@@ -16,8 +16,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using Azul.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Azul.Api
 {
@@ -123,8 +125,8 @@ namespace Azul.Api
             builder.Services.AddSingleton<ITokenFactory>(new JwtTokenFactory(tokenSettings));
             builder.Services.AddCore(configuration);
             builder.Services.AddInfrastructure(configuration);
-            builder.Services.AddDbContext<DbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<AzulDbContext>(options => options.UseNpgsql(connectionString));
 
             //////////////////////////////////////////////
             //Create database (if it does not exist yet)//
