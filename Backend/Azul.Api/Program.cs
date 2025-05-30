@@ -125,12 +125,17 @@ namespace Azul.Api
             builder.Services.AddSingleton<ITokenFactory>(new JwtTokenFactory(tokenSettings));
             builder.Services.AddCore(configuration);
             builder.Services.AddInfrastructure(configuration);
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            Console.WriteLine($"Using connection string: {connectionString}"); // Log voor debug
+
             builder.Services.AddDbContext<AzulDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-    npgsqlOptions =>
-    {
-        npgsqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-    }));
+                options.UseNpgsql(connectionString, npgsqlOptions =>
+                {
+                    npgsqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorCodesToAdd: null);
+                }));
             //////////////////////////////////////////////
             //Create database (if it does not exist yet)//
             //////////////////////////////////////////////
