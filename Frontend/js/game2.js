@@ -48,12 +48,7 @@ async function pollGameState() {
     if (polling) return;
     polling = true;
 
-    try {
-        
-            
-        
-        
-
+    try {       
         const token = sessionStorage.getItem('userToken');
         const gameId = sessionStorage.getItem('gameId');
         const gameRes = await fetch(`https://azul32.onrender.com/api/Games/${gameId}`, {
@@ -357,11 +352,11 @@ function renderPlayerBoards(players, currentUserId, hadTakenTile) {
     const container = document.getElementById('player-boards');
     container.innerHTML = '';
     const tileImages = {
-        blue: '../Frontend/Images/Tiles/plainblue.png',
-        yellow: '../Frontend/Images/Tiles/yellowred.png',
-        red: '../Frontend/Images/Tiles/plainred.png',
-        black: '../Frontend/Images/Tiles/blackblue.png',
-        white: '../Frontend/Images/Tiles/whiteturquoise.png'
+        blue: '../Images/Tiles/plainblue.png',
+        yellow: '../Images/Tiles/yellowred.png',
+        red: '../Images/Tiles/plainred.png',
+        black: '../Images/Tiles/blackblue.png',
+        white: '../Images/Tiles/whiteturquoise.png'
     };
 
     const playerSart = sessionStorage.getItem('playerStart');
