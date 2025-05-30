@@ -125,7 +125,7 @@ namespace Azul.Api
             builder.Services.AddSingleton<ITokenFactory>(new JwtTokenFactory(tokenSettings));
             builder.Services.AddCore(configuration);
             builder.Services.AddInfrastructure(configuration);
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var connectionString = builder.Configuration.GetConnectionString("AzulDbConnection");
             builder.Services.AddDbContext<AzulDbContext>(options => options.UseNpgsql(connectionString));
 
             //////////////////////////////////////////////
