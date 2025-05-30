@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddDbContext<AzulDbContext>(options =>
         {
-            string connectionString = configuration.GetConnectionString("AzulDbConnection")!;
+            string connectionString = configuration.GetConnectionString("DefaultConnection")!;
             options.UseNpgsql(connectionString, npgsqlOptions =>
             {
                 npgsqlOptions.EnableRetryOnFailure(
