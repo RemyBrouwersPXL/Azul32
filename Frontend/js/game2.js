@@ -304,8 +304,8 @@ function renderTableCenter(tileFactory) {
                 selectedTileCenter = null;
             }
 
-            if (selectedFactoryCenter !== tileFactory.tableCenter.id) {
-                selectedFactoryCenter = tileFactory.tableCenter.id;
+            if (selectedFactoryCenter !== tileButton.dataset.displayId) {
+                selectedFactoryCenter = tileButton.dataset.displayId;
             } else {
                 selectedFactoryCenter = null;
             }
