@@ -355,7 +355,7 @@ function takeTiles() {
 }
 
 function TakeTilesCenter() {
-    if (selectedTileCenterInt !== null && selectedFactoryCenter !== null && selectedTileCenter !== null) {
+    
         try {
             const token = sessionStorage.getItem('userToken');
             const gameId = sessionStorage.getItem('gameId');
@@ -379,7 +379,7 @@ function TakeTilesCenter() {
         } catch (e) {
             console.error('Error:', e);
         }
-    }
+    
 }
 
 function renderPlayerBoards(players, currentUserId, hadTakenTile) {
