@@ -355,9 +355,6 @@ function takeTiles() {
 }
 
 function TakeTilesCenter() {
-    if (selectedFactoryCenter === null) {
-        selectedFactoryCenter = tileFactory.tableCenter.id;
-    }
         try {
             const token = sessionStorage.getItem('userToken');
             const gameId = sessionStorage.getItem('gameId');
@@ -370,7 +367,7 @@ function TakeTilesCenter() {
                     'Accept': 'text/plain'
                 },
                 body: JSON.stringify({
-                    displayId: selectedFactoryCenter,
+                    displayId: tileFactory.tableCenter.id,
                     tileType: selectedTileCenterInt,
                 })
             }).then(res => {
