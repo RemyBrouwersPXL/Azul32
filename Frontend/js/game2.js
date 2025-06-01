@@ -355,7 +355,9 @@ function takeTiles() {
 }
 
 function TakeTilesCenter() {
-    
+    if (selectedFactoryCenter === null) {
+        selectedFactoryCenter = tileFactory.tableCenter.id;
+    }
         try {
             const token = sessionStorage.getItem('userToken');
             const gameId = sessionStorage.getItem('gameId');
