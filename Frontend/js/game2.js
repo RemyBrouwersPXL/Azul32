@@ -288,7 +288,7 @@ function renderTableCenter(tileFactory) {
 
             // Verwijder selectie van vorige tegel
             if (selectedTileCenter) {
-                selectedTile.classList.remove('selected');
+                selectedTileCenter.classList.remove('selected');
             }
 
             if (window.hadTakenTile) {
