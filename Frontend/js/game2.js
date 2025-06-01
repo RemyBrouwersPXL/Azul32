@@ -2,8 +2,11 @@
 let lastGameStateHash = '';
 let pollTimeoutId = null;
 let selectedTile = null;
+let selectedTileCenter = null; // For central factory tiles
 let selectedTileInt = null;
+let selectedTileCenterInt = null; // For central factory tiles
 let selectedFactory = null;
+let selectedFactoryCenter = null; // For central factory tiles
 
 window.addEventListener('beforeunload', function () {
     localStorage.removeItem('hasRefreshed');
@@ -270,7 +273,7 @@ function renderTableCenter(tileFactory) {
         tileButton.dataset.tileId = `${tileType}`;
         tileButton.dataset.displayId = `${tileFactory.tableCenter.id}`;
 
-        if (selectedTile && selectedTile.dataset.tileId === tileButton.dataset.tileId && selectedTile.dataset.displayId === tileButton.dataset.displayId) {
+        if (selectedTileCenter && selectedTileCenter.dataset.tileId === tileButton.dataset.tileId && selectedTileCenter.dataset.displayId === tileButton.dataset.displayId) {
             tileButton.classList.add('selected');
         }
 
@@ -282,30 +285,33 @@ function renderTableCenter(tileFactory) {
                 return;
             }
 
+
             // Verwijder selectie van vorige tegel
-            if (selectedTile) {
+            if (selectedTileCenter) {
                 selectedTile.classList.remove('selected');
-            }
-
-            if (selectedTile !== this) {
-                this.classList.add('selected');
-                selectedTile = this;
-                selectedTileInt = Number(selectedTile.dataset.tileId);
-            } else {
-                selectedTile = null;
-            }
-
-            if (selectedFactory !== tileFactory.tableCenter.id) {
-                selectedFactory = tileFactory.tableCenter.id;
-            } else {
-                selectedFactory = null;
             }
 
             if (window.hadTakenTile) {
                 alert('You still have tiles to place before you can take new ones.');
                 return;
             }
-            takeTiles();
+
+            if (selectedTileCenter !== this) {
+                this.classList.add('selected');
+                selectedTileCenter = this;
+                selectedTileCenterInt = Number(selectedTileCenter.dataset.tileId);
+            } else {
+                selectedTileCenter = null;
+            }
+
+            if (selectedFactoryCenter !== tileFactory.tableCenter.id) {
+                selectedFactoryCenter = tileFactory.tableCenter.id;
+            } else {
+                selectedFactoryCenter = null;
+            }
+
+            
+            TakeTilesCenter()
         });
 
         const tileImg = document.createElement('img');
@@ -336,6 +342,34 @@ function takeTiles() {
                 body: JSON.stringify({
                     displayId: selectedFactory,
                     tileType: selectedTileInt,
+                })
+            }).then(res => {
+                if (!res.ok) {
+                    console.error('API request failed:', res.status);
+                }
+            });
+        } catch (e) {
+            console.error('Error:', e);
+        }
+    }
+}
+
+function TakeTilesCenter() {
+    if (selectedTileCenterInt !== null && selectedFactoryCenter !== null && selectedTileCenter !== null) {
+        try {
+            const token = sessionStorage.getItem('userToken');
+            const gameId = sessionStorage.getItem('gameId');
+
+            fetch(`https://azul32.onrender.com/api/Games/${gameId}/take-tiles`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/plain'
+                },
+                body: JSON.stringify({
+                    displayId: selectedFactoryCenter,
+                    tileType: selectedTileCenterInt,
                 })
             }).then(res => {
                 if (!res.ok) {
