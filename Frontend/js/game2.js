@@ -311,7 +311,7 @@ function renderTableCenter(tileFactory) {
             }
 
             
-            TakeTilesCenter()
+            TakeTilesCenter(tileFactory)
         });
 
         const tileImg = document.createElement('img');
@@ -354,7 +354,7 @@ function takeTiles() {
     }
 }
 
-function TakeTilesCenter() {
+function TakeTilesCenter(tafelFactory) {
         try {
             const token = sessionStorage.getItem('userToken');
             const gameId = sessionStorage.getItem('gameId');
@@ -367,7 +367,7 @@ function TakeTilesCenter() {
                     'Accept': 'text/plain'
                 },
                 body: JSON.stringify({
-                    displayId: tileFactory.tableCenter.id,
+                    displayId: tafelFactory.tableCenter.id,
                     tileType: selectedTileCenterInt,
                 })
             }).then(res => {
