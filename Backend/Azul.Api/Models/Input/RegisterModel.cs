@@ -16,4 +16,6 @@ public class RegisterModel
     public string Password { get; set; } = string.Empty;
 
     public DateOnly? LastVisitToPortugal { get; set; }
+
+    public int Wins { get; set; } = 0;
 }
