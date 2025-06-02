@@ -58,21 +58,23 @@ internal class Table : ITable
 
     public void Join(User user)
     {
-        var player = new HumanPlayer(user.Id, user.UserName, user.LastVisitToPortugal);
-        if (_seatedPlayers.Any(player => player.Id == user.Id))
+        // Correcting the instantiation of HumanPlayer to fix the errors
+        var player = new HumanPlayer(user.Id, user.UserName, user.LastVisitToPortugal, user.Wins);
+
+        // Check if the user is already seated
+        if (_seatedPlayers.Any(p => p.Id == user.Id))
         {
             throw new InvalidOperationException("User already seated");
         }
 
-        
-
-        if (HasAvailableSeat == false)
+        // Check if the table has available seats
+        if (!HasAvailableSeat)
         {
             throw new InvalidOperationException("The table is full");
         }
 
+        // Add the player to the seated players list
         _seatedPlayers.Add(player);
-        int aantal = _seatedPlayers.Count;
     }
 
     public void Leave(Guid userId)

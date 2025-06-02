@@ -10,6 +10,8 @@ public class UserModel
     public string UserName { get; set; }
     public DateOnly? LastVisitToPortugal { get; set; }
 
+    public int Wins { get; set; }
+
     private class MappingProfile : Profile
     {
         public MappingProfile()
