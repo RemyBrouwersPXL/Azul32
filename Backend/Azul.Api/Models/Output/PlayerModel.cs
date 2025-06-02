@@ -12,7 +12,7 @@ public class PlayerModel
     public BoardModel Board { get; set; }
     public bool HasStartingTile { get; set; }
     public List<TileType> TilesToPlace { get; set; }
-    public UserStatsModel Stats { get; set; }
+    public UserModel Info { get; set; }
 
     private class MappingProfile : Profile
     {
