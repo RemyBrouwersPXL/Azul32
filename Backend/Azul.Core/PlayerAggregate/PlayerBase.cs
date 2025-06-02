@@ -21,8 +21,6 @@ internal class PlayerBase : IPlayer
         TilesToPlace = new List<TileType>();
         Wins = wins;
         Losses = losses;
-
-
     }
 
     public Guid Id { get; }
