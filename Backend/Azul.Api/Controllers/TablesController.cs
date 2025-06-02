@@ -16,6 +16,7 @@ public class TablesController : ApiControllerBase
     private readonly ITableRepository _tableRepository;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
+    private readonly UserManager<UserStats> _userManagers;
 
     public TablesController(ITableManager tableManager, ITableRepository tableRepository, IMapper mapper, UserManager<User> userManager)
     {

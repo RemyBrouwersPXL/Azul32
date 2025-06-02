@@ -9,7 +9,9 @@ namespace Azul.Core.PlayerAggregate;
 /// <inheritdoc cref="IPlayer"/>
 internal class PlayerBase : IPlayer
 {
-    internal PlayerBase(Guid id, string name, DateOnly? lastVisitToPortugal)
+    private int wins;
+
+    internal PlayerBase(Guid id, string name, DateOnly? lastVisitToPortugal, int wins, int losses)
     {
         Id = id;
         Name = name;
@@ -17,7 +19,10 @@ internal class PlayerBase : IPlayer
         Board = new Board();
         HasStartingTile = false;
         TilesToPlace = new List<TileType>();
-   
+        Wins = wins;
+        Losses = losses;
+
+
     }
 
     public Guid Id { get; }
@@ -32,7 +37,11 @@ internal class PlayerBase : IPlayer
 
     public List<TileType> TilesToPlace { get; }
 
+    public int Wins { get; }
+
+    public int Losses { get; }
 
 
-    
+
+
 }

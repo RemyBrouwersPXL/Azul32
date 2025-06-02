@@ -10,7 +10,6 @@ namespace Azul.Core.UserAggregate
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public User User { get; set; }
         public int Wins { get; set; }
         public int Losses { get; set; }
         public int TotalGamesPlayed { get; set; }

@@ -13,7 +13,7 @@ internal class ComputerPlayer : PlayerBase
     private static int _indexCounter = 1; // Static counter to ensure unique names
     private readonly string _index;
 
-    public ComputerPlayer(IGamePlayStrategy strategy) : base(Guid.NewGuid(), $"Computer", null)
+    public ComputerPlayer(IGamePlayStrategy strategy) : base(Guid.NewGuid(), $"Computer", null, 0, 0)
     {
         _strategy = strategy;
         _index = _indexCounter.ToString();
