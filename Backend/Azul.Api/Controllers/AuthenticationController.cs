@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace Azul.Api.Controllers;
 
@@ -99,6 +100,10 @@ public class AuthenticationController : ApiControllerBase
         }
 
         IList<string> roleNames = await _userManager.GetRolesAsync(user);
+
+        await _userManager.Users
+        .Include(u => u.Stats)  // Zorg ervoor dat Stats geladen wordt
+        .FirstOrDefaultAsync(u => u.Id == user.Id);
 
         var accessPass = new AccessPassModel
         {

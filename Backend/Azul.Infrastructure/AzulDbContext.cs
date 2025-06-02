@@ -1,4 +1,5 @@
-﻿using Azul.Core.UserAggregate;
+﻿using System.Reflection.Emit;
+using Azul.Core.UserAggregate;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,10 @@ public class AzulDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         builder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
 
         // Nieuwe configuratie voor UserStats
+        builder.Entity<User>()
+        .HasOne(u => u.Stats)
+        .WithOne()
+        .HasForeignKey<UserStats>(s => s.UserId);
     }
         
 }
