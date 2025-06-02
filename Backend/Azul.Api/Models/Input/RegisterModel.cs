@@ -17,5 +17,4 @@ public class RegisterModel
 
     public DateOnly? LastVisitToPortugal { get; set; }
 
-    public int Wins { get; set; } = 0;
 }

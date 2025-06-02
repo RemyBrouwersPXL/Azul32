@@ -12,7 +12,7 @@ internal class PlayerBase : IPlayer
 {
    
 
-    internal PlayerBase(Guid id, string name, DateOnly? lastVisitToPortugal)
+    internal PlayerBase(Guid id, string name, DateOnly? lastVisitToPortugal, UserStats stats)
     {
         Id = id;
         Name = name;
@@ -20,16 +20,7 @@ internal class PlayerBase : IPlayer
         Board = new Board();
         HasStartingTile = false;
         TilesToPlace = new List<TileType>();
-        Stats = new UserStats
-        {
-            Id = id,
-            UserId = id,
-            Wins = 0,
-            Losses = 0,
-            TotalGamesPlayed = 0,
-            HighestScore = 0,
-            LastPlayed = DateTime.UtcNow
-        };
+        Stats = stats;
     }
 
     public Guid Id { get; }
