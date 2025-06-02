@@ -4,13 +4,14 @@ using Azul.Core.PlayerAggregate;
 using Azul.Core.PlayerAggregate.Contracts;
 using Azul.Core.TileFactoryAggregate.Contracts;
 
+
 namespace Azul.Core.GameAggregate;
 
 /// <inheritdoc cref="IGameService"/>
 internal class GameService : IGameService
 {
     private IGameRepository _gameRepository;
-
+    
     public GameService(IGameRepository gameRepository)
     {
         _gameRepository = gameRepository;

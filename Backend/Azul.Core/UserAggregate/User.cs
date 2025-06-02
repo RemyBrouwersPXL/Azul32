@@ -7,5 +7,6 @@ public class User : IdentityUser<Guid>
 {
     public DateOnly? LastVisitToPortugal { get; set; }
 
-    public int Wins { get; set; }
+
+    
 }

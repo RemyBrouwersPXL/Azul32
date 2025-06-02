@@ -10,7 +10,7 @@ public class UserModel
     public string UserName { get; set; }
     public DateOnly? LastVisitToPortugal { get; set; }
 
-    public int Wins { get; set; }
+    public UserStatsModel Stats { get; set; } // Nested stats object
 
     private class MappingProfile : Profile
     {

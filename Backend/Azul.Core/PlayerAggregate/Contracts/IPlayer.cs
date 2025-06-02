@@ -39,5 +39,5 @@ public interface IPlayer
     /// </summary>
     public List<TileType> TilesToPlace { get; }
 
-    public int Wins { get; set; }
+    
 }

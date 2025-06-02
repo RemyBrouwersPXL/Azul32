@@ -10,12 +10,6 @@ namespace Azul.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "Wins",
-                table: "User",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
         }
 
         /// <inheritdoc />

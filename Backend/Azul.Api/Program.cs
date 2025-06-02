@@ -124,6 +124,7 @@ namespace Azul.Api
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddSingleton<ITokenFactory>(new JwtTokenFactory(tokenSettings));
             builder.Services.AddCore(configuration);
+            builder.Services.AddScoped<GameStatsService>();
             builder.Services.AddInfrastructure(configuration);
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             Console.WriteLine($"Using connection string: {connectionString}"); // Log voor debug
