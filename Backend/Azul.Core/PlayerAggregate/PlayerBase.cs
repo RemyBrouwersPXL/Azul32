@@ -3,13 +3,14 @@ using Azul.Core.BoardAggregate;
 using Azul.Core.BoardAggregate.Contracts;
 using Azul.Core.PlayerAggregate.Contracts;
 using Azul.Core.TileFactoryAggregate.Contracts;
+using Azul.Core.UserAggregate;
 
 namespace Azul.Core.PlayerAggregate;
 
 /// <inheritdoc cref="IPlayer"/>
 internal class PlayerBase : IPlayer
 {
-    private int wins;
+   
 
     internal PlayerBase(Guid id, string name, DateOnly? lastVisitToPortugal)
     {
@@ -19,7 +20,16 @@ internal class PlayerBase : IPlayer
         Board = new Board();
         HasStartingTile = false;
         TilesToPlace = new List<TileType>();
-        
+        Stats = new UserStats
+        {
+            Id = id,
+            UserId = id,
+            Wins = 0,
+            Losses = 0,
+            TotalGamesPlayed = 0,
+            HighestScore = 0,
+            LastPlayed = DateTime.UtcNow
+        };
     }
 
     public Guid Id { get; }
@@ -34,11 +44,5 @@ internal class PlayerBase : IPlayer
 
     public List<TileType> TilesToPlace { get; }
 
-    public int Wins { get; }
-
-    public int Losses { get; }
-
-
-
-
+    public UserStats Stats { get; set; }
 }
