@@ -106,15 +106,13 @@ internal class Game : IGame
 
                     if (p.Board.HasCompletedHorizontalLine)
                     {
+                        IPlayer winner = Players.OrderByDescending(p => p.Board.Score).FirstOrDefault();
+                        winner.Wins++;
                         _hasEnded = true;
                     }
                 }
 
-                if (_hasEnded == true)
-                {
-                    IPlayer winner = Players.OrderByDescending(p => p.Board.Score).FirstOrDefault();
-                    winner.Wins++;
-                }
+                
 
 
                 TileFactory.FillDisplays();
@@ -253,16 +251,14 @@ internal class Game : IGame
 
                     if (p.Board.HasCompletedHorizontalLine)
                     {
+                        IPlayer winner = Players.OrderByDescending(p => p.Board.Score).FirstOrDefault();
+                        winner.Wins++;
                         _hasEnded = true;
                     }
                 }
 
 
-                if (_hasEnded == true)
-                {
-                    IPlayer winner = Players.OrderByDescending(p => p.Board.Score).FirstOrDefault();
-                    winner.Wins++;
-                }
+                
 
                 TileFactory.FillDisplays();
                 

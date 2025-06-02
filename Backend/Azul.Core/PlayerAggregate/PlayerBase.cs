@@ -17,7 +17,7 @@ internal class PlayerBase : IPlayer
         Board = new Board();
         HasStartingTile = false;
         TilesToPlace = new List<TileType>();
-        Wins = 0;
+        
     }
 
     public Guid Id { get; }
