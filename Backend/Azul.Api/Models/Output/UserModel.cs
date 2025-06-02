@@ -16,7 +16,12 @@ public class UserModel
     {
         public MappingProfile()
         {
-            CreateMap<User, UserModel>();
+            CreateMap<User, UserModel>()
+            .ForMember(dest => dest.Stats,
+                       opt => opt.MapFrom(src => src.Stats));
+
+
+            CreateMap<UserStats, UserStatsModel>();
         }
     }
 }
