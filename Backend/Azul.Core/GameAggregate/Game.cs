@@ -110,6 +110,12 @@ internal class Game : IGame
                     }
                 }
 
+                if (_hasEnded == true)
+                {
+                    IPlayer winner = Players.OrderByDescending(p => p.Board.Score).FirstOrDefault();
+                    winner.Wins++;
+                }
+
 
                 TileFactory.FillDisplays();
 
@@ -250,8 +256,14 @@ internal class Game : IGame
                         _hasEnded = true;
                     }
                 }
-                
-                
+
+
+                if (_hasEnded == true)
+                {
+                    IPlayer winner = Players.OrderByDescending(p => p.Board.Score).FirstOrDefault();
+                    winner.Wins++;
+                }
+
                 TileFactory.FillDisplays();
                 
 

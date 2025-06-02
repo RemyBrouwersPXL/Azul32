@@ -17,6 +17,7 @@ internal class PlayerBase : IPlayer
         Board = new Board();
         HasStartingTile = false;
         TilesToPlace = new List<TileType>();
+        Wins = 0;
     }
 
     public Guid Id { get; }
@@ -29,5 +30,9 @@ internal class PlayerBase : IPlayer
 
     public bool HasStartingTile { get; set; } //{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-    public List<TileType> TilesToPlace { get; } //=> throw new NotImplementedException();
+    public List<TileType> TilesToPlace { get; }
+
+    public int Wins { get; set; }
+
+    
 }

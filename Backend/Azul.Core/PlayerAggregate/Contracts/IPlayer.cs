@@ -38,4 +38,6 @@ public interface IPlayer
     /// The tiles that the player has taken from the factory and must place on the board
     /// </summary>
     public List<TileType> TilesToPlace { get; }
+
+    public int Wins { get; set; }
 }
