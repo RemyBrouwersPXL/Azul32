@@ -10,6 +10,27 @@ body {
     background: url('../Images/register_background.png') no-repeat center center fixed;
     background-size: cover;
 }
+.leaderboard {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f0f8ff; /* Lichtblauwe achtergrond */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+    .leaderboard h3 {
+        color: #1e3a8a; /* Donkerblauwe tekst */
+        margin-bottom: 10px;
+    }
+
+    .leaderboard ol {
+        padding-left: 20px;
+    }
+
+    .leaderboard li {
+        margin-bottom: 8px;
+        color: #333;
+    }
 
 #easter-egg-modal {
     display: none;
