@@ -10,10 +10,13 @@ namespace Azul.Core.UserAggregate
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public int Wins { get; set; }
-        public int Losses { get; set; }
-        public int TotalGamesPlayed { get; set; }
-        public int HighestScore { get; set; }
-        public DateTime LastPlayed { get; set; }
+
+        public int Wins { get; set; } = 0;
+        public int Losses { get; set; } = 0;
+        public int TotalGamesPlayed { get; set; } = 0;
+        public int HighestScore { get; set; } = 0;
+        public DateTime LastPlayed { get; set; } = DateTime.MinValue;
+
+        public virtual User User { get; set; }
     }
 }

@@ -10,9 +10,10 @@ namespace Azul.Infrastructure;
 // Modified to include UserStats while preserving existing functionality
 public class AzulDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
-    public DbSet<UserStats> UserStats { get; set; }
+    
 
     public AzulDbContext(DbContextOptions options) : base(options) { }
+    public DbSet<UserStats> UserStats { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -30,7 +31,7 @@ public class AzulDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         // Nieuwe configuratie voor UserStats
         builder.Entity<User>()
         .HasOne(u => u.Stats)
-        .WithOne()
+        .WithOne(s => s.User)
         .HasForeignKey<UserStats>(s => s.UserId);
     }
         

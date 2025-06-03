@@ -3,6 +3,7 @@ using Azul.Api.Models.Input;
 using Azul.Api.Models.Output;
 using Azul.Api.Services.Contracts;
 using Azul.Core.UserAggregate;
+using Azul.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,16 +20,19 @@ public class AuthenticationController : ApiControllerBase
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly ITokenFactory _tokenFactory;
     private readonly IMapper _mapper;
+    private readonly AzulDbContext _dbContext;
 
     public AuthenticationController(UserManager<User> userManager,
         IPasswordHasher<User> passwordHasher,
         ITokenFactory tokenFactory,
-        IMapper mapper)
+        IMapper mapper,
+        AzulDbContext dbContext)
     {
         _userManager = userManager;
         _passwordHasher = passwordHasher;
         _tokenFactory = tokenFactory;
         _mapper = mapper;
+        _dbContext = dbContext;
     }
 
     /// <summary>
@@ -53,6 +57,20 @@ public class AuthenticationController : ApiControllerBase
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+                var stats = new UserStats
+                {
+                    UserId = user.Id,
+                    Wins = 0,
+                    Losses = 0,
+                    TotalGamesPlayed = 0,
+                    HighestScore = 0,
+                    LastPlayed = DateTime.UtcNow
+                };
+
+                _dbContext.UserStats.Add(stats);
+                await _dbContext.SaveChangesAsync();
+
+
                 return Ok();
             }
 
@@ -101,9 +119,9 @@ public class AuthenticationController : ApiControllerBase
 
         IList<string> roleNames = await _userManager.GetRolesAsync(user);
 
-        await _userManager.Users
-        .Include(u => u.Stats)  // Zorg ervoor dat Stats geladen wordt
-        .FirstOrDefaultAsync(u => u.Id == user.Id);
+        var userWithStats = await _userManager.Users
+            .Include(u => u.Stats)
+            .FirstOrDefaultAsync(u => u.Email == model.Email);
 
         var accessPass = new AccessPassModel
         {
