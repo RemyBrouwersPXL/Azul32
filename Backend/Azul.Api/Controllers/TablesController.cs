@@ -4,6 +4,7 @@ using Azul.Api.Models.Output;
 using Azul.Core.TableAggregate;
 using Azul.Core.TableAggregate.Contracts;
 using Azul.Core.UserAggregate;
+using Azul.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,13 +19,15 @@ public class TablesController : ApiControllerBase
     private readonly ITableRepository _tableRepository;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
+    private readonly AzulDbContext _dbContext;
 
-    public TablesController(ITableManager tableManager, ITableRepository tableRepository, IMapper mapper, UserManager<User> userManager)
+    public TablesController(ITableManager tableManager, ITableRepository tableRepository, IMapper mapper, UserManager<User> userManager, AzulDbContext dbContext)
     {
         _tableManager = tableManager;
         _tableRepository = tableRepository;
         _mapper = mapper;
         _userManager = userManager;
+        _dbContext = dbContext;
     }
 
     /// <summary>
@@ -59,6 +62,23 @@ public class TablesController : ApiControllerBase
         if (currentUser == null)
         {
             return BadRequest(new ErrorModel { Message = "User not found." });
+        }
+
+        if (currentUser.Stats == null)
+        {
+            currentUser.Stats = new UserStats
+            {
+                Id = Guid.NewGuid(),
+                UserId = currentUser.Id,
+                Wins = 0,
+                Losses = 0,
+                TotalGamesPlayed = 0,
+                HighestScore = 0,
+                LastPlayed = DateTime.MinValue
+            };
+
+            _dbContext.UserStats.Add(currentUser.Stats);
+            await _dbContext.SaveChangesAsync();
         }
 
         ITable table = _tableManager.JoinOrCreateTable(currentUser, preferences);
