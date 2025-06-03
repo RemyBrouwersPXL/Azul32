@@ -1,5 +1,6 @@
 ﻿using Azul.Api.Models.Output;
 using Azul.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ namespace Azul.Api.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<LeaderboardEntryDto>>> GetLeaderboard()
         {
             var leaderboard = await _dbContext.Users
