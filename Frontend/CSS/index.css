@@ -7,10 +7,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     background: url('../Images/register_background.png') no-repeat center center fixed;
     background-size: cover;
     position: relative;
-    padding-top: 40px;
 }
 
     /* Overlay voor betere leesbaarheid */
@@ -31,7 +31,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 1200px;
+    max-width: 500px;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
@@ -39,238 +39,167 @@ body {
     z-index: 2;
 }
 
-/* Logo stijl */
-.welcome-logo {
-    max-width: 280px;
-    width: 100%;
-    margin-bottom: 30px;
-    animation: float-zoom 2s ease-in-out;
-}
-
 /* Formulier stijl */
 .form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     width: 100%;
-    max-width: 500px;
     padding: 30px;
     border-radius: 20px;
     background-color: #f7ebd6;
     color: #1d7cb6;
     border: 3px solid #c3baa9;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.title {
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -1px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding-left: 30px;
-    color: #1d7cb6;
-    margin-top: 0;
-}
-
-    .title::before,
-    .title::after {
-        position: absolute;
-        content: "";
-        height: 16px;
-        width: 16px;
-        border-radius: 50%;
-        left: 0;
-        background-color: #1d7cb6;
-    }
-
-    .title::after {
-        animation: pulse 1s linear infinite;
-    }
-
-/* Input velden */
-.form label {
     position: relative;
 }
 
-    .form label .input {
-        background-color: #c3baa9;
-        color: #1f2523;
+    /* Titel stijl */
+    .form h1 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1d7cb6;
+        margin: 0;
+        text-align: center;
+    }
+
+    .form h2 {
+        font-size: 22px;
+        color: #1d7cb6;
+        margin: 0 0 10px 0;
+        text-align: center;
+    }
+
+    /* Input velden */
+    .form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #1d7cb6;
+    }
+
+    .form input {
         width: 100%;
-        padding: 20px 5px 5px 10px;
-        outline: 0;
-        border: 1px solid rgba(105, 105, 105, 0.4);
-        border-radius: 10px;
+        padding: 12px;
+        border: 2px solid #c3baa9;
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.8);
         font-size: 16px;
+        box-sizing: border-box;
+        margin-bottom: 15px;
     }
 
-        .form label .input + span {
-            color: #1f2523;
-            position: absolute;
-            left: 10px;
-            top: 0;
-            font-size: 0.9em;
-            cursor: text;
-            transition: 0.3s ease;
-        }
-
-        .form label .input:placeholder-shown + span {
-            top: 12.5px;
-            font-size: 0.9em;
-        }
-
-        .form label .input:focus + span,
-        .form label .input:valid + span {
-            color: #1f2523;
-            top: 0;
-            font-size: 0.7em;
-            font-weight: 600;
-        }
-
-/* Knoppen */
-.submit,
-#leave-button {
+/* Submit knop */
+.submit {
+    background-color: #1d7cb6;
+    color: white;
     border: none;
-    outline: none;
     padding: 12px;
-    border-radius: 10px;
-    color: #fff;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: bold;
-    background-color: #1d7cb6;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s;
 }
 
-#leave-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-    .submit:hover,
-    #leave-button:hover {
+    .submit:hover {
         background-color: #165a8a;
-        transform: translateY(-2px);
     }
 
-/* Leaderboard stijl */
-.leaderboard-sidebar {
-    width: 100%;
-    max-width: 500px;
-    margin-top: 30px;
+/* Sign up link */
+.signup-link {
+    text-align: center;
+    margin-top: 10px;
 }
 
+    .signup-link a {
+        color: #1d7cb6;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+/* Leaderboard binnen formulier */
 .leaderboard {
-    padding: 25px;
+    margin-top: 20px;
+    padding: 20px;
     background-color: rgba(240, 248, 255, 0.9);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
     border: 2px solid #c3baa9;
-    backdrop-filter: blur(5px);
 }
 
     .leaderboard h3 {
         color: #1d7cb6;
-        margin: 0 0 15px 0;
-        font-size: 1.3em;
+        font-size: 1.2em;
+        margin: 0 0 10px 0;
         text-align: center;
-        border-bottom: 2px solid #1d7cb6;
-        padding-bottom: 8px;
     }
 
     .leaderboard ol {
-        padding-left: 25px;
-        list-style-type: none;
-        counter-reset: leaderboard-counter;
+        padding-left: 20px;
+        margin: 0;
     }
 
     .leaderboard li {
-        position: relative;
-        padding: 8px 0 8px 30px;
-        margin-bottom: 8px;
+        padding: 8px 0;
         border-bottom: 1px dashed #c3baa9;
-        counter-increment: leaderboard-counter;
+        list-style-type: none;
+        position: relative;
+        padding-left: 25px;
     }
 
         .leaderboard li::before {
-            content: counter(leaderboard-counter);
+            content: attr(data-rank);
             position: absolute;
             left: 0;
             font-weight: bold;
             color: #1d7cb6;
         }
 
-/* Footer */
-.site-footer {
-    margin-top: auto;
-    padding: 20px;
-    width: 100%;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
-    position: relative;
-    z-index: 2;
+/* Leave button */
+#leave-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background-color: #1d7cb6;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
 }
 
-/* Easter Egg modal */
-#easter-egg-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #f7ebd6;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    z-index: 999;
-    font-size: 1.2rem;
-    text-align: center;
-    border: 3px solid #1d7cb6;
-}
-
-/* Animaties */
-@keyframes float-zoom {
-    0% {
-        transform: translateY(0) scale(1);
+    #leave-button:hover {
+        background-color: #165a8a;
     }
-
-    50% {
-        transform: translateY(-10px) scale(1.05);
-    }
-
-    100% {
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes pulse {
-    from {
-        transform: scale(0.9);
-        opacity: 1;
-    }
-
-    to {
-        transform: scale(1.8);
-        opacity: 0;
-    }
-}
 
 /* Responsive aanpassingen */
 @media (max-width: 600px) {
-    .form,
-    .leaderboard-sidebar {
-        width: 95%;
+    .form {
         padding: 20px;
     }
 
-    .title {
-        font-size: 24px;
-    }
+        .form h1 {
+            font-size: 24px;
+        }
 
-    .form label .input {
-        padding: 15px 5px 5px 10px;
+        .form h2 {
+            font-size: 18px;
+        }
+
+    #leave-button {
+        top: 10px;
+        right: 10px;
+        width: 25px;
+        height: 25px;
     }
 }
