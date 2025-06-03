@@ -52,26 +52,26 @@ public class AuthenticationController : ApiControllerBase
                 UserName = model.UserName,
                 Email = model.Email,
                 LastVisitToPortugal = model.LastVisitToPortugal,
-                Stats = new UserStats
-                {
-                    Id = Guid.NewGuid(), // Generate a new Guid for the UserStats Id
-                    UserId = Guid.NewGuid(), // Generate a new Guid for the UserId
-                    Wins = 0,
-                    Losses = 0,
-                    TotalGamesPlayed = 0,
-                    HighestScore = 0,
-                    LastPlayed = DateTime.MinValue
-                }
+                
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
 
-                //var Stats = user.Stats;
+                var stats = new UserStats
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id, // ✅ juiste Id gebruiken
+                    Wins = 0,
+                    Losses = 0,
+                    TotalGamesPlayed = 0,
+                    HighestScore = 0,
+                    LastPlayed = DateTime.MinValue
+                };
 
-                //_dbContext.UserStats.Add(Stats);
-                //await _dbContext.SaveChangesAsync();
+                _dbContext.UserStats.Add(stats);
+                await _dbContext.SaveChangesAsync();
 
                 return Ok();
             }
