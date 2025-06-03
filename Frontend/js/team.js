@@ -42,21 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
         themeToggle.textContent = isDark ? '☀️' : '🌙';
     });
 
-    setInterval(async function () {
-        try {
-            const token = sessionStorage.getItem('userToken');
-            const res = await fetch(
-                "https://azul32.onrender.com/api/Leaderboard"
-               
-            
-            );
-            if (!res.ok) return;
-            const data = await res.json();
-            
-
-        } catch (e) {
-            console.error('Poll error:', e);
-        }
-    }, 3000);
+    
 });
 
