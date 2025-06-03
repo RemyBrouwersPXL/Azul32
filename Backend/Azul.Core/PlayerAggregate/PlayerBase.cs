@@ -12,7 +12,7 @@ internal class PlayerBase : IPlayer
 {
    
 
-    internal PlayerBase(Guid id, string name, DateOnly? lastVisitToPortugal)
+    internal PlayerBase(Guid id, string name, DateOnly? lastVisitToPortugal, UserStats stats)
     {
         Id = id;
         Name = name;
@@ -20,6 +20,7 @@ internal class PlayerBase : IPlayer
         Board = new Board();
         HasStartingTile = false;
         TilesToPlace = new List<TileType>();
+        Stats = stats ?? throw new ArgumentNullException(nameof(stats), "Stats cannot be null");
     }
 
     public Guid Id { get; }
@@ -33,5 +34,7 @@ internal class PlayerBase : IPlayer
     public bool HasStartingTile { get; set; } //{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     public List<TileType> TilesToPlace { get; }
+
+    public UserStats Stats { get; } //{ get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 }

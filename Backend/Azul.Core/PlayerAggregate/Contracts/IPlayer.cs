@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Azul.Core.BoardAggregate.Contracts;
 using Azul.Core.TileFactoryAggregate.Contracts;
+using Azul.Core.UserAggregate;
 
 namespace Azul.Core.PlayerAggregate.Contracts;
 
@@ -39,5 +40,7 @@ public interface IPlayer
     /// </summary>
     public List<TileType> TilesToPlace { get; }
 
-    
+    public UserStats Stats { get; } // The stats of the player, including wins, losses, total games played, highest score, and last played date
+
+
 }
