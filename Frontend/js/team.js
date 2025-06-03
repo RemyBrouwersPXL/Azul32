@@ -41,5 +41,27 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         themeToggle.textContent = isDark ? '☀️' : '🌙';
     });
+
+    setInterval(async function () {
+        try {
+            const token = sessionStorage.getItem('userToken');
+            const res = await fetch(
+                "https://azul32.onrender.com/api/Leaderboard", {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'text/plain'
+                }
+            }
+            );
+            if (!res.ok) return;
+            const data = await res.json();
+            
+
+        } catch (e) {
+            console.error('Poll error:', e);
+        }
+    }, 3000);
 });
 
