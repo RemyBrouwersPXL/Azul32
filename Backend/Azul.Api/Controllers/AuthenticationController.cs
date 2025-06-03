@@ -67,10 +67,10 @@ public class AuthenticationController : ApiControllerBase
             if (result.Succeeded)
             {
 
-                var Stats = user.Stats;
+                //var Stats = user.Stats;
 
-                _dbContext.UserStats.Add(Stats);
-                await _dbContext.SaveChangesAsync();
+                //_dbContext.UserStats.Add(Stats);
+                //await _dbContext.SaveChangesAsync();
 
                 return Ok();
             }
