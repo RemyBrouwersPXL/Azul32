@@ -63,7 +63,7 @@ setInterval(async function () {
         );
         if (!res.ok) return;
         const data = await res.json();
-        leaderboardData.sort((a, b) => b.highestScore - a.highestScore);
+        data.sort((a, b) => b.highestScore - a.highestScore);
         createLeaderboard(data);
 
 
