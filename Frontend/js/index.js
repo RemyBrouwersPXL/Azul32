@@ -74,7 +74,9 @@ setInterval(async function () {
 
 function createLeaderboard(data) {
     const container = document.getElementById('leaderboard-container');
-
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
     // Maak titel
     const title = document.createElement('h3');
     title.textContent = '🏆 Top Players';
@@ -86,7 +88,6 @@ function createLeaderboard(data) {
     // Voeg alleen de top 5 spelers toe (of aanpasbaar aantal)
     data.slice(0, 5).forEach(player => {
         const li = document.createElement('li');
-        li.innerHTML = "";
         li.innerHTML = `
                     <strong>${player.userName}</strong> 
                     - High Score: ${player.highestScore} 
