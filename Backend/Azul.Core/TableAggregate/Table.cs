@@ -59,7 +59,7 @@ internal class Table : ITable
     public void Join(User user)
     {
         // Correcting the instantiation of HumanPlayer to fix the errors
-        var player = new HumanPlayer(user.Id, user.UserName, user.LastVisitToPortugal, user.Stats);
+        var player = new HumanPlayer(user.Id, user.UserName, user.LastVisitToPortugal);
 
         // Check if the user is already seated
         if (_seatedPlayers.Any(p => p.Id == user.Id))
