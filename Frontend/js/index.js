@@ -86,6 +86,7 @@ function createLeaderboard(data) {
     // Voeg alleen de top 5 spelers toe (of aanpasbaar aantal)
     data.slice(0, 5).forEach(player => {
         const li = document.createElement('li');
+        li.innerHTML = "";
         li.innerHTML = `
                     <strong>${player.userName}</strong> 
                     - High Score: ${player.highestScore} 
