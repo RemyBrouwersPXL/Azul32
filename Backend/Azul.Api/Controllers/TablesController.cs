@@ -1,10 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using Azul.Api.Models.Output;
 using Azul.Core.TableAggregate;
 using Azul.Core.TableAggregate.Contracts;
 using Azul.Core.UserAggregate;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Azul.Api.Controllers;
 
@@ -53,10 +55,15 @@ public class TablesController : ApiControllerBase
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> JoinOrCreate([FromBody] TablePreferences preferences)
     {
-        User currentUser = (await _userManager.GetUserAsync(User))!;
+        User currentUser = await _userManager.Users.Include(u => u.Stats).FirstOrDefaultAsync(u => u.Id == Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+        if (currentUser == null)
+        {
+            return BadRequest(new ErrorModel { Message = "User not found." });
+        }
+
         ITable table = _tableManager.JoinOrCreateTable(currentUser, preferences);
 
-        if(!table.HasAvailableSeat)
+        if (!table.HasAvailableSeat)
         {
             _tableManager.StartGameForTable(table.Id);
         }
