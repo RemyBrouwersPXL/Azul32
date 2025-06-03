@@ -51,25 +51,26 @@ public class AuthenticationController : ApiControllerBase
             {
                 UserName = model.UserName,
                 Email = model.Email,
-                LastVisitToPortugal = model.LastVisitToPortugal
+                LastVisitToPortugal = model.LastVisitToPortugal,
+                Stats = new UserStats
+                {
+                    UserId = Guid.NewGuid(), // Assign a new GUID for the user stats
+                    Wins = 0,
+                    Losses = 0,
+                    TotalGamesPlayed = 0,
+                    HighestScore = 0,
+                    LastPlayed = DateTime.MinValue
+                }
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                var stats = new UserStats
-                {
-                    UserId = user.Id,
-                    Wins = 0,
-                    Losses = 0,
-                    TotalGamesPlayed = 0,
-                    HighestScore = 0,
-                    LastPlayed = DateTime.UtcNow
-                };
 
-                _dbContext.UserStats.Add(stats);
+                var Stats = user.Stats;
+
+                _dbContext.UserStats.Add(Stats);
                 await _dbContext.SaveChangesAsync();
-
 
                 return Ok();
             }
@@ -106,7 +107,9 @@ public class AuthenticationController : ApiControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var user = await _userManager.FindByEmailAsync(model.Email);
+        var user = await _userManager.Users
+            .Include(u => u.Stats)
+            .FirstOrDefaultAsync(u => u.Email == model.Email);
         if (user == null)
         {
             return Unauthorized();
@@ -119,9 +122,7 @@ public class AuthenticationController : ApiControllerBase
 
         IList<string> roleNames = await _userManager.GetRolesAsync(user);
 
-        var userWithStats = await _userManager.Users
-            .Include(u => u.Stats)
-            .FirstOrDefaultAsync(u => u.Email == model.Email);
+        
 
         var accessPass = new AccessPassModel
         {
