@@ -46,14 +46,9 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const token = sessionStorage.getItem('userToken');
             const res = await fetch(
-                "https://azul32.onrender.com/api/Leaderboard", {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json',
-                    'Accept': 'text/plain'
-                }
-            }
+                "https://azul32.onrender.com/api/Leaderboard"
+               
+            
             );
             if (!res.ok) return;
             const data = await res.json();
