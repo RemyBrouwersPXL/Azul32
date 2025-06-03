@@ -10,26 +10,70 @@ body {
     background: url('../Images/register_background.png') no-repeat center center fixed;
     background-size: cover;
 }
+.login-page {
+    display: flex;
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.login-form {
+    flex: 1;
+    max-width: 400px;
+}
+
+.leaderboard-sidebar {
+    flex: 1;
+    max-width: 300px;
+}
+
+/* Leaderboard stijl */
 .leaderboard {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f0f8ff; /* Lichtblauwe achtergrond */
+    padding: 20px;
+    background-color: #f0f8ff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 20px;
 }
 
     .leaderboard h3 {
-        color: #1e3a8a; /* Donkerblauwe tekst */
-        margin-bottom: 10px;
+        color: #1e3a8a;
+        margin-bottom: 15px;
+        font-size: 1.2em;
     }
 
     .leaderboard ol {
         padding-left: 20px;
+        list-style-type: none;
+        counter-reset: leaderboard-counter;
     }
 
     .leaderboard li {
-        margin-bottom: 8px;
-        color: #333;
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 10px;
+        counter-increment: leaderboard-counter;
+    }
+
+        .leaderboard li::before {
+            content: counter(leaderboard-counter);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+.view-full {
+    display: block;
+    margin-top: 15px;
+    color: #1e3a8a;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+    .view-full:hover {
+        text-decoration: underline;
     }
 
 #easter-egg-modal {
