@@ -13,12 +13,11 @@ body {
 
 .login-layout {
     display: flex;
-    justify-content: center;
-    gap: 40px;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
-    max-width: 1200px;
-    margin: 20px 0;
-    align-items: flex-start; /* Zorgt dat items bovenaan uitlijnen */
+    max-width: 500px; /* Gelijk aan formulierbreedte */
+    margin: 0 auto; /* Zorgt dat items bovenaan uitlijnen */
 }
 
 .leaderboard-sidebar {
@@ -93,16 +92,11 @@ body {
         transform: translateY(0) scale(1);
     }
 }
-@media (max-width: 900px) {
-    .login-layout {
-        flex-direction: column;
-        align-items: center;
-    }
-
+@media (max-width: 600px) {
+    .form,
     .leaderboard-sidebar {
-        width: 100%;
-        max-width: 500px;
-        margin-top: 30px;
+        width: 95%;
+        max-width: none;
     }
 }
 
@@ -110,7 +104,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 500px;
+    width: 100%;
+    max-width: 500px;
     padding: 20px;
     border-radius: 20px;
     position: relative;
@@ -118,9 +113,9 @@ body {
     color: #1d7cb6;
     border: 3px solid #c3baa9;
     margin: 0;
+    margin-top: 20px;
     z-index: 1;
     box-shadow: 0 8px 24px #00000026;
-    
 }
 
 .title {
