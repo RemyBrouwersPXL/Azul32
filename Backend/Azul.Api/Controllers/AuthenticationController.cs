@@ -54,7 +54,8 @@ public class AuthenticationController : ApiControllerBase
                 LastVisitToPortugal = model.LastVisitToPortugal,
                 Stats = new UserStats
                 {
-                    UserId = Guid.NewGuid(), // Assign a new GUID for the user stats
+                    Id = Guid.NewGuid(), // Generate a new Guid for the UserStats Id
+                    UserId = Guid.NewGuid(), // Generate a new Guid for the UserId
                     Wins = 0,
                     Losses = 0,
                     TotalGamesPlayed = 0,
