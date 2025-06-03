@@ -14,7 +14,13 @@ namespace Azul.Api.Models.Output
         public int HighestScore { get; set; } = 0;
         public DateTime LastPlayed { get; set; } = DateTime.UtcNow;
 
-        
+        private class MappingProfile : Profile
+        {
+            public MappingProfile()
+            {
+                CreateMap<UserStats, UserStatsModel>();
+            }
+        }
     }
 
    
