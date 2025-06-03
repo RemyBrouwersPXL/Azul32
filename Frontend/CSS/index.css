@@ -9,69 +9,44 @@ body {
     align-items: center;
     background: url('../Images/register_background.png') no-repeat center center fixed;
     background-size: cover;
+    position: relative;
 }
-.login-page {
-    display: flex;
-    gap: 40px;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-
 
 .leaderboard-sidebar {
-    z-index: 2;
-    max-width: 300px;
+    width: 320px;
+    position: sticky;
+    top: 20px; /* Blijft zichtbaar bij scrollen */
 }
 
 /* Leaderboard stijl */
 .leaderboard {
-    padding: 20px;
-    background-color: #f0f8ff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-top: 20px;
+    padding: 25px;
+    background-color: rgba(240, 248, 255, 0.9); /* Licht transparant */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 2px solid #c3baa9;
+    backdrop-filter: blur(5px); /* Moderne browser effect */
 }
 
     .leaderboard h3 {
-        color: #1e3a8a;
-        margin-bottom: 15px;
-        font-size: 1.2em;
+        color: #1d7cb6; /* Matching AZUL kleur */
+        margin-bottom: 20px;
+        font-size: 1.3em;
+        text-align: center;
+        border-bottom: 2px solid #1d7cb6;
+        padding-bottom: 8px;
     }
 
     .leaderboard ol {
-        padding-left: 20px;
-        list-style-type: none;
-        counter-reset: leaderboard-counter;
+        padding-left: 25px;
     }
+
 
     .leaderboard li {
-        position: relative;
-        padding-left: 30px;
-        margin-bottom: 10px;
-        counter-increment: leaderboard-counter;
+        padding: 8px 0;
+        border-bottom: 1px dashed #c3baa9;
     }
 
-        .leaderboard li::before {
-            content: counter(leaderboard-counter);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-            color: #1e3a8a;
-        }
-
-.view-full {
-    display: block;
-    margin-top: 15px;
-    color: #1e3a8a;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-    .view-full:hover {
-        text-decoration: underline;
-    }
 
 #easter-egg-modal {
     display: none;
