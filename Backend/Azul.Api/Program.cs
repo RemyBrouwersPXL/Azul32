@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Azul.Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Azul.Api.Hubs;
 
 
 namespace Azul.Api
@@ -117,6 +118,21 @@ namespace Azul.Api
                         ValidAudience = tokenSettings.Audience,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Key)),
                     };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                path.StartsWithSegments("/hubs/chat")) // Match je SignalR endpoint
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             builder.Services.AddAuthorization();
@@ -138,6 +154,16 @@ namespace Azul.Api
                         maxRetryDelay: TimeSpan.FromSeconds(10),
                         errorCodesToAdd: null);
                 }));
+            builder.Services.AddSignalR();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    policyBuilder => policyBuilder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials()); // Belangrijk voor SignalR
+            });
             //////////////////////////////////////////////
             //Create database (if it does not exist yet)//
             //////////////////////////////////////////////
@@ -161,6 +187,8 @@ namespace Azul.Api
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            app.MapHub<ChatHub>("/hubs/chat");
 
             app.MapControllers();
 

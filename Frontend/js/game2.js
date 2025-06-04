@@ -736,83 +736,119 @@ function getCurrentPlayerName() {
 
 
 // Enhanced loadMessages() with player names and timestamps
-function loadMessages() {
-    const messages = JSON.parse(localStorage.getItem('azul-chat') || '[]');
-    chatMessages.innerHTML = messages.map(msg => `
-        <div class="message">
-            <span class="sender">${msg.sender}:</span>
-            <span class="text">${msg.text}</span>
-            <span class="time">${msg.time}</span>
-        </div>
-    `).join('');
+let chatConnection = null;
+
+function initializeChat() {
+    chatConnection = new signalR.HubConnectionBuilder()
+        .withUrl("https://azul32.onrender.com/hubs/chat", {
+            accessTokenFactory: () => sessionStorage.getItem('userToken')
+        })
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+    chatConnection.on("ReceiveMessage", (user, message, timestamp) => {
+        addMessageToChat(user, message, timestamp);
+    });
+
+    chatConnection.on("UserConnected", (username) => {
+        
+        addSystemMessage(username + "joined the chat");
+    });
+
+    chatConnection.on("UserDisconnected", (username) => {
+        addSystemMessage(username + " left the chat");
+    });
+
+    chatConnection.start()
+        .then(() => {
+            console.log("Chat connection established");
+            loadInitialMessages();
+        })
+        .catch(err => {
+            console.error("Error establishing chat connection:", err);
+            setTimeout(initializeChat, 5000);
+    
+        });
+}
+
+
+// Bericht toevoegen aan de chat UI
+function addMessageToChat(user, message, timestamp) {
+    const isCurrentUser = user === getCurrentPlayerName();
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${isCurrentUser ? 'current-user' : ''}`;
+
+    messageElement.innerHTML = `
+        <span class="sender">${user}:</span>
+        <span class="text">${message}</span>
+        <span class="time">${new Date(timestamp).toLocaleTimeString()}</span>
+    `;
+
+    chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Enhanced sendMessage() with real-time sync
-function sendMessage() {
-    const text = messageInput.value.trim();
-    if (!text) return;
-
-    const newMessage = {
-        sender: getCurrentPlayerName(),
-        text: text,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-
-    // Save to session storage
-    const messages = JSON.parse(localStorage.getItem('azul-chat') || '[]');
-    messages.push(newMessage);
-    localStorage.setItem('azul-chat', JSON.stringify(messages));
-
-    // Update UI immediately
-    loadMessages();
-
-    // Clear input
-    messageInput.value = '';
-    messageInput.focus();
+// Systeembericht toevoegen
+function addSystemMessage(text) {
+    const messageElement = document.createElement('div');
+    messageElement.className = 'system-message';
+    messageElement.textContent = text;
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Clear chat when new game starts
-function checkForNewGame() {
-    const currentGameId = sessionStorage.getItem('gameId');
-    const lastGameId = localStorage.getItem('lastGameId');
+// Laad initiële berichten van de server
+async function loadInitialMessages() {
+    try {
+        const response = await fetch(`https://azul32.onrender.com/api/chat/history`, {
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('userToken')
+            }
+        });
 
-    if (currentGameId && currentGameId !== lastGameId) {
-        // New game detected, clear chat
-        localStorage.removeItem('azul-chat');
-        localStorage.setItem('lastGameId', currentGameId);
-        loadMessages(); // Refresh chat to show it's empty
-    }
-}
-
-// Enhanced storage listener for instant updates
-window.addEventListener('storage', (e) => {
-    if (e.key === 'azul-chat') {
-        loadMessages();
-
-        // Flash chat icon on new message (if chat is closed)
-        if (chatContainer.style.display !== 'block') {
-            chatIcon.classList.add('new-message');
-            setTimeout(() => chatIcon.classList.remove('new-message'), 500);
+        if (response.ok) {
+            const messages = await response.json();
+            messages.forEach(msg => {
+                addMessageToChat(msg.user, msg.message, msg.timestamp);
+            });
         }
+    } catch (error) {
+        console.error("Failed to load chat history:", error);
     }
-});
-
-// Toggle Chat
-chatIcon.addEventListener('click', () => {
-    const isVisible = chatContainer.style.display === 'block';
-    chatContainer.style.display = isVisible ? 'none' : 'block';
-    if (!isVisible) {
-        messageInput.focus();
-        chatIcon.classList.remove('new-message');
-    }
-});
-
-// Initialize chat
-function initializeChat() {
-    checkForNewGame();
-    loadMessages();
 }
 
-// Call initializeChat when DOM is loaded
-document.addEventListener('DOMContentLoaded', initializeChat);
+// Verstuur een bericht naar de server
+function sendMessage() {
+    const message = messageInput.value.trim();
+    if (!message || !chatConnection) return;
+
+    chatConnection.invoke("SendMessage", message)
+        .then(() => {
+            messageInput.value = '';
+        })
+        .catch(err => {
+            console.error("Failed to send message:", err);
+        });
+}
+
+// Update de event listeners
+sendButton.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+// Initialize chat when game loads
+document.addEventListener('DOMContentLoaded', function () {
+    if (sessionStorage.getItem('userToken')) {
+        initializeChat();
+    }
+});
+
+// Reconnect when token becomes available
+const tokenCheckInterval = setInterval(() => {
+    if (sessionStorage.getItem('userToken') && !chatConnection) {
+        initializeChat();
+        clearInterval(tokenCheckInterval);
+    }
+}, 1000);
