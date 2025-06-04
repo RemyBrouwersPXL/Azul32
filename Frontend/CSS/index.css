@@ -1,165 +1,159 @@
-/* Reset en basisstijlen */
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    font-family: Arial, sans-serif;
     background: url('../Images/register_background.png') no-repeat center center fixed;
     background-size: cover;
-    position: relative;
-    padding-top: 40px;
 }
 
-/* Overlay voor betere leesbaarheid */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: 1;
-}
-
-/* Hoofdcontainer */
-.login-layout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 2;
-}
-
-/* Logo stijl */
 .welcome-logo {
-    max-width: 280px;
-    width: 100%;
-    margin-bottom: 30px;
-    animation: float-zoom 2s ease-in-out;
+    display: block;
+    max-width: 300px;
+    margin: 40px auto 20px;
+    animation: float-zoom 2s ease-in-out 1 forwards;
 }
 
-/* Formulier stijl */
+@keyframes float-zoom {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-10px) scale(1.05);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+.layout-container {
+    display: flex;
+    justify-content: center;
+ 
+    align-items: flex-start;
+    padding: 40px 20px;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.main-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex: auto;
+    min-width: 500px;
+    width: 100%;
+}
+
 .form {
+    width: 100%;
+    max-width: 500px ;
+    background-color: #f7ebd6;
+    padding: 20px;
+    border-radius: 20px;
+    border: 3px solid #c3baa9;
+    box-shadow: 0 8px 24px #00000026;
+    color: #1d7cb6;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    width: 100%;
-    max-width: 500px;
-    padding: 30px;
-    border-radius: 20px;
-    background-color: #f7ebd6;
-    color: #1d7cb6;
-    border: 3px solid #c3baa9;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    gap: 12px;
+    justify-content:center;
 }
 
 .title {
     font-size: 28px;
     font-weight: 600;
-    letter-spacing: -1px;
+    text-align: center;
+}
+
+.message {
+    font-size: 16px;
+    text-align: center;
+}
+
+label {
     position: relative;
-    display: flex;
-    align-items: center;
-    padding-left: 30px;
-    color: #1d7cb6;
-    margin-top: 0;
-}
-
-.title::before,
-.title::after {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    left: 0;
-    background-color: #1d7cb6;
-}
-
-.title::after {
-    animation: pulse 1s linear infinite;
-}
-
-/* Input velden */
-.form label {
-    position: relative;
-}
-
-.form label .input {
-    background-color: #c3baa9;
-    color: #1f2523;
     width: 100%;
-    padding: 20px 5px 5px 10px;
-    outline: 0;
-    border: 1px solid rgba(105, 105, 105, 0.4);
+}
+
+.input {
+    width: 100%;
+    height: 40px;
     border-radius: 10px;
+    border: 1px solid #ccc;
+    background: #c3baa9;
+    color: #1f2523;
     font-size: 16px;
 }
 
-.form label .input + span {
-    color: #1f2523;
+label span {
     position: absolute;
-    left: 10px;
-    top: 0;
+    left: 14px;
+    top: 12px;
     font-size: 0.9em;
-    cursor: text;
-    transition: 0.3s ease;
-}
-
-.form label .input:placeholder-shown + span {
-    top: 12.5px;
-    font-size: 0.9em;
-}
-
-.form label .input:focus + span,
-.form label .input:valid + span {
     color: #1f2523;
-    top: 0;
-    font-size: 0.7em;
-    font-weight: 600;
+    pointer-events: none;
+    transition: 0.3s;
 }
 
-/* Knoppen */
+.input:focus + span,
+.input:valid + span {
+    top: -10px;
+    left: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    background-color: #f7ebd6;
+    padding: 0 4px;
+}
+
 .submit,
 #leave-button {
-    border: none;
-    outline: none;
-    padding: 12px;
-    border-radius: 10px;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
     background-color: #1d7cb6;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-#leave-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+    .submit:hover,
+    #leave-button:hover {
+        background-color: #1f2523;
+    }
+
+.signin {
+    font-size: 14px;
+    text-align: center;
 }
 
-.submit:hover,
-#leave-button:hover {
-    background-color: #165a8a;
-    transform: translateY(-2px);
+    .signin a {
+        color: #1d7cb6;
+        text-decoration: none;
+    }
+
+        .signin a:hover {
+            text-decoration: underline;
+        }
+
+.team {
+    margin-top: 16px;
+    font-size: 18px;
+    text-decoration: none;
+    color: #414246;
+    text-align: center;
+    flex-direction: row;
 }
 
-/* Leaderboard stijl */
+    .team:hover {
+        text-decoration: underline;
+    }
+
 .leaderboard-sidebar {
-    width: 100%;
-    max-width: 500px;
-    margin-top: 30px;
+    width: 300px;
+    position: absolute;
+    padding-left: 1000px;
 }
 
 .leaderboard {
@@ -171,91 +165,53 @@ body::before {
     backdrop-filter: blur(5px);
 }
 
-.leaderboard h3 {
-    color: #1d7cb6;
-    margin: 0 0 15px 0;
-    font-size: 1.3em;
-    text-align: center;
-    border-bottom: 2px solid #1d7cb6;
-    padding-bottom: 8px;
-}
+    .leaderboard h3 {
+        color: #1d7cb6;
+        text-align: center;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #1d7cb6;
+        padding-bottom: 6px;
+    }
 
-.leaderboard ol {
-    padding-left: 25px;
-    list-style-type: none;
-    counter-reset: leaderboard-counter;
-}
+    .leaderboard ol {
+        padding-left: 20px;
+    }
 
-.leaderboard li {
-    position: relative;
-    padding: 8px 0 8px 30px;
-    margin-bottom: 8px;
-    border-bottom: 1px dashed #c3baa9;
-    counter-increment: leaderboard-counter;
-}
+    .leaderboard li {
+        padding: 6px 0;
+        border-bottom: 1px dashed #c3baa9;
+    }
 
-.leaderboard li::before {
-    content: counter(leaderboard-counter);
-    position: absolute;
-    left: 0;
-    font-weight: bold;
-    color: #1d7cb6;
-}
-
-/* Footer */
-.site-footer {
-    margin-top: auto;
-    padding: 20px;
-    width: 100%;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
-    position: relative;
-    z-index: 2;
-}
-
-/* Easter Egg modal */
 #easter-egg-modal {
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #f7ebd6;
+    background: #fff;
     padding: 2rem;
     border-radius: 1rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     z-index: 999;
     font-size: 1.2rem;
     text-align: center;
-    border: 3px solid #1d7cb6;
 }
 
-/* Animaties */
-@keyframes float-zoom {
-    0% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-10px) scale(1.05); }
-    100% { transform: translateY(0) scale(1); }
+.site-footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0,0,0,0.05);
+    margin-top: 40px;
 }
 
-@keyframes pulse {
-    from { transform: scale(0.9); opacity: 1; }
-    to { transform: scale(1.8); opacity: 0; }
-}
+@media (max-width: 900px) {
+    .layout-container {
+        flex-direction: column;
+        align-items: center;
+    }
 
-/* Responsive aanpassingen */
-@media (max-width: 600px) {
-    .form,
     .leaderboard-sidebar {
-        width: 95%;
-        padding: 20px;
-    }
-    
-    .title {
-        font-size: 24px;
-    }
-    
-    .form label .input {
-        padding: 15px 5px 5px 10px;
+        width: 100%;
+        margin-top: 20px;
     }
 }

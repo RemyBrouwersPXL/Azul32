@@ -8,53 +8,58 @@
 </head>
 
 <body>
-    <div class="login-layout">
-        <form class="form">
-            <p class="title">Log In</p>
+    <div class="layout-container">
+        <div class="main-area">
+            <form class="form">
+                <p class="title">Log In</p>
 
-            <p class="message">Sign in now to start playing</p>
-            <span>Email</span>
-            <label>
-                <input class="input" type="email" id="email" name="email" placeholder="" required="">
-                <span>Enter your email</span>
-            </label>
+                <p class="message">Sign in now to start playing</p>
+                <span>Email</span>
+                <label>
+                    <input class="input" type="email" id="email" name="email" placeholder="" required="">
+                    <span>Enter your email</span>
+                </label>
 
-            <span>Password</span>
-            <label>
-                <input class="input" type="password" id="password" name="password" placeholder="" required="">
-                <span>Enter your password</span>
-            </label>
+                <span>Password</span>
+                <label>
+                    <input class="input" type="password" id="password" name="password" placeholder="" required="">
+                    <span>Enter your password</span>
+                </label>
 
-            <button class="submit" type="submit">Sign In</button>
-            <p class="signin">Don't have an account yet? <a href="register.html">Sign Up</a> </p>
-            <button id="leave-button">Instructions</button>
+                <button class="submit" type="submit">Sign In</button>
+                <p class="signin">Don't have an account yet? <a href="register.html">Sign Up</a> </p>
+                <button id="leave-button">Instructions</button>
+                <div>
+                    <a class="team" href="./team.html"><p>About Us</p></a>
+                </div>
 
-        </form>
+            </form>
+            
+        </div>
 
         <div id="easter-egg-modal" style="
-         display: none;
-         position: fixed;
-         top: 50%;
-         left: 50%;
-         transform: translate(-50%, -50%);
-         background: #fff;
-         padding: 2rem;
-         border-radius: 1rem;
-         box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-         z-index: 999;
-         font-size: 1.2rem;
-         text-align: center;">
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            z-index: 999;
+            font-size: 1.2rem;
+            text-align: center;">
             Congratulations! You just found our Azul Game egg!
         </div>
-        <div>
-            <a class="team" href="./team.html"><p>About Us</p></a>
-        </div>
-        <div class="leaderboard-sidebar">
+        
+        <aside class="leaderboard-sidebar">
             <div class="leaderboard" id="leaderboard-container">
                 <!-- Hier komt het dynamische leaderboard -->
             </div>
-        </div>
+        </aside>
     </div>
+ 
 </body>
 <script src="js/index.js"></script>
 </html>
