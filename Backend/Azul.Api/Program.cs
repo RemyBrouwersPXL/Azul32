@@ -159,7 +159,9 @@ namespace Azul.Api
             {
                 options.AddPolicy("AllowAll",
                     policyBuilder => policyBuilder
-                        .AllowAnyOrigin()
+                        .WithOrigins(
+                "https://azul32-bsv7.vercel.app/" // Je frontend URL op Render
+            )
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials()); // Belangrijk voor SignalR
@@ -192,7 +194,9 @@ namespace Azul.Api
 
             app.MapControllers();
 
-            
+            var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+            app.Run($"http://0.0.0.0:{port}");
+
         }
     }
 }
