@@ -192,7 +192,7 @@ namespace Azul.Api
 
             app.MapControllers();
 
-            app.Run($"https://azul32.onrender.com");
+            
         }
     }
 }
