@@ -155,17 +155,7 @@ namespace Azul.Api
                         errorCodesToAdd: null);
                 }));
             builder.Services.AddSignalR();
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll",
-                    policyBuilder => policyBuilder
-                        .AllowAnyOrigin()
-
-
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials()); // Belangrijk voor SignalR
-            });
+            
             //////////////////////////////////////////////
             //Create database (if it does not exist yet)//
             //////////////////////////////////////////////
