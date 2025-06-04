@@ -20,7 +20,7 @@ internal class PlayerBase : IPlayer
         Board = new Board();
         HasStartingTile = false;
         TilesToPlace = new List<TileType>();
-        Stats = stats ?? throw new ArgumentNullException(nameof(stats), "Stats cannot be null");
+        Stats = stats;
     }
 
     public Guid Id { get; }
