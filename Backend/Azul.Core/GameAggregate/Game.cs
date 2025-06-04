@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Threading.Tasks;
 using Azul.Core.GameAggregate.Contracts;
 using Azul.Core.PlayerAggregate;
 using Azul.Core.PlayerAggregate.Contracts;
@@ -6,11 +7,15 @@ using Azul.Core.TableAggregate;
 using Azul.Core.TileFactoryAggregate;
 using Azul.Core.TileFactoryAggregate.Contracts;
 
+
+
+
 namespace Azul.Core.GameAggregate;
 
 /// <inheritdoc cref="IGame"/>
 internal class Game : IGame
 {
+
     private int _roundNumber;
     private Guid _playerToPlayId;
     private bool _hasEnded;
@@ -107,7 +112,9 @@ internal class Game : IGame
                     if (p.Board.HasCompletedHorizontalLine)
                     {
                         
-                        _hasEnded = true;
+                        _hasEnded = true; 
+                        
+
                     }
                 }
 
@@ -252,6 +259,7 @@ internal class Game : IGame
                     {
                         
                         _hasEnded = true;
+                        
                     }
                 }
 

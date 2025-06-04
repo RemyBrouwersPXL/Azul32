@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Azul.Api.Models.Input;
 using Azul.Api.Models.Output;
+using Azul.Bootstrapper;
 using Azul.Core.GameAggregate.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,13 @@ namespace Azul.Api.Controllers
     {
         private readonly IGameService _gameService;
         private readonly IMapper _mapper;
+        private readonly StatsService _statsService;
 
-        public GamesController(IGameService gameService, IMapper mapper)
+        public GamesController(IGameService gameService, IMapper mapper, StatsService statsService)
         {
             _gameService = gameService;
             _mapper = mapper;
+            _statsService = statsService;
         }
 
         /// <summary>
@@ -63,9 +66,21 @@ namespace Azul.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
-        public IActionResult PlaceTilesOnPatternLine(Guid id, [FromBody] PlaceTilesModel inputModel)
+        public async Task<IActionResult> PlaceTilesOnPatternLine(Guid id, [FromBody] PlaceTilesModel inputModel)
         {
             _gameService.PlaceTilesOnPatternLine(id, UserId, inputModel.PatternLineIndex);
+            var game = _gameService.GetGame(id);
+
+            if (game.HasEnded)
+            {
+                foreach (var player in game.Players)
+                {
+                    bool didwin = player.Board.Score == game.Players.Max(p => p.Board.Score);
+                    int score = player.Board.Score;
+                    await _statsService.UpdateStatsAfterGameAsync(player.Id, didwin, score);
+                }
+
+            }
             return Ok();
         }
 
@@ -77,9 +92,21 @@ namespace Azul.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
-        public IActionResult PlaceTilesOnFloorLine(Guid id)
+        public async Task<IActionResult> PlaceTilesOnFloorLine(Guid id)
         {
             _gameService.PlaceTilesOnFloorLine(id, UserId);
+            var game = _gameService.GetGame(id);
+
+            if (game.HasEnded)
+            {
+                foreach (var player in game.Players)
+                {
+                    bool didwin = player.Board.Score == game.Players.Max(p => p.Board.Score);
+                    int score = player.Board.Score;
+                    await _statsService.UpdateStatsAfterGameAsync(player.Id, didwin, score);
+                }
+
+            }
             return Ok();
         }
     }
