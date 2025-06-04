@@ -159,9 +159,9 @@ namespace Azul.Api
             {
                 options.AddPolicy("AllowAll",
                     policyBuilder => policyBuilder
-                        .WithOrigins(
-                "https://azul32-bsv7.vercel.app/" // Je frontend URL op Render
-            )
+                        .AllowAnyOrigin()
+
+
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials()); // Belangrijk voor SignalR
