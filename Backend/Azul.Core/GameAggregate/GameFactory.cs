@@ -15,7 +15,7 @@ internal class GameFactory : IGameFactory
     public IGame CreateNewForTable(ITable table)
     {
         {
-            GamePlayStrategy strategy = new GamePlayStrategy();
+            
             if (table == null)
                 throw new ArgumentNullException(nameof(table), "Table cannot be null.");
 
