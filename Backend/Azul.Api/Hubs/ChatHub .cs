@@ -32,13 +32,26 @@ namespace Azul.Api.Hubs
 
         public async Task SendMessage(string message)
         {
-            var username = Context.GetHttpContext().Request.Query["username"];
-            await Clients.Group(GetGameId()).SendAsync("ReceiveMessage", username, message);
-
-            if (IsComputerOpponent(GetGameId()))
+            try
             {
-                var aiReply = await _aiService.GetReplyAsync(message);
-                await Clients.Group(GetGameId()).SendAsync("ReceiveMessage", "Computer", aiReply);
+                var username = Context.GetHttpContext().Request.Query["username"];
+                var gameId = GetGameId();
+
+                Console.WriteLine($"📨 Bericht ontvangen van {username}: {message}");
+
+                await Clients.Group(gameId).SendAsync("ReceiveMessage", username, message);
+
+                // AI-reactie (optioneel, afhankelijk van jouw logica)
+                if (IsComputerOpponent(GetGameId())) // of een andere controle
+                {
+                    var aiReply = await _aiService.GetReplyAsync(message);
+                    await Clients.Group(gameId).SendAsync("ReceiveMessage", "Computer", aiReply);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Fout in SendMessage: {ex.Message}");
+                throw;
             }
         }
 
