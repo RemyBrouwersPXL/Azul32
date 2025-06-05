@@ -390,6 +390,7 @@ function takeTiles() {
                 if (!res.ok) {
                     console.error('API request failed:', res.status);
                 }
+                pollGameState(); // Refresh game state after taking tiles
             });
         } catch (e) {
             console.error('Error:', e);
@@ -417,6 +418,7 @@ function TakeTilesCenter(tafelFactory) {
                 if (!res.ok) {
                     console.error('API request failed:', res.status);
                 }
+                pollGameState(); 
             });
         } catch (e) {
             console.error('Error:', e);
