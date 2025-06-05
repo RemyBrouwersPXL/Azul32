@@ -136,7 +136,7 @@ namespace Azul.Api
                 });
 
             builder.Services.AddAuthorization();
-
+            builder.Services.AddSingleton<GeminiAiService>();
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddAutoMapper(typeof(UserModel));
             builder.Services.AddSignalR();
