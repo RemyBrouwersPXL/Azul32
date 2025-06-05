@@ -6,7 +6,6 @@ using Azul.Api.Services.Contracts;
 namespace Azul.Api.Hubs
 {
     [Authorize]
-    [AllowAnonymous]
     public class ChatHub : Hub
     {
         public override async Task OnConnectedAsync()
