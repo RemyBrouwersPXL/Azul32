@@ -747,32 +747,32 @@ function getCurrentPlayerName() {
 
 
 // Verbinding met SignalR
-const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/hubs/chat")
-    .build();
+let connection;
 
-// Ontvang chatberichten
-connection.on("ReceiveMessage", (user, message) => {
-    const msgElement = document.createElement("div");
-    msgElement.innerHTML = `<strong>${user}:</strong> ${message}`;
-    document.getElementById("chat-messages").appendChild(msgElement);
-});
+document.addEventListener('DOMContentLoaded', function () {
+    connection = new signalR.HubConnectionBuilder()
+        .withUrl("/gameHub")
+        .build();
 
-// Ontvang emotes (als speciale berichten)
-connection.on("ReceiveEmote", (user, emote) => {
-    const emoteElement = document.createElement("div");
-    emoteElement.className = "emote-message";
-    emoteElement.innerHTML = `${user} <img src="../Images/emotes/${emote}.png">`;
-    document.getElementById("chat-messages").appendChild(emoteElement);
+    // Ontvang berichten
+    connection.on("ReceiveMessage", (user, message) => {
+        document.getElementById("messages").innerHTML += `<p>${user}: ${message}</p>`;
+    });
+
+    // Ontvang emotes
+    connection.on("ReceiveEmote", (user, emote) => {
+        document.getElementById("messages").innerHTML += `<p>${user} used <img src="/emotes/${emote}.png" style="width:20px"></p>`;
+    });
+
+    connection.start().catch(console.error);
 });
 
 function sendMessage() {
-    const message = document.getElementById("chat-input").value;
-    connection.invoke("SendMessage", message);
+    const input = document.getElementById("chat-input");
+    connection.invoke("SendMessage", input.value);
+    input.value = "";
 }
 
 function sendEmote(emote) {
     connection.invoke("SendEmote", emote);
 }
-
-connection.start().catch(err => console.error(err));
