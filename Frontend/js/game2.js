@@ -749,9 +749,12 @@ function getCurrentPlayerName() {
 let connection;
 
 async function startConnection() {
+    const token = sessionStorage.getItem('userToken')
+    console.log("Token used for SignalR:", token);
+
     connection = new signalR.HubConnectionBuilder()
         .withUrl("https://azul32.onrender.com/hubs/chat?gameId=" + sessionStorage.getItem('gameId'), {
-            accessTokenFactory: () => sessionStorage.getItem('userToken'),
+            accessTokenFactory: () => token,
             withCredentials: true
         })
         .configureLogging(signalR.LogLevel.Information)
