@@ -68,11 +68,14 @@ namespace Azul.Api.Hubs
 
         private bool IsComputerOpponent(string gameId)
         {
-            // Hier kun je checken of het spel tegen AI is — bijvoorbeeld:
+            if (Guid.TryParse(gameId, out var id))
+            {
+                return _gameService.IsVsComputer(id); // zelf implementeren
+            }
 
-            Guid id = Guid.Parse(gameId);
-
-            return _gameService.IsVsComputer(id); // zelf implementeren
+            Console.WriteLine($"⚠️ Ongeldige gameId ontvangen: {gameId}");
+            return false; // of eventueel true/exception gooien
         }
+
     }
 }
