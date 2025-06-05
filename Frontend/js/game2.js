@@ -760,7 +760,12 @@ async function startConnection() {
 
         // Luister naar berichten
         connection.on("ReceiveMessage", (user, message) => {
-            console.log(`${user}: ${message}`);
+            addChatMessage(user, message);
+        });
+
+        // Luister naar emotes (optioneel)
+        connection.on("ReceiveEmote", (user, emote) => {
+            addChatMessage(user, emote); // Je zou hier evt. een afbeelding kunnen tonen i.p.v. tekst
         });
 
     } catch (err) {
@@ -769,18 +774,22 @@ async function startConnection() {
     }
 }
 
-// Start de verbinding wanneer de pagina laadt
-document.addEventListener('DOMContentLoaded', startConnection);
-
+// Stuur een normaal bericht
 async function sendMessage() {
-    const message = document.getElementById("chat-input").value;
+    const input = document.getElementById("chat-input");
+    const message = input.value.trim();
+
+    if (!message) return;
+
     try {
         await connection.invoke("SendMessage", message);
+        input.value = "";
     } catch (err) {
         console.error("Bericht niet verstuurd:", err);
     }
 }
 
+// Stuur een emote
 async function sendEmote(emote) {
     try {
         await connection.invoke("SendEmote", emote);
@@ -788,3 +797,25 @@ async function sendEmote(emote) {
         console.error("Emote niet verstuurd:", err);
     }
 }
+
+// Bericht toevoegen aan het chatvenster
+function addChatMessage(user, message) {
+    const chatBox = document.getElementById("chat-messages");
+    const msg = document.createElement("div");
+    msg.innerHTML = `<strong>${user}:</strong> ${message}`;
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Chatvenster toggle
+document.addEventListener("DOMContentLoaded", () => {
+    startConnection();
+
+    const toggleButton = document.getElementById("toggle-chat");
+    if (toggleButton) {
+        toggleButton.addEventListener("click", () => {
+            const chat = document.getElementById("chat-container");
+            chat.classList.toggle("hidden");
+        });
+    }
+});

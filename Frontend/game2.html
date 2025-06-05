@@ -31,22 +31,14 @@
 
     </div>
 
-    <!-- chat.html -->
-    <div id="chat-container">
-        <!-- Berichtenweergave -->
-        <div id="chat-messages"></div>
+    <button id="toggle-chat">💬 Chat</button>
 
-        <!-- Inputveld met emote-knopen -->
+    <div id="chat-container" class="hidden">
+        <div id="chat-messages" class="chat-messages"></div>
+
         <div class="chat-controls">
-            <input type="text" id="chat-input" placeholder="Type een bericht...">
+            <input type="text" id="chat-input" placeholder="Typ een bericht...">
             <button onclick="sendMessage()">Verstuur</button>
-
-            <!-- Emote selector -->
-            <div class="emote-buttons">
-                <img src="../Frontend/Images/emoties/nice.png" onclick="sendEmote('Nice move!')" title="Nice move!">
-                <img src="../Frontend/Images/emoties/oof.png" onclick="sendEmote('Oof...')" title="Oof!">
-                <img src="../Frontend/Images/emoties/gg.png" onclick="sendEmote('GG!')" title="Good Game">
-            </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
