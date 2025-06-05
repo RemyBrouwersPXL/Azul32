@@ -154,6 +154,19 @@ h1 {
     float: left;
 }
 
+#round {
+    position: relative;
+    min-height: 100px;
+}
+
+    #round .tiles-container {
+        position: absolute;
+        top: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+
 .factory-display {
     color: #1d7cb6;
     display: grid;
