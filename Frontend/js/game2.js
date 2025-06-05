@@ -114,10 +114,51 @@ async function pollGameState() {
             tilesContainer.innerHTML = '';
 
             if (playerIndex >= 0 && gameData.players[playerIndex]) {
-                for (const tile of gameData.players[playerIndex].tilesToPlace) {
-                    const tileImg = document.createElement('div');
-                    tileImg.className = `tile tile-${getTileColor(tile)}`;
-                    tilesContainer.appendChild(tileImg);
+                const originElement = selectedTile
+                    ? document.querySelector(`.factory-display[data-display-id="${selectedFactory}"] .tile-button[data-tile-id="${selectedTileInt}"]`)
+                    : document.querySelector(`.central-factory-display .tile-button[data-tile-id="${selectedTileCenterInt}"]`);
+
+                if (originElement) {
+                    const originRect = originElement.getBoundingClientRect();
+                    const destinationRect = tilesContainer.getBoundingClientRect();
+
+                    gameData.players[playerIndex].tilesToPlace.forEach((tile, index) => {
+                        const tileImg = document.createElement('div');
+                        tileImg.className = `tile tile-${getTileColor(tile)}`;
+                        tilesContainer.appendChild(tileImg);
+
+                        const flyingTile = document.createElement('div');
+                        flyingTile.className = `tile tile-${getTileColor(tile)} flying-tile`;
+                        document.body.appendChild(flyingTile);
+
+                        flyingTile.style.position = 'absolute';
+                        flyingTile.style.left = `${originRect.left}px`;
+                        flyingTile.style.top = `${originRect.top}px`;
+                        flyingTile.style.width = `${originRect.width}px`;
+                        flyingTile.style.height = `${originRect.height}px`;
+                        flyingTile.style.zIndex = '1000';
+                        flyingTile.style.transition = 'all 0.5s ease-in-out';
+
+                        setTimeout(() => {
+                            flyingTile.style.left = `${destinationRect.left + (index * 40)}px`;
+                            flyingTile.style.top = `${destinationRect.top}px`;
+
+                            flyingTile.addEventListener('transitionend', () => {
+                                flyingTile.remove(); // Remove flying tile after animation
+                            });
+                        }, index * 100); // Stagger animations
+
+
+                    });
+
+                }
+                else {
+                    // Fallback - just show the tiles without animation
+                    gameData.players[playerIndex].tilesToPlace.forEach(tile => {
+                        const tileImg = document.createElement('div');
+                        tileImg.className = `tile tile-${getTileColor(tile)}`;
+                        tilesContainer.appendChild(tileImg);
+                    });
                 }
             }
 
@@ -804,7 +845,7 @@ async function loadInitialMessages() {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('userToken')
             }
         });
-
+        
         if (response.ok) {
             const messages = await response.json();
             messages.forEach(msg => {
