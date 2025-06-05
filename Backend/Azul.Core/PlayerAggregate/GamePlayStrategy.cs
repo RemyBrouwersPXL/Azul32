@@ -8,84 +8,78 @@ using Azul.Core.TileFactoryAggregate.Contracts;
 using Azul.Core.BoardAggregate.Contracts;
 
 namespace Azul.Core.PlayerAggregate;
-
+public enum AIDifficulty { Easy, Medium, Hard, Expert }
+public enum AIPlayStyle { Offensive, Defensive, Chaotic }
 public class GamePlayStrategy : IGamePlayStrategy
 {
-    private class PlacementOption
+    private readonly AIDifficulty _difficulty;
+    private readonly AIPlayStyle _playStyle;
+    private readonly Random _random = new Random();
+
+    public GamePlayStrategy(AIDifficulty difficulty, AIPlayStyle playStyle)
     {
-        public int Row { get; set; }
-        public int ImmediateScore { get; set; }
-        public int FuturePotential { get; set; }
-        public int TotalScore => ImmediateScore + FuturePotential;
+        _difficulty = difficulty;
+        _playStyle = playStyle;
     }
 
+    // ====== HOOFDMETHODES ======
     public ITakeTilesMove GetBestTakeTilesMove(Guid playerId, IGame game)
     {
         var player = game.Players.First(p => p.Id == playerId);
         var allSources = game.TileFactory.Displays.Cast<IFactoryDisplay>()
                                .Concat(new[] { game.TileFactory.TableCenter });
 
-        var bestMove = allSources
+        var possibleMoves = allSources
             .Where(source => source.Tiles.Any())
             .SelectMany(source => source.Tiles
                 .Where(t => t != TileType.StartingTile)
                 .GroupBy(t => t)
-                .Select(group => new {
+                .Select(group => new TakeOption
+                {
                     Source = source,
                     Color = group.Key,
                     Count = group.Count(),
                     ContainsFirstPlayer = source.Tiles.Contains(TileType.StartingTile)
                 }))
-            .OrderByDescending(option => EvaluateTakeOption(option.Color, option.Count,
-                                option.ContainsFirstPlayer, player, game))
-            .FirstOrDefault();
+            .ToList();
 
-        return bestMove != null
-            ? new TakeTilesMove(bestMove.Source, bestMove.Color)
-            : throw new InvalidOperationException("No valid moves available");
-    }
-
-    private float EvaluateTakeOption(TileType color, int count, bool containsFirstPlayer,
-                                   IPlayer player, IGame game)
-    {
-        float score = 0;
-
-        // 1. Kijk of we een rij kunnen afmaken
-        for (int row = 0; row < 5; row++)
+        // Voeg wat willekeur toe voor lagere moeilijkheidsgraden
+        if (_difficulty == AIDifficulty.Easy && possibleMoves.Count > 1 && _random.Next(100) < 30)
         {
-            var line = player.Board.PatternLines[row];
-            if (line.TileType == color && !line.IsComplete)
+            return possibleMoves.OrderBy(x => _random.Next()).First().ToMove();
+        }
+
+        // Pas speelstijl toe
+        foreach (var move in possibleMoves)
+        {
+            move.Score = EvaluateTakeOption(move, player, game);
+
+            // Pas speelstijl aan
+            switch (_playStyle)
             {
-                int needed = (row + 1) - line.NumberOfTiles;
-                if (count >= needed)
-                {
-                    score += 1000; // Hoge prioriteit voor compleet maken
-                    score += CalculateWallPlacementScore(row, GetWallColumnForColor(row, color), player.Board) * 2;
-                }
+                case AIPlayStyle.Offensive:
+                    if (WillCompleteLine(move.Color, player.Board))
+                        move.Score *= 1.5f;
+                    break;
+                case AIPlayStyle.Defensive:
+                    int space = 0;
+                    for (int i = 0; i < player.Board.FloorLine.Length; i++)
+                    {
+                        if (!player.Board.FloorLine[i].HasTile)
+                        {
+                            space++;
+                        }
+                    }
+                    if (move.Count > space)
+                        move.Score *= 0.6f; // Vermijd tegels verliezen
+                    break;
+                case AIPlayStyle.Chaotic:
+                    move.Score *= (float)(0.8 + _random.NextDouble() * 0.4); // Willekeurige factor
+                    break;
             }
         }
 
-        // 2. Kijk naar toekomstige plaatsingsmogelijkheden
-        var placementOptions = GetBestPlacementOptions(color, player.Board);
-        if (placementOptions.Any())
-        {
-            score += placementOptions.Max(o => o.TotalScore) * 0.8f;
-        }
-
-        // 3. Floorline management
-        int floorSpace = 7 - player.Board.FloorLine.Length;
-        if (count > floorSpace)
-        {
-            score -= (count - floorSpace) * 50;
-        }
-
-        // 4. First player token afweging
-        if (containsFirstPlayer)
-        {
-            score += player.Board.FloorLine.Length <= 2 ? 30 : -100;
-        }
-
-        return score;
+        return possibleMoves.OrderByDescending(m => m.Score).First().ToMove();
     }
 
     public IPlaceTilesMove GetBestPlaceTilesMove(Guid playerId, IGame game)
@@ -94,107 +88,173 @@ public class GamePlayStrategy : IGamePlayStrategy
         var color = player.TilesToPlace.FirstOrDefault();
         var count = player.TilesToPlace.Count;
 
-        // 1. HOOGSTE PRIORITEIT: Vul eerst bestaande, onvolledige lijnen aan
+        var options = new List<PlaceOption>();
+
+        // Optie 1: Bestaande lijn aanvullen
         for (int row = 0; row < 5; row++)
         {
             var line = player.Board.PatternLines[row];
             if (line.NumberOfTiles > 0 && line.TileType == color && !line.IsComplete)
             {
-                // Als we genoeg tegels hebben om de lijn compleet te maken OF
-                // als we minstens 1 tegel kunnen toevoegen aan een onvolledige lijn
-                return PlaceTilesMove.CreateMoveOnPatternLine(row);
+                int needed = (row + 1) - line.NumberOfTiles;
+                if (count >= needed || _difficulty >= AIDifficulty.Medium) // Hard AI plaatst zelfs als niet compleet
+                {
+                    options.Add(new PlaceOption
+                    {
+                        Row = row,
+                        Score = CalculatePlacementScore(row, color, player.Board, isNewLine: false)
+                    });
+                }
             }
         }
 
-        // 2. Kies nieuwe lijnen strategisch (lange lijnen eerst)
-        var validNewRows = new List<(int row, int capacity)>();
-        for (int row = 0; row < 5; row++) // Begin bij rij 5 (index 4)
+        // Optie 2: Nieuwe lijn starten (alleen als geen bestaande opties)
+        if (!options.Any() || _difficulty >= AIDifficulty.Hard)
         {
-            var line = player.Board.PatternLines[row];
-            if (line.NumberOfTiles == 0 && !player.Board.IsColorInWallRow(row, color))
+            for (int row = 0; row < 5; row++)
             {
-                validNewRows.Add((row, row + 1));
+                var line = player.Board.PatternLines[row];
+                if (line.NumberOfTiles == 0 && !player.Board.IsColorInWallRow(row, color))
+                {
+                    options.Add(new PlaceOption
+                    {
+                        Row = row,
+                        Score = CalculatePlacementScore(row, color, player.Board, isNewLine: true)
+                    });
+                }
             }
         }
 
-        // Kies de langst mogelijke lijn die past
-        foreach (var option in validNewRows.OrderByDescending(x => x.capacity))
+        // Floorline als laatste optie
+        options.Add(new PlaceOption { Row = -1, Score = -50 });
+
+        // Kies beste optie op basis van moeilijkheid
+        PlaceOption bestOption;
+        if (_difficulty == AIDifficulty.Easy && options.Count > 1)
         {
-            // Voor rij 5 (index 4): altijd plaatsen als mogelijk
-            if (option.row == 4) return PlaceTilesMove.CreateMoveOnPatternLine(option.row);
-
-            // Voor andere rijen: alleen als we genoeg tegels hebben
-            if (count <= option.capacity)
-            {
-                return PlaceTilesMove.CreateMoveOnPatternLine(option.row);
-            }
+            bestOption = options.OrderByDescending(o => o.Score).Take(3).OrderBy(x => _random.Next()).First();
+        }
+        else
+        {
+            bestOption = options.OrderByDescending(o => o.Score).First();
         }
 
-        // 3. Als laatste redmiddel: floorline (maar probeer dit te vermijden)
-        return PlaceTilesMove.CreateMoveOnFloorLine();
+        return bestOption.Row >= 0
+            ? PlaceTilesMove.CreateMoveOnPatternLine(bestOption.Row)
+            : PlaceTilesMove.CreateMoveOnFloorLine();
     }
 
-    private List<PlacementOption> GetBestPlacementOptions(TileType color, IBoard board)
+    // ====== SCORE BEREKENINGEN ======
+    private float EvaluateTakeOption(TakeOption option, IPlayer player, IGame game)
     {
-        var options = new List<PlacementOption>();
+        float score = 0;
 
-        for (int row = 0; row < 5; row++)
+        // 1. Directe lijncompletering (hoogste prioriteit)
+        if (WillCompleteLine(option.Color, player.Board))
+            score += 200;
+
+        // 2. Toekomstige muurplaatsing
+        score += CalculateFutureWallScore(option.Color, player.Board) * (_difficulty == AIDifficulty.Hard ? 1.5f : 1f);
+
+        int space = 0;
+        for (int i = 0; i < player.Board.FloorLine.Length; i++)
         {
-            if (board.IsColorInWallRow(row, color)) continue;
-
-            int immediateScore = 0;
-            int futurePotential = 0;
-
-            // Bereken directe score als we deze rij zouden afmaken
-            int col = GetWallColumnForColor(row, color);
-            immediateScore = CalculateWallPlacementScore(row, col, board);
-
-            // Bereken toekomstig potentieel
-            futurePotential = CalculateFuturePotential(row, col, board);
-
-            options.Add(new PlacementOption
+            if (!player.Board.FloorLine[i].HasTile)
             {
-                Row = row,
-                ImmediateScore = immediateScore,
-                FuturePotential = futurePotential
-            });
+                space++;
+            }
         }
 
-        return options;
-    }
+        // 3. Floorline management
+        if (option.Count > space)
+            score -= (option.Count - space) * 30;
 
-    private int CalculateWallPlacementScore(int row, int col, IBoard board)
-    {
-        int score = 1; // Basispunt
+        // 4. First player token
+        if (option.ContainsFirstPlayer)
+            score += player.Board.FloorLine.Length <= 2 ? 40 : -80;
 
-        // Check horizontale aansluitingen
-        int horizontal = 1;
-        for (int c = col - 1; c >= 0 && board.Wall[row, c].HasTile; c--) horizontal++;
-        for (int c = col + 1; c < 5 && board.Wall[row, c].HasTile; c++) horizontal++;
-        if (horizontal > 1) score += horizontal;
-
-        // Check verticale aansluitingen
-        int vertical = 1;
-        for (int r = row - 1; r >= 0 && board.Wall[r, col].HasTile; r--) vertical++;
-        for (int r = row + 1; r < 5 && board.Wall[r, col].HasTile; r++) vertical++;
-        if (vertical > 1) score += vertical;
+        // 5. Tegel efficiëntie (voor Hard+ AI)
+        if (_difficulty >= AIDifficulty.Hard)
+        {
+            int usableTiles = Math.Min(option.Count, 5); // Max aantal nodig voor een lijn
+            score += usableTiles * 5;
+        }
 
         return score;
     }
 
-    private int CalculateFuturePotential(int row, int col, IBoard board)
+    private int CalculatePlacementScore(int row, TileType color, IBoard board, bool isNewLine)
     {
-        int potential = 0;
+        int score = 0;
+        int col = GetWallColumnForColor(row, color);
 
-        // Potentiële horizontale aansluitingen
-        if (col > 0 && !board.Wall[row, col - 1].HasTile) potential += 10;
-        if (col < 4 && !board.Wall[row, col + 1].HasTile) potential += 10;
+        // Directe score voor muurplaatsing
+        if (!board.IsColorInWallRow(row, color))
+        {
+            score += CalculateWallScore(row, col, board);
+        }
 
-        // Potentiële verticale aansluitingen
-        if (row > 0 && !board.Wall[row - 1, col].HasTile) potential += 10;
-        if (row < 4 && !board.Wall[row + 1, col].HasTile) potential += 10;
+        // Bonus voor het starten van een strategische lijn
+        if (isNewLine && row == 4) score += 30; // Lange lijn bonus
+        if (isNewLine && _difficulty >= AIDifficulty.Hard) score += 15;
 
-        return potential;
+        // Malus voor onvolledige lijnen (voor Hard AI)
+        if (!isNewLine && _difficulty >= AIDifficulty.Hard)
+        {
+            var line = board.PatternLines[row];
+            if (!line.IsComplete) score -= 10;
+        }
+
+        return score;
+    }
+
+    private int CalculateWallScore(int row, int col, IBoard board)
+    {
+        int score = 1; // Basispunt
+
+        // Horizontale aansluitingen
+        int left = col - 1;
+        while (left >= 0 && board.Wall[row, left].HasTile) { score++; left--; }
+
+        int right = col + 1;
+        while (right < 5 && board.Wall[row, right].HasTile) { score++; right++; }
+
+        // Verticale aansluitingen
+        int up = row - 1;
+        while (up >= 0 && board.Wall[up, col].HasTile) { score++; up--; }
+
+        int down = row + 1;
+        while (down < 5 && board.Wall[down, col].HasTile) { score++; down++; }
+
+        return score;
+    }
+
+    private int CalculateFutureWallScore(TileType color, IBoard board)
+    {
+        int total = 0;
+        for (int row = 0; row < 5; row++)
+        {
+            if (!board.IsColorInWallRow(row, color))
+            {
+                int col = GetWallColumnForColor(row, color);
+                total += CalculateWallScore(row, col, board);
+            }
+        }
+        return total;
+    }
+
+    private bool WillCompleteLine(TileType color, IBoard board)
+    {
+        for (int row = 0; row < 5; row++)
+        {
+            var line = board.PatternLines[row];
+            if (line.TileType == color && !line.IsComplete)
+            {
+                int needed = (row + 1) - line.NumberOfTiles;
+                if (needed <= line.Length) return true;
+            }
+        }
+        return false;
     }
 
     private int GetWallColumnForColor(int row, TileType color)
@@ -208,5 +268,21 @@ public class GamePlayStrategy : IGamePlayStrategy
             TileType.WhiteTurquoise => (4 + row) % 5,
             _ => throw new ArgumentOutOfRangeException(nameof(color), "Invalid tile color")
         };
+    }
+    private class TakeOption
+    {
+        public IFactoryDisplay Source { get; set; }
+        public TileType Color { get; set; }
+        public int Count { get; set; }
+        public bool ContainsFirstPlayer { get; set; }
+        public float Score { get; set; }
+
+        public ITakeTilesMove ToMove() => new TakeTilesMove(Source, Color);
+    }
+
+    private class PlaceOption
+    {
+        public int Row { get; set; }
+        public int Score { get; set; }
     }
 }

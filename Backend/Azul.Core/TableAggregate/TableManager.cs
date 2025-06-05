@@ -102,9 +102,9 @@ internal class TableManager : ITableManager
         {
             throw new InvalidOperationException("User is not seated at this table");
         }
-
+        var stratagy = new GamePlayStrategy(AIDifficulty.Hard, AIPlayStyle.Offensive);
         // Fill remaining seats with AI players
-        table.FillWithArtificialPlayers(_gamePlayStrategy);
+        table.FillWithArtificialPlayers(stratagy);
 
         
     }
