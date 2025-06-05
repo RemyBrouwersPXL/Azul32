@@ -91,8 +91,7 @@ async function pollGameState() {
             window.hadTakenTile = hadTakenTile;
 
             // Render factory displays and table center with your original click handlers
-            renderFactoryDisplays(sessionStorage.getItem('count'), gameData.tileFactory);
-            renderTableCenter(gameData.tileFactory);
+            
 
             // Update round information
             const round = document.getElementById('round');
@@ -161,6 +160,9 @@ async function pollGameState() {
                     });
                 }
             }
+
+            renderFactoryDisplays(sessionStorage.getItem('count'), gameData.tileFactory);
+            renderTableCenter(gameData.tileFactory);
 
             // Update current player highlight
             document.querySelectorAll('.player-board').forEach(board => {
