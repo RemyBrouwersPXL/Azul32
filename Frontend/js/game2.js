@@ -54,6 +54,7 @@ async function pollGameState() {
     try {
         const token = sessionStorage.getItem('userToken');
         const gameId = sessionStorage.getItem('gameId');
+
         const gameRes = await fetch(`https://azul32.onrender.com/api/Games/${gameId}`, {
             method: 'GET',
             headers: {
@@ -62,10 +63,10 @@ async function pollGameState() {
                 'Accept': 'text/plain'
             }
         });
+
         if (!gameRes.ok) throw new Error('Failed to fetch game data');
         const gameData = await gameRes.json();
 
-        // Update session storage
         const currentPlayerId = gameData.playerToPlayId;
         const currentUserId = getUserIdFromToken();
         const playerIndex = gameData.players.findIndex(p => p.id === currentPlayerId);
@@ -76,25 +77,25 @@ async function pollGameState() {
         sessionStorage.setItem('currentUserId', currentUserId);
         sessionStorage.setItem('gameId', gameId);
 
-
-        // Check if game state has changed
         const newHash = hashGameState(gameData);
         if (newHash !== lastGameStateHash) {
             lastGameStateHash = newHash;
 
-            // Render game with all your original functionality
+            // === 🔥 ANIMATIE CONTEXT OPSLAAN VOORDAT DOM HERRENDERT ===
+            let originRect = null;
+            if (selectedTile && selectedFactory !== null) {
+                const originElement = document.querySelector(`.factory-display[data-display-id="${selectedFactory}"] .tile-button[data-tile-id="${selectedTileInt}"]`);
+                if (originElement) originRect = originElement.getBoundingClientRect();
+            } else if (selectedTileCenter && selectedTileCenterInt !== null) {
+                const originElement = document.querySelector(`.central-factory-display .tile-button[data-tile-id="${selectedTileCenterInt}"]`);
+                if (originElement) originRect = originElement.getBoundingClientRect();
+            }
+
+            // === HERRENDERING ===
             renderGame(gameData);
-
-            // Determine if player has taken tiles
-            const playerIndex = Number(sessionStorage.getItem('playerIndex'));
-            let hadTakenTile = gameData.players[playerIndex]?.tilesToPlace.length > 0;
-            window.hadTakenTile = hadTakenTile;
-
-            // Render factory displays and table center with your original click handlers
             renderFactoryDisplays(sessionStorage.getItem('count'), gameData.tileFactory);
             renderTableCenter(gameData.tileFactory);
 
-            // Update round information
             const round = document.getElementById('round');
             let roundNumberText = round.querySelector('.round-number');
             if (!roundNumberText) {
@@ -104,7 +105,6 @@ async function pollGameState() {
             }
             roundNumberText.textContent = `Round: ${gameData.roundNumber}`;
 
-            // Update tiles to place
             let tilesContainer = round.querySelector('.tiles-container');
             if (!tilesContainer) {
                 tilesContainer = document.createElement('div');
@@ -113,15 +113,46 @@ async function pollGameState() {
             }
             tilesContainer.innerHTML = '';
 
+            // === TILES TO PLACE EN ANIMATIE ===
             if (playerIndex >= 0 && gameData.players[playerIndex]) {
-                for (const tile of gameData.players[playerIndex].tilesToPlace) {
-                    const tileImg = document.createElement('div');
-                    tileImg.className = `tile tile-${getTileColor(tile)}`;
-                    tilesContainer.appendChild(tileImg);
+                const tiles = gameData.players[playerIndex].tilesToPlace;
+
+                if (originRect) {
+                    const destinationRect = tilesContainer.getBoundingClientRect();
+
+                    tiles.forEach((tile, index) => {
+                        const flyingTile = document.createElement('div');
+                        flyingTile.className = `tile tile-${getTileColor(tile)} flying-tile`;
+                        document.body.appendChild(flyingTile);
+
+                        flyingTile.style.position = 'absolute';
+                        flyingTile.style.left = `${originRect.left}px`;
+                        flyingTile.style.top = `${originRect.top}px`;
+                        flyingTile.style.width = `${originRect.width}px`;
+                        flyingTile.style.height = `${originRect.height}px`;
+                        flyingTile.style.zIndex = '1000';
+                        flyingTile.style.transition = 'all 0.5s ease-in-out';
+
+                        setTimeout(() => {
+                            flyingTile.style.left = `${destinationRect.left + (index * 40)}px`;
+                            flyingTile.style.top = `${destinationRect.top}px`;
+
+                            flyingTile.addEventListener('transitionend', () => {
+                                flyingTile.remove();
+                            });
+                        }, index * 100);
+                    });
+                } else {
+                    // Zonder animatie (fallback)
+                    tiles.forEach(tile => {
+                        const tileImg = document.createElement('div');
+                        tileImg.className = `tile tile-${getTileColor(tile)}`;
+                        tilesContainer.appendChild(tileImg);
+                    });
                 }
             }
 
-            // Update current player highlight
+            // === HIGHLIGHT CURRENT PLAYER ===
             document.querySelectorAll('.player-board').forEach(board => {
                 board.classList.remove('current-player');
                 if (board.dataset.playerId === currentPlayerId) {
@@ -129,7 +160,6 @@ async function pollGameState() {
                 }
             });
 
-            // Check if game has ended
             if (gameData.hasEnded) {
                 window.location.href = `game-over.html?gameId=${gameId}`;
             }
@@ -138,12 +168,12 @@ async function pollGameState() {
         console.error('Polling error:', e);
     } finally {
         polling = false;
-        // Adjust polling frequency based on whether it's the player's turn
         const isYourTurn = sessionStorage.getItem('currentUserId') === sessionStorage.getItem('currentPlayerId');
         const delay = isYourTurn ? 2000 : 5000;
         pollTimeoutId = setTimeout(pollGameState, delay);
     }
 }
+
 
 function renderGame(data) {
     // Render game info (your original implementation)
