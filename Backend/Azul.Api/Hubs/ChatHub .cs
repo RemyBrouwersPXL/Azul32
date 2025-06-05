@@ -27,3 +27,4 @@ namespace Azul.Api.Hubs
             return Context.GetHttpContext().Request.Query["gameId"];
         }
     }
+}

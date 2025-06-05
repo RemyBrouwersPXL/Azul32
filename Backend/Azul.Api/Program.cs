@@ -139,6 +139,17 @@ namespace Azul.Api
 
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddAutoMapper(typeof(UserModel));
+            builder.Services.AddSignalR();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AzulPolicy", policy =>
+                {
+                    policy.WithOrigins("https://azul32-bsv7.vercel.app")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // Vereist voor SignalR
+                });
+            });
             builder.Services.AddSingleton<ITokenFactory>(new JwtTokenFactory(tokenSettings));
             builder.Services.AddCore(configuration);
             builder.Services.AddScoped<StatsService>();
@@ -154,7 +165,6 @@ namespace Azul.Api
                         maxRetryDelay: TimeSpan.FromSeconds(10),
                         errorCodesToAdd: null);
                 }));
-            builder.Services.AddSignalR();
             
             //////////////////////////////////////////////
             //Create database (if it does not exist yet)//
@@ -179,6 +189,7 @@ namespace Azul.Api
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+            app.UseCors("AzulPolicy");
 
             app.MapHub<ChatHub>("/hubs/chat");
 
