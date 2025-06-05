@@ -61,7 +61,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ITableFactory, TableFactory>();
         services.AddScoped<IGameFactory, GameFactory>();
         services.AddScoped<IGameService, GameService>();
-        services.AddScoped<IGamePlayStrategy, GamePlayStrategy>();
+        services.AddScoped<IGamePlayStrategy, GamePlayStrategy>(_ =>
+            new GamePlayStrategy(AIDifficulty.Hard, AIPlayStyle.Offensive));
 
         return services;
     }
