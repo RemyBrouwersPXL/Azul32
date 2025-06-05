@@ -7,14 +7,21 @@ namespace Azul.Api.Hubs
 {
     public class ChatHub : Hub
     {
-        // Chatberichten versturen
+        public override async Task OnConnectedAsync()
+        {
+            var gameId = Context.GetHttpContext().Request.Query["gameId"];
+            await Groups.AddToGroupAsync(Context.ConnectionId, gameId);
+
+            Console.WriteLine($"✅ Verbonden met groep: {gameId}");
+            await base.OnConnectedAsync();
+        }
+
         public async Task SendMessage(string message)
         {
             var user = Context.User?.Identity?.Name ?? "Anonymous";
             await Clients.Group(GetGameId()).SendAsync("ReceiveMessage", user, message);
         }
 
-        // Emotes versturen
         public async Task SendEmote(string emoteKey)
         {
             var user = Context.User?.Identity?.Name ?? "Anonymous";
@@ -23,7 +30,6 @@ namespace Azul.Api.Hubs
 
         private string GetGameId()
         {
-            // Haal game ID op uit de context (bijv. via query string)
             return Context.GetHttpContext().Request.Query["gameId"];
         }
     }
