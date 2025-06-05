@@ -751,8 +751,8 @@ let connection;
 async function startConnection() {
     connection = new signalR.HubConnectionBuilder()
         .withUrl("https://azul32.onrender.com/hubs/chat?gameId=" + sessionStorage.getItem('gameId'), {
-            accessTokenFactory: () => sessionStorage.getItem('userToken')
-            
+            accessTokenFactory: () => sessionStorage.getItem('userToken'),
+            withCredentials: true
         })
         .configureLogging(signalR.LogLevel.Information)
         .build();
