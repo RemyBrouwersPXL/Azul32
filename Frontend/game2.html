@@ -31,15 +31,22 @@
 
     </div>
 
-    <!-- Floating Chat Icon -->
-    <div id="chat-icon">💬</div>
-
-    <!-- Chat Box (Initially Hidden) -->
-    <div id="chat-container" style="display: none;">
+    <!-- chat.html -->
+    <div id="chat-container">
+        <!-- Berichtenweergave -->
         <div id="chat-messages"></div>
-        <div id="chat-input">
-            <input type="text" id="chat-message" placeholder="Type your message...">
-            <button id="send-message">Send</button>
+
+        <!-- Inputveld met emote-knopen -->
+        <div class="chat-controls">
+            <input type="text" id="chat-input" placeholder="Type een bericht...">
+            <button onclick="sendMessage()">Verstuur</button>
+
+            <!-- Emote selector -->
+            <div class="emote-buttons">
+                <img src="../Images/emotes/nice.png" onclick="sendEmote('Nice move!')" title="Nice move!">
+                <img src="../Images/emotes/oof.png" onclick="sendEmote('Oof...')" title="Oof!">
+                <img src="../Images/emotes/gg.png" onclick="sendEmote('GG!')" title="Good Game">
+            </div>
         </div>
     </div>
 

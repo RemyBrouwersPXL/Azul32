@@ -5,27 +5,25 @@ using Azul.Api.Services.Contracts;
 
 namespace Azul.Api.Hubs
 {
-    [Authorize]
     public class ChatHub : Hub
     {
-        
-        
+        // Chatberichten versturen
         public async Task SendMessage(string message)
         {
             var user = Context.User?.Identity?.Name ?? "Anonymous";
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
-        }
-        public override async Task OnConnectedAsync()
-        {
-            // Optionally, you can handle when a client connects
-            await base.OnConnectedAsync();
-            await Clients.All.SendAsync("UserConnected", Context.User?.Identity?.Name ?? "Anonymous");
+            await Clients.Group(GetGameId()).SendAsync("ReceiveMessage", user, message);
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
+        // Emotes versturen
+        public async Task SendEmote(string emoteKey)
         {
-            await Clients.All.SendAsync("UserDisconnected", Context.User?.Identity?.Name ?? "Anonymous");
-            await base.OnDisconnectedAsync(exception);
+            var user = Context.User?.Identity?.Name ?? "Anonymous";
+            await Clients.Group(GetGameId()).SendAsync("ReceiveEmote", user, emoteKey);
+        }
+
+        private string GetGameId()
+        {
+            // Haal game ID op uit de context (bijv. via query string)
+            return Context.GetHttpContext().Request.Query["gameId"];
         }
     }
-}

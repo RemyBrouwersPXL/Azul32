@@ -723,26 +723,7 @@ function showError(message) {
     }, 5000);
 };
 
-// -------- Chatbox Functionaliteit --------
 
-// DOM Elements
-const chatIcon = document.getElementById('chat-icon');
-const chatContainer = document.getElementById('chat-container');
-const chatMessages = document.getElementById('chat-messages');
-const messageInput = document.getElementById('chat-message');
-const sendButton = document.getElementById('send-message');
-
-// Add event listener for send button
-sendButton.addEventListener('click', sendMessage);
-
-// Also allow sending with Enter key
-messageInput.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
-});
-
-// Get player name from your existing game state
 function getCurrentPlayerName() {
     const token = sessionStorage.getItem('userToken');
     if (!token) return "Player";
@@ -765,120 +746,33 @@ function getCurrentPlayerName() {
 }
 
 
-// Enhanced loadMessages() with player names and timestamps
-let chatConnection = null;
+// Verbinding met SignalR
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("/hubs/chat")
+    .build();
 
-function initializeChat() {
-    chatConnection = new signalR.HubConnectionBuilder()
-        .withUrl("https://azul32.onrender.com/hubs/chat", {
-            accessTokenFactory: () => sessionStorage.getItem('userToken')
-        })
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
-    chatConnection.on("ReceiveMessage", (user, message, timestamp) => {
-        addMessageToChat(user, message, timestamp);
-    });
+// Ontvang chatberichten
+connection.on("ReceiveMessage", (user, message) => {
+    const msgElement = document.createElement("div");
+    msgElement.innerHTML = `<strong>${user}:</strong> ${message}`;
+    document.getElementById("chat-messages").appendChild(msgElement);
+});
 
-    chatConnection.on("UserConnected", (username) => {
+// Ontvang emotes (als speciale berichten)
+connection.on("ReceiveEmote", (user, emote) => {
+    const emoteElement = document.createElement("div");
+    emoteElement.className = "emote-message";
+    emoteElement.innerHTML = `${user} <img src="../Images/emotes/${emote}.png">`;
+    document.getElementById("chat-messages").appendChild(emoteElement);
+});
 
-        addSystemMessage(username + "joined the chat");
-    });
-
-    chatConnection.on("UserDisconnected", (username) => {
-        addSystemMessage(username + " left the chat");
-    });
-
-    chatConnection.start()
-        .then(() => {
-            console.log("Chat connection established");
-            loadInitialMessages();
-        })
-        .catch(err => {
-            console.error("Error establishing chat connection:", err);
-            setTimeout(initializeChat, 5000);
-
-        });
-}
-
-
-// Bericht toevoegen aan de chat UI
-function addMessageToChat(user, message, timestamp) {
-    const isCurrentUser = user === getCurrentPlayerName();
-    const messageElement = document.createElement('div');
-    messageElement.className = `message ${isCurrentUser ? 'current-user' : ''}`;
-
-    messageElement.innerHTML = `
-        <span class="sender">${user}:</span>
-        <span class="text">${message}</span>
-        <span class="time">${new Date(timestamp).toLocaleTimeString()}</span>
-    `;
-
-    chatMessages.appendChild(messageElement);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-// Systeembericht toevoegen
-function addSystemMessage(text) {
-    const messageElement = document.createElement('div');
-    messageElement.className = 'system-message';
-    messageElement.textContent = text;
-    chatMessages.appendChild(messageElement);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-// Laad initiële berichten van de server
-async function loadInitialMessages() {
-    try {
-        const response = await fetch(`https://azul32.onrender.com/api/chat/history`, {
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('userToken')
-            }
-        });
-
-        if (response.ok) {
-            const messages = await response.json();
-            messages.forEach(msg => {
-                addMessageToChat(msg.user, msg.message, msg.timestamp);
-            });
-        }
-    } catch (error) {
-        console.error("Failed to load chat history:", error);
-    }
-}
-
-// Verstuur een bericht naar de server
 function sendMessage() {
-    const message = messageInput.value.trim();
-    if (!message || !chatConnection) return;
-
-    chatConnection.invoke("SendMessage", message)
-        .then(() => {
-            messageInput.value = '';
-        })
-        .catch(err => {
-            console.error("Failed to send message:", err);
-        });
+    const message = document.getElementById("chat-input").value;
+    connection.invoke("SendMessage", message);
 }
 
-// Update de event listeners
-sendButton.addEventListener('click', sendMessage);
-messageInput.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
-});
+function sendEmote(emote) {
+    connection.invoke("SendEmote", emote);
+}
 
-// Initialize chat when game loads
-document.addEventListener('DOMContentLoaded', function () {
-    if (sessionStorage.getItem('userToken')) {
-        initializeChat();
-    }
-});
-
-// Reconnect when token becomes available
-const tokenCheckInterval = setInterval(() => {
-    if (sessionStorage.getItem('userToken') && !chatConnection) {
-        initializeChat();
-        clearInterval(tokenCheckInterval);
-    }
-}, 1000);
+connection.start().catch(err => console.error(err));
