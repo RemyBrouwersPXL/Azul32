@@ -746,33 +746,45 @@ function getCurrentPlayerName() {
 }
 
 
-// Verbinding met SignalR
 let connection;
 
-document.addEventListener('DOMContentLoaded', function () {
+async function startConnection() {
     connection = new signalR.HubConnectionBuilder()
-        .withUrl("/gameHub")
+        .withUrl("https://azul32.onrender.com/hubs/chat")
+        .configureLogging(signalR.LogLevel.Information)
         .build();
 
-    // Ontvang berichten
-    connection.on("ReceiveMessage", (user, message) => {
-        document.getElementById("messages").innerHTML += `<p>${user}: ${message}</p>`;
-    });
+    try {
+        await connection.start();
+        console.log("Verbonden met SignalR!");
 
-    // Ontvang emotes
-    connection.on("ReceiveEmote", (user, emote) => {
-        document.getElementById("messages").innerHTML += `<p>${user} used <img src="/emotes/${emote}.png" style="width:20px"></p>`;
-    });
+        // Luister naar berichten
+        connection.on("ReceiveMessage", (user, message) => {
+            console.log(`${user}: ${message}`);
+        });
 
-    connection.start().catch(console.error);
-});
-
-function sendMessage() {
-    const input = document.getElementById("chat-input");
-    connection.invoke("SendMessage", input.value);
-    input.value = "";
+    } catch (err) {
+        console.error("Verbindingsfout:", err);
+        setTimeout(startConnection, 5000); // Probeer opnieuw
+    }
 }
 
-function sendEmote(emote) {
-    connection.invoke("SendEmote", emote);
+// Start de verbinding wanneer de pagina laadt
+document.addEventListener('DOMContentLoaded', startConnection);
+
+async function sendMessage() {
+    const message = document.getElementById("chat-input").value;
+    try {
+        await connection.invoke("SendMessage", message);
+    } catch (err) {
+        console.error("Bericht niet verstuurd:", err);
+    }
+}
+
+async function sendEmote(emote) {
+    try {
+        await connection.invoke("SendEmote", emote);
+    } catch (err) {
+        console.error("Emote niet verstuurd:", err);
+    }
 }

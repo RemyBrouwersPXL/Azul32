@@ -191,7 +191,7 @@ namespace Azul.Api
             app.UseAuthorization();
             app.UseCors("AzulPolicy");
 
-            app.MapHub<ChatHub>("/hubs/chat");
+            app.MapHub<ChatHub>(@"https://azul32.onrender.com/hubs/chat");
 
             app.MapControllers();
 
