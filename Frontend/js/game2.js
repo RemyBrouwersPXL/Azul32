@@ -650,6 +650,8 @@ function getUserIdFromToken() {
     }
 }
 
+
+
 // Helper function for floor penalties
 function getFloorPenalty(position) {
     const penalties = ['-1', '-1', '-2', '-2', '-2', '-3', '-3'];
@@ -749,14 +751,16 @@ function getCurrentPlayerName() {
 let connection;
 
 async function startConnection() {
-    const token = sessionStorage.getItem('userToken')
+    const token = sessionStorage.getItem('userToken');
+    const currentPlayerName = getCurrentPlayerName();
     console.log("Token used for SignalR:", token);
 
     connection = new signalR.HubConnectionBuilder()
-        .withUrl("https://azul32.onrender.com/hubs/chat?gameId=" + sessionStorage.getItem('gameId'), {
+        .withUrl(`https://azul32.onrender.com/hubs/chat?gameId=${sessionStorage.getItem('gameId')}&username=${currentPlayerName}`, {
             accessTokenFactory: () => token,
             withCredentials: true
         })
+        .withAutomaticReconnect()
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
