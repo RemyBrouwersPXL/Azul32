@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const leaveButton = document.getElementById('leave-button');
     leaveButton.addEventListener('click', () => handleLeaveTable(tableId));
 
-    
+
     const token = sessionStorage.getItem('userToken');
     if (!tableId || !token) return;
 
@@ -51,7 +51,7 @@ async function pollGameState() {
     if (polling) return;
     polling = true;
 
-    try {       
+    try {
         const token = sessionStorage.getItem('userToken');
         const gameId = sessionStorage.getItem('gameId');
         const gameRes = await fetch(`https://azul32.onrender.com/api/Games/${gameId}`, {
@@ -75,7 +75,7 @@ async function pollGameState() {
         sessionStorage.setItem('currentPlayerId', currentPlayerId);
         sessionStorage.setItem('currentUserId', currentUserId);
         sessionStorage.setItem('gameId', gameId);
-        
+
 
         // Check if game state has changed
         const newHash = hashGameState(gameData);
@@ -91,7 +91,8 @@ async function pollGameState() {
             window.hadTakenTile = hadTakenTile;
 
             // Render factory displays and table center with your original click handlers
-            
+            renderFactoryDisplays(sessionStorage.getItem('count'), gameData.tileFactory);
+            renderTableCenter(gameData.tileFactory);
 
             // Update round information
             const round = document.getElementById('round');
@@ -113,56 +114,12 @@ async function pollGameState() {
             tilesContainer.innerHTML = '';
 
             if (playerIndex >= 0 && gameData.players[playerIndex]) {
-                const originElement = selectedTile
-                    ? document.querySelector(`.factory-display[data-display-id="${selectedFactory}"] .tile-button[data-tile-id="${selectedTileInt}"]`)
-                    : document.querySelector(`.central-factory-display .tile-button[data-tile-id="${selectedTileCenterInt}"]`);
-
-                if (originElement) {
-                    const originRect = originElement.getBoundingClientRect();
-                    const destinationRect = tilesContainer.getBoundingClientRect();
-
-                    gameData.players[playerIndex].tilesToPlace.forEach((tile, index) => {
-                        const tileImg = document.createElement('div');
-                        tileImg.className = `tile tile-${getTileColor(tile)}`;
-                        tilesContainer.appendChild(tileImg);
-
-                        const flyingTile = document.createElement('div');
-                        flyingTile.className = `tile tile-${getTileColor(tile)} flying-tile`;
-                        document.body.appendChild(flyingTile);
-
-                        flyingTile.style.position = 'absolute';
-                        flyingTile.style.left = `${originRect.left}px`;
-                        flyingTile.style.top = `${originRect.top}px`;
-                        flyingTile.style.width = `${originRect.width}px`;
-                        flyingTile.style.height = `${originRect.height}px`;
-                        flyingTile.style.zIndex = '1000';
-                        flyingTile.style.transition = 'all 0.5s ease-in-out';
-
-                        setTimeout(() => {
-                            flyingTile.style.left = `${destinationRect.left + (index * 40)}px`;
-                            flyingTile.style.top = `${destinationRect.top}px`;
-
-                            flyingTile.addEventListener('transitionend', () => {
-                                flyingTile.remove(); // Remove flying tile after animation
-                            });
-                        }, index * 100); // Stagger animations
-
-
-                    });
-
-                }
-                else {
-                    // Fallback - just show the tiles without animation
-                    gameData.players[playerIndex].tilesToPlace.forEach(tile => {
-                        const tileImg = document.createElement('div');
-                        tileImg.className = `tile tile-${getTileColor(tile)}`;
-                        tilesContainer.appendChild(tileImg);
-                    });
+                for (const tile of gameData.players[playerIndex].tilesToPlace) {
+                    const tileImg = document.createElement('div');
+                    tileImg.className = `tile tile-${getTileColor(tile)}`;
+                    tilesContainer.appendChild(tileImg);
                 }
             }
-
-            renderFactoryDisplays(sessionStorage.getItem('count'), gameData.tileFactory);
-            renderTableCenter(gameData.tileFactory);
 
             // Update current player highlight
             document.querySelectorAll('.player-board').forEach(board => {
@@ -193,8 +150,8 @@ function renderGame(data) {
     document.getElementById('game-id').textContent = `Game ID: ${data.id}`;
     document.getElementById('player-count').textContent =
         `Players: ${data.players.length})`;
-    
-        
+
+
 
     // Clear existing player boards before rendering new ones
     const playerBoardsContainer = document.getElementById('player-boards');
@@ -353,7 +310,7 @@ function renderTableCenter(tileFactory) {
                 selectedFactoryCenter = null;
             }
 
-            
+
             TakeTilesCenter(tileFactory)
         });
 
@@ -390,7 +347,6 @@ function takeTiles() {
                 if (!res.ok) {
                     console.error('API request failed:', res.status);
                 }
-                pollGameState(); // Refresh game state after taking tiles
             });
         } catch (e) {
             console.error('Error:', e);
@@ -399,31 +355,30 @@ function takeTiles() {
 }
 
 function TakeTilesCenter(tafelFactory) {
-        try {
-            const token = sessionStorage.getItem('userToken');
-            const gameId = sessionStorage.getItem('gameId');
+    try {
+        const token = sessionStorage.getItem('userToken');
+        const gameId = sessionStorage.getItem('gameId');
 
-            fetch(`https://azul32.onrender.com/api/Games/${gameId}/take-tiles`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json',
-                    'Accept': 'text/plain'
-                },
-                body: JSON.stringify({
-                    displayId: tafelFactory.tableCenter.id,
-                    tileType: selectedTileCenterInt,
-                })
-            }).then(res => {
-                if (!res.ok) {
-                    console.error('API request failed:', res.status);
-                }
-                pollGameState(); 
-            });
-        } catch (e) {
-            console.error('Error:', e);
-        }
-    
+        fetch(`https://azul32.onrender.com/api/Games/${gameId}/take-tiles`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'text/plain'
+            },
+            body: JSON.stringify({
+                displayId: tafelFactory.tableCenter.id,
+                tileType: selectedTileCenterInt,
+            })
+        }).then(res => {
+            if (!res.ok) {
+                console.error('API request failed:', res.status);
+            }
+        });
+    } catch (e) {
+        console.error('Error:', e);
+    }
+
 }
 
 function renderPlayerBoards(players, currentUserId, hadTakenTile) {
@@ -795,7 +750,7 @@ function initializeChat() {
     });
 
     chatConnection.on("UserConnected", (username) => {
-        
+
         addSystemMessage(username + "joined the chat");
     });
 
@@ -811,7 +766,7 @@ function initializeChat() {
         .catch(err => {
             console.error("Error establishing chat connection:", err);
             setTimeout(initializeChat, 5000);
-    
+
         });
 }
 
@@ -849,7 +804,7 @@ async function loadInitialMessages() {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('userToken')
             }
         });
-        
+
         if (response.ok) {
             const messages = await response.json();
             messages.forEach(msg => {

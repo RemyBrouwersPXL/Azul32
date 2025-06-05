@@ -99,13 +99,7 @@ h1 {
 
 .tiles-container {
     display: flex;
-    gap: 5px;
-    min-height: 50px;
-    align-items: center;
-    padding: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    margin-top: 10px;
+    gap: 5px; /* Ruimte tussen tegels */
 }
 
 .tile-to-place {
@@ -135,7 +129,7 @@ h1 {
     /*    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     border: 3px solid #c3baa9;*/
     float: right;
-     /* Width of the central factory */
+    /* Width of the central factory */
 }
 
 .factory-displays {
@@ -153,19 +147,6 @@ h1 {
     border: 3px solid #c3baa9;*/
     float: left;
 }
-
-#round {
-    position: relative;
-    min-height: 100px;
-}
-
-    #round .tiles-container {
-        position: absolute;
-        top: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
 
 .factory-display {
     color: #1d7cb6;
@@ -256,6 +237,7 @@ h1 {
         flex-direction: column;
         align-items: center; /* Center the boards */
     }
+
     .player-board {
         width: 100%;
         max-width: none;
@@ -426,21 +408,8 @@ h1 {
     }
 
 
-.flying-tile {
-    pointer-events: none;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-origin: center;
-}
-
-
-.tile:hover {
-    transform: scale(1.1);
-    z-index: 10;
-}
-
 
 .tile {
-    transition: transform 0.2s;
     display: flex;
     justify-content: center;
     align-items: center;
