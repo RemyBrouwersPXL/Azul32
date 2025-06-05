@@ -51,11 +51,7 @@ namespace Azul.Api
                 options.JsonSerializerOptions.Converters.Add(new TwoDimensionalArrayJsonConverter<TileSpotModel>());
             });
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll",
-                    policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            });
+            
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -184,7 +180,7 @@ namespace Azul.Api
             ////////////////////////
 
 
-            app.UseCors(policyName: "AllowAll");
+           
 
             app.UseHttpsRedirection();
 
