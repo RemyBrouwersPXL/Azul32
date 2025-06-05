@@ -81,4 +81,16 @@ internal class GameService : IGameService
             
         }
     }
+
+    public bool IsVsComputer(Guid gameId)
+    {
+        IGame game = _gameRepository.GetById(gameId);
+        if (game == null)
+        {
+            throw new InvalidOperationException($"Game with ID {gameId} could not be retrieved or is of an invalid type.");
+        }
+
+        // Check if any player in the game is a ComputerPlayer  
+        return game.Players.Any(player => player is ComputerPlayer);
+    }
 }

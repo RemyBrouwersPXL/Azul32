@@ -29,4 +29,5 @@ public interface IGameService
     /// <param name="gameId">Unique identifier of the game</param>
     /// <param name="playerId">Unique identifier of the player</param>
     void PlaceTilesOnFloorLine(Guid gameId, Guid playerId);
+    bool IsVsComputer(Guid gameId);
 }
