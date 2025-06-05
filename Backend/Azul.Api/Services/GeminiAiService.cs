@@ -21,7 +21,7 @@ namespace Azul.Api.Services
             };
 
             var response = await client.PostAsync(
-                $"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={_apiKey}",
+                $"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro-latest:generateContent?key={_apiKey}",
                 new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json")
             );
 
