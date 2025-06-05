@@ -180,15 +180,16 @@ namespace Azul.Api
             ////////////////////////
 
 
-           
+
+            
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseCors("AzulPolicy");
 
             app.UseAuthentication();
 
-            app.UseCors("AzulPolicy");
+            app.UseAuthorization();
 
             app.MapHub<ChatHub>("/hubs/chat");
 
