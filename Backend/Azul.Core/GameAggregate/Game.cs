@@ -50,7 +50,7 @@ internal class Game : IGame
         Id = id;
         TileFactory = tileFactory;
         Players = players;
-        GamePlayStrategy strategy = new GamePlayStrategy();
+        GamePlayStrategy strategy = new GamePlayStrategy(AIDifficulty.Hard, AIPlayStyle.Offensive);
         _playerToPlayId = firstplayer.Id; 
         TileFactory.TableCenter.AddStartingTile();
         TileFactory.FillDisplays();
