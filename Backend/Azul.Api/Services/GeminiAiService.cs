@@ -16,9 +16,25 @@ namespace Azul.Api.Services
             {
                 contents = new[]
                 {
-                    new { parts = new[] { new { text = userMessage } } }
+                    new {
+                        role = "user", // system prompt moet in de vorm van een "user" als Gemini Flash 001 geen "system" direct ondersteunt
+                        parts = new[] {
+                            new {
+                                text = "Je bent een virtuele speler in een Azul-spel. Je heet 'Computer'. Je doet zelf beurten, kiest tegels, plaatst ze op je bord en houdt je eigen score bij. Je reageert alsof je meespeelt. Gebruik geen zinnen als 'ik ben een AI' of 'ik kan niet fysiek spelen'. Gedraag je als een echte speler."
+                            }
+                        }
+                    },
+                    new {
+                        role = "user",
+                        parts = new[] {
+                            new {
+                                text = userMessage
+                            }
+                        }
+                    }
                 }
             };
+
 
             var response = await client.PostAsync(
                 $"https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-001:generateContent?key={_apiKey}",
