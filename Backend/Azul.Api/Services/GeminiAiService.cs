@@ -26,15 +26,33 @@ namespace Azul.Api.Services
             );
 
             var responseString = await response.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(responseString);
-            var reply = doc.RootElement
-                .GetProperty("candidates")[0]
-                .GetProperty("content")
-                .GetProperty("parts")[0]
-                .GetProperty("text")
-                .GetString();
 
-            return reply ?? "Geen antwoord van Gemini.";
+            try
+            {
+                using var doc = JsonDocument.Parse(responseString);
+                var root = doc.RootElement;
+
+                if (root.TryGetProperty("candidates", out var candidates) &&
+                    candidates.GetArrayLength() > 0 &&
+                    candidates[0].TryGetProperty("content", out var content) &&
+                    content.TryGetProperty("parts", out var parts) &&
+                    parts.GetArrayLength() > 0 &&
+                    parts[0].TryGetProperty("text", out var textProp))
+                {
+                    return textProp.GetString() ?? "🤖 Geen antwoord van Gemini.";
+                }
+                else
+                {
+                    Console.WriteLine("⚠️ Ongeldig Gemini-response:\n" + responseString);
+                    return "🤖 Ongeldig antwoord van AI.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Fout bij verwerken Gemini-response: {ex.Message}\nResponse: {responseString}");
+                return "🤖 AI kon niet antwoorden.";
+            }
         }
+
     }
 }
