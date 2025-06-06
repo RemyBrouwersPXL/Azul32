@@ -64,7 +64,7 @@ function getUserIdFromToken() {
 }
 
 function openModal() {
-    document.getElementById('profileModal').style.display = 'block';
+    
     try {
         const userId = getUserIdFromToken();
         const userToken = sessionStorage.getItem('userToken');
@@ -83,6 +83,7 @@ function openModal() {
                 document.getElementById('name').value = data.userName || '';
                 document.querySelector(`input[name="color"][value="${data.color}"]`).checked = true;
                 document.getElementById('bio').value = data.bio || '';
+                document.getElementById('profileModal').style.display = 'block';
             })
             .catch(error => console.error('Error fetching profile:', error));
     }
@@ -104,7 +105,7 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
         userName: document.getElementById('name').value,
         color: document.querySelector('input[name="color"]:checked')?.value,
         bio: document.getElementById('bio').value,
-        avatarUrl: document.getElementById('avatarUrl').value || ""
+        avatarUrl: null
     };
 
     const userId = getUserIdFromToken();
