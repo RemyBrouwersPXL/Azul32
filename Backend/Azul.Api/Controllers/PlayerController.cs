@@ -28,7 +28,7 @@ namespace Azul.Api.Controllers
         {
             var player = await _context.Users
                 .Include(p => p.Stats)
-                .Where(u => u.Stats != null)
+                .Where(u => u.Id == id && u.Stats != null)
                 .Select(u => new ProfielModel
                 {
                     Id = u.Id,
@@ -43,8 +43,8 @@ namespace Azul.Api.Controllers
                     Color = u.Stats.Color,
                     
                 })
-                .OrderByDescending(u => u.Wins) // Of sorteren op HighestScore?
-                .ToListAsync();
+                .FirstOrDefaultAsync();
+                
 
             if (player == null) return NotFound();
 
