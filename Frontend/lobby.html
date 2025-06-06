@@ -47,39 +47,39 @@
 
     <button onclick="openModal()">👤 Profielinstellingen</button>
 
-    <!-- Modal -->
-    <div id="profileModal" class="modal">
+    <<div id="profileModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
 
+            <h2>Profile Settings</h2>
+
             <div class="avatar-section">
-                <img src="https://cdn-icons-png.flaticon.com/512/921/921347.png" id="avatar" alt="avatar">
-                <div>
-                    <button class="btn-secondary">Choose avatar</button>
-                    <button class="btn-secondary">Upload image</button>
+                <button>Choose avatar</button>
+                <button>Upload image</button>
+            </div>
+
+            <form id="profileForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="color">Player color:</label>
+                <div class="color-options">
+                    <label><input type="radio" name="color" value="red"><span class="color red"></span></label>
+                    <label><input type="radio" name="color" value="blue"><span class="color blue"></span></label>
+                    <label><input type="radio" name="color" value="green"><span class="color green"></span></label>
+                    <label><input type="radio" name="color" value="orange"><span class="color orange"></span></label>
                 </div>
-            </div>
 
-            <label for="name">Name:</label>
-            <input type="text" id="name" value="Rym">
+                <label for="bio">Bio:</label>
+                <input type="text" id="bio" name="bio" placeholder="Always ready to play!">
 
-            <label>Player color:</label>
-            <div class="color-choice">
-                <span style="background:#ff5c5c" onclick="selectColor(this)"></span>
-                <span style="background:#4c9aff" onclick="selectColor(this)"></span>
-                <span style="background:#6fcf97" onclick="selectColor(this)"></span>
-                <span style="background:#f2c94c" onclick="selectColor(this)"></span>
-            </div>
-
-            <label for="bio">Bio:</label>
-            <input type="text" id="bio" value="Always ready to play!">
-
-            <div class="modal-actions">
-                <button class="btn-primary" onclick="saveProfile()">Save</button>
-                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
-            </div>
+                <div class="actions">
+                    <button type="submit">Save</button>
+                    <button type="button" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
         </div>
-    </div>
+     </div>
 </body>
 <script src="js/lobby.js"></script>
 </html>

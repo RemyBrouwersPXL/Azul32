@@ -51,17 +51,36 @@ function closeModal() {
     document.getElementById('profileModal').style.display = 'none';
 }
 
-function selectColor(el) {
-    document.querySelectorAll('.color-choice span').forEach(e => e.classList.remove('selected'));
-    el.classList.add('selected');
-}
+// Formulier versturen naar backend
+document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-function saveProfile() {
-    const name = document.getElementById('name').value;
-    const bio = document.getElementById('bio').value;
-    alert(`Opgeslagen!\nNaam: ${name}\nBio: ${bio}`);
-    closeModal();
-}
+    const data = {
+        name: document.getElementById('name').value,
+        color: document.querySelector('input[name="color"]:checked')?.value,
+        bio: document.getElementById('bio').value
+    };
+
+    try {
+        const response = await fetch('https://jouw-backend-api.com/api/profile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert('Profiel opgeslagen!');
+            closeModal();
+        } else {
+            alert('Fout bij opslaan!');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Server niet bereikbaar.');
+    }
+});
 
 function showError(fieldId, message) {
     if (fieldId === 'form') {
