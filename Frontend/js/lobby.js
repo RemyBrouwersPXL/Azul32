@@ -80,7 +80,7 @@ function openModal() {
         })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('name').value = data.name || '';
+                document.getElementById('name').value = data.userName || '';
                 document.querySelector(`input[name="color"][value="${data.color}"]`).checked = true;
                 document.getElementById('bio').value = data.bio || '';
             })
