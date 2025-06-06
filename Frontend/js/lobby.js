@@ -67,11 +67,9 @@ function openModal() {
     document.getElementById('profileModal').style.display = 'block';
     try {
         const userId = getUserIdFromToken();
-        if (!userToken) {
-            throw new Error('No user token found');
-        }
+        
         // Fetch user profile data
-        fetch('https://azul32.onrender.com/api/Player/{userId}', {
+        fetch(`https://azul32.onrender.com/api/Player/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -110,7 +108,7 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
     const userId = getUserIdFromToken();
 
     try {
-        const response = await fetch('https://azul32.onrender.com/api/Player/{userId}', {
+        const response = await fetch(`https://azul32.onrender.com/api/Player/${userId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
