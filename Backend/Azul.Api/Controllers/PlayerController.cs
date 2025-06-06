@@ -77,7 +77,7 @@ namespace Azul.Api.Controllers
                 user.Stats.Color = update.Color;
 
             await _context.SaveChangesAsync();
-            return Ok(user); // Of Ok(user) als je de aangepaste user wil teruggeven
+            return NoContent(); // Of Ok(user) als je de aangepaste user wil teruggeven
         }
     }
 }
