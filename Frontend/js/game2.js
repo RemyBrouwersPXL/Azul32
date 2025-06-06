@@ -748,7 +748,7 @@ async function getCurrentPlayerName() {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Server niet bereikbaar.');
+        alert('Server down');
     }
 
 }
@@ -758,7 +758,7 @@ let connection;
 
 async function startConnection() {
     const token = sessionStorage.getItem('userToken');
-    const currentPlayerName = getCurrentPlayerName();
+    const currentPlayerName = await getCurrentPlayerName();
     console.log("Token used for SignalR:", token);
 
     connection = new signalR.HubConnectionBuilder()

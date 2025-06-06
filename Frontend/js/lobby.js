@@ -91,7 +91,7 @@ function openModal() {
     }
     catch (error) {
         console.error('Error opening modal:', error);
-        alert('Er is een fout opgetreden bij het openen van het profiel.');
+        alert('Something whent wrong');
     }
 }
 
@@ -125,14 +125,14 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
         });
 
         if (response.ok) {
-            alert('Profiel opgeslagen!');
+            alert('Profile saved!');
             closeModal();
         } else {
-            alert('Fout bij opslaan!');
+            alert('Error!');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Server niet bereikbaar.');
+        alert('Server down');
     }
 });
 
