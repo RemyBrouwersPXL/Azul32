@@ -43,8 +43,53 @@ async function handleSubmitButtonClick(event) {
     }
 }
 
+function getUserIdFromToken() {
+    const token = sessionStorage.getItem('userToken');
+    if (!token) {
+        return null;
+    }
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        const payload = JSON.parse(jsonPayload);
+        return payload.nameid;
+    } catch (error) {
+        console.error('Error decoding JWT token:', error);
+        return null;
+    }
+}
+
 function openModal() {
     document.getElementById('profileModal').style.display = 'block';
+    try {
+        const userId = getUserIdFromToken();
+        if (!userToken) {
+            throw new Error('No user token found');
+        }
+        // Fetch user profile data
+        fetch('https://azul32.onrender.com/api/Player/{userId}', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'text/plain'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('name').value = data.name || '';
+                document.querySelector(`input[name="color"][value="${data.color}"]`).checked = true;
+                document.getElementById('bio').value = data.bio || '';
+            })
+            .catch(error => console.error('Error fetching profile:', error));
+    }
+    catch (error) {
+        console.error('Error opening modal:', error);
+        alert('Er is een fout opgetreden bij het openen van het profiel.');
+    }
 }
 
 function closeModal() {
@@ -56,16 +101,20 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const data = {
-        name: document.getElementById('name').value,
+        userName: document.getElementById('name').value,
         color: document.querySelector('input[name="color"]:checked')?.value,
-        bio: document.getElementById('bio').value
+        bio: document.getElementById('bio').value,
+        avatarUrl: document.getElementById('avatarUrl').value || ""
     };
 
+    const userId = getUserIdFromToken();
+
     try {
-        const response = await fetch('https://jouw-backend-api.com/api/profile', {
-            method: 'POST',
+        const response = await fetch('https://azul32.onrender.com/api/Player/{userId}', {
+            method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'text/plain'
             },
             body: JSON.stringify(data)
         });
