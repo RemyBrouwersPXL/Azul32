@@ -43,6 +43,19 @@ async function handleSubmitButtonClick(event) {
     }
 }
 
+function openModal() {
+    document.getElementById('profileModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('profileModal').style.display = 'none';
+}
+
+function selectColor(el) {
+    document.querySelectorAll('.color-choice span').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
 function showError(fieldId, message) {
     if (fieldId === 'form') {
         const form = document.querySelector('.form');

@@ -44,6 +44,30 @@
             </div>
         </div>
     </div>
+
+    <button onclick="openModal()">Profielinstellingen</button>
+
+    <!-- Modal structuur -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Profielinstellingen</h2>
+            <label>Naam:</label>
+            <input type="text" value="Rym"><br><br>
+
+            <label>Spelerskleur:</label><br>
+            <div class="color-choice">
+                <span style="background:red" onclick="selectColor(this)"></span>
+                <span style="background:blue" onclick="selectColor(this)"></span>
+                <span style="background:green" onclick="selectColor(this)"></span>
+            </div><br>
+
+            <label>Bio:</label>
+            <input type="text" value="Altijd klaar voor een spelletje!"><br><br>
+
+            <button onclick="alert('Opgeslagen!')">Opslaan</button>
+        </div>
+    </div>
 </body>
 <script src="js/lobby.js"></script>
 </html>
