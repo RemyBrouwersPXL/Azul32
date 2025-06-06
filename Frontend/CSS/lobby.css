@@ -15,7 +15,7 @@ body {
 .modal {
     display: none;
     position: fixed;
-    z-index: 999;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
@@ -24,34 +24,105 @@ body {
 }
 
 .modal-content {
-    background: #fdf8f1;
-    margin: 10% auto;
-    padding: 20px;
+    background: #fff7ed;
+    width: 340px;
+    margin: 8% auto;
+    padding: 24px;
     border-radius: 20px;
-    width: 300px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    font-family: 'Segoe UI', sans-serif;
     position: relative;
 }
 
 .close {
     position: absolute;
-    right: 15px;
+    right: 16px;
     top: 10px;
-    font-size: 24px;
+    font-size: 22px;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.color-choice span {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    margin: 5px;
-    border-radius: 50%;
-    cursor: pointer;
+.avatar-section {
+    text-align: center;
+    margin-bottom: 16px;
 }
 
-    .color-choice span.selected {
-        border: 3px solid #000;
+    .avatar-section img {
+        width: 70px;
+        border-radius: 50%;
+        margin-bottom: 10px;
     }
+
+    .avatar-section button {
+        margin: 4px;
+    }
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-top: 12px;
+    color: #333;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.color-choice {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+    .color-choice span {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+
+        .color-choice span.selected {
+            border: 3px solid #000;
+        }
+
+.modal-actions {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: #2f80ed;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 4px;
+}
+
+.btn-secondary {
+    background-color: #eee;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    margin: 4px;
+}
+
+    .btn-secondary:hover {
+        background-color: #ddd;
+    }
+
+.btn-primary:hover {
+    background-color: #1366d6;
+}
 
 body.loading {
     filter: brightness(0.7);

@@ -56,6 +56,13 @@ function selectColor(el) {
     el.classList.add('selected');
 }
 
+function saveProfile() {
+    const name = document.getElementById('name').value;
+    const bio = document.getElementById('bio').value;
+    alert(`Opgeslagen!\nNaam: ${name}\nBio: ${bio}`);
+    closeModal();
+}
+
 function showError(fieldId, message) {
     if (fieldId === 'form') {
         const form = document.querySelector('.form');

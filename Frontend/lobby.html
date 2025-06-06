@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Lobby</title>
     <link href="CSS/lobby.css" rel="stylesheet" />
@@ -45,27 +45,39 @@
         </div>
     </div>
 
-    <button onclick="openModal()">Profielinstellingen</button>
+    <button onclick="openModal()">👤 Profielinstellingen</button>
 
-    <!-- Modal structuur -->
+    <!-- Modal -->
     <div id="profileModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Profielinstellingen</h2>
-            <label>Naam:</label>
-            <input type="text" value="Rym"><br><br>
 
-            <label>Spelerskleur:</label><br>
+            <div class="avatar-section">
+                <img src="https://cdn-icons-png.flaticon.com/512/921/921347.png" id="avatar" alt="avatar">
+                <div>
+                    <button class="btn-secondary">Choose avatar</button>
+                    <button class="btn-secondary">Upload image</button>
+                </div>
+            </div>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" value="Rym">
+
+            <label>Player color:</label>
             <div class="color-choice">
-                <span style="background:red" onclick="selectColor(this)"></span>
-                <span style="background:blue" onclick="selectColor(this)"></span>
-                <span style="background:green" onclick="selectColor(this)"></span>
-            </div><br>
+                <span style="background:#ff5c5c" onclick="selectColor(this)"></span>
+                <span style="background:#4c9aff" onclick="selectColor(this)"></span>
+                <span style="background:#6fcf97" onclick="selectColor(this)"></span>
+                <span style="background:#f2c94c" onclick="selectColor(this)"></span>
+            </div>
 
-            <label>Bio:</label>
-            <input type="text" value="Altijd klaar voor een spelletje!"><br><br>
+            <label for="bio">Bio:</label>
+            <input type="text" id="bio" value="Always ready to play!">
 
-            <button onclick="alert('Opgeslagen!')">Opslaan</button>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="saveProfile()">Save</button>
+                <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
         </div>
     </div>
 </body>
