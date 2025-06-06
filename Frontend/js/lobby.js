@@ -67,11 +67,13 @@ function openModal() {
     document.getElementById('profileModal').style.display = 'block';
     try {
         const userId = getUserIdFromToken();
+        const userToken = sessionStorage.getItem('userToken');
         
         // Fetch user profile data
         fetch(`https://azul32.onrender.com/api/Player/${userId}`, {
             method: 'GET',
             headers: {
+                'Authorization': 'Bearer ' + userToken,
                 'Content-Type': 'application/json',
                 'Accept': 'text/plain'
             }
@@ -106,11 +108,13 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
     };
 
     const userId = getUserIdFromToken();
+    const userToken = sessionStorage.getItem('userToken');
 
     try {
         const response = await fetch(`https://azul32.onrender.com/api/Player/${userId}`, {
             method: 'PATCH',
             headers: {
+                'Authorization': 'Bearer ' + userToken,
                 'Content-Type': 'application/json',
                 'Accept': 'text/plain'
             },
