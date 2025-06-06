@@ -740,7 +740,7 @@ async function getCurrentPlayerName() {
                 'Accept': 'text/plain'
             }
         });
-        if (response.ok) {
+        if (res.ok) {
             const data = await res.json();
             return data.userName || "Player";
         } else {
