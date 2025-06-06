@@ -42,5 +42,6 @@ public interface IPlayer
 
     public UserStats Stats { get; } // The stats of the player, including wins, losses, total games played, highest score, and last played date
 
+     // Short biography or description of the player
 
 }

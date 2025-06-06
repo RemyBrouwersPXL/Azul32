@@ -74,7 +74,10 @@ public class TablesController : ApiControllerBase
                 Losses = 0,
                 TotalGamesPlayed = 0,
                 HighestScore = 0,
-                LastPlayed = DateTime.MinValue
+                LastPlayed = DateTime.MinValue,
+                AvatarUrl = string.Empty, // Default or empty avatar URL
+                Color = string.Empty, // Default or empty color
+                Bio = string.Empty // Default or empty bio
             };
 
             _dbContext.UserStats.Add(currentUser.Stats);

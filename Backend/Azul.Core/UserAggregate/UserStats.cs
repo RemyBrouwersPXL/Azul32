@@ -17,6 +17,11 @@ namespace Azul.Core.UserAggregate
         public int HighestScore { get; set; } = 0;
         public DateTime LastPlayed { get; set; } = DateTime.MinValue;
 
+        public string AvatarUrl { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
+        public string Bio { get; set; } = string.Empty;
+
+
         public virtual User User { get; set; }
     }
 }

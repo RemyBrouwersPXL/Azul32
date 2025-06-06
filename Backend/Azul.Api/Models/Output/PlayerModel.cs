@@ -9,6 +9,7 @@ public class PlayerModel
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+
     public DateOnly? LastVisitToPortugal { get; set; }
     public BoardModel Board { get; set; }
     public bool HasStartingTile { get; set; }

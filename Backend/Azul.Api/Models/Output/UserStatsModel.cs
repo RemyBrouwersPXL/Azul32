@@ -13,6 +13,9 @@ namespace Azul.Api.Models.Output
         public int TotalGamesPlayed { get; set; } = 0;
         public int HighestScore { get; set; } = 0;
         public DateTime LastPlayed { get; set; } = DateTime.UtcNow;
+        public string AvatarUrl { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
+        public string Bio { get; set; } = string.Empty;
 
         private class MappingProfile : Profile
         {

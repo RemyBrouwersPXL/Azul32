@@ -67,7 +67,11 @@ public class AuthenticationController : ApiControllerBase
                     Losses = 0,
                     TotalGamesPlayed = 0,
                     HighestScore = 0,
-                    LastPlayed = DateTime.MinValue
+                    LastPlayed = DateTime.MinValue,
+                    // AvatarUrl, Color, and Bio can be set to default values or passed from the model if needed
+                    AvatarUrl = string.Empty,
+                    Color = string.Empty,
+                    Bio = string.Empty
                 };
 
                 _dbContext.UserStats.Add(stats);
