@@ -728,23 +728,29 @@ function showError(message) {
 
 function getCurrentPlayerName() {
     const token = sessionStorage.getItem('userToken');
+    const userId = getUserIdFromToken();
     if (!token) return "Player";
 
     try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        const payload = JSON.parse(jsonPayload);
-        console.log('JWT Payload:', payload);  // <-- Add this line
-
-        return payload.unique_name || payload.name || payload.username || payload.sub || "Player";
+        const res = await fetch(`https://azul32.onrender.com/api/Player/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${userToken}`,
+                'Content-Type': 'application/json',
+                'Accept': 'text/plain'
+            }
+        });
+        if (response.ok) {
+            const data = await res.json();
+            return data.userName || "Player";
+        } else {
+            alert('user not found');
+        }
     } catch (error) {
-        console.error('Error decoding JWT token:', error);
-        return "Player";
+        console.error('Error:', error);
+        alert('Server niet bereikbaar.');
     }
+
 }
 
 
