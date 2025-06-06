@@ -735,7 +735,7 @@ async function getCurrentPlayerName() {
         const res = await fetch(`https://azul32.onrender.com/api/Player/${userId}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${userToken}`,
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
                 'Accept': 'text/plain'
             }
