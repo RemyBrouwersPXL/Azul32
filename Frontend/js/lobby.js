@@ -107,7 +107,7 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
         userName: document.getElementById('name').value,
         color: document.querySelector('input[name="color"]:checked')?.value,
         bio: document.getElementById('bio').value,
-        avatarUrl: null
+        avatarUrl: `https://www.pngkey.com/png/full/115-1150420_avatar-png-pic-male-avatar-icon-png.png`
     };
 
     const userId = getUserIdFromToken();
