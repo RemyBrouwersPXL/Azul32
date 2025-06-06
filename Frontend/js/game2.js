@@ -726,7 +726,7 @@ function showError(message) {
 };
 
 
-function getCurrentPlayerName() {
+async function getCurrentPlayerName() {
     const token = sessionStorage.getItem('userToken');
     const userId = getUserIdFromToken();
     if (!token) return "Player";
