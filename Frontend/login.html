@@ -10,130 +10,59 @@
 </head>
 
 <body>
+    <div class="tile-background">
+        <!-- Decorative tiles -->
+        <div class="tile blue-tile tile-1"></div>
+        <div class="tile orange-tile tile-2"></div>
+        <div class="tile yellow-tile tile-3"></div>
+        <div class="tile blue-tile tile-4"></div>
+        <div class="tile orange-tile tile-5"></div>
+        <div class="tile black-tile tile-6">
+            <div class="leaf-pattern">
+                <div class="leaf leaf-1"></div>
+                <div class="leaf leaf-2"></div>
+                <div class="leaf leaf-3"></div>
+                <div class="leaf leaf-4"></div>
+                <div class="leaf leaf-5"></div>
+                <div class="leaf leaf-6"></div>
+            </div>
+        </div>
+        <div class="tile blue-tile tile-7"></div>
+        <div class="tile yellow-tile tile-8"></div>
+    </div>
+
     <div class="layout-container">
         <div class="main-area">
-            <div class="login-container">
-                <div class="logo-container">
-                    <img src="./Images/Untitled design.png" alt="Welcome to Azul" class="welcome-logo" />
+            <img src="./Images/Untitled design.png" alt="Welcome to Azul" class="welcome-logo" />
+
+            <form class="form">
+                <p class="title">Log In</p>
+                <p class="message">Sign in now to start playing</p>
+
+                <span>Email</span>
+                <label>
+                    <input class="input" type="email" id="email" name="email" placeholder="" required="">
+                    <span>Enter your email</span>
+                </label>
+
+                <span>Password</span>
+                <label>
+                    <input class="input" type="password" id="password" name="password" placeholder="" required="">
+                    <span>Enter your password</span>
+                </label>
+
+                <button class="submit" type="submit">Sign In</button>
+                <p class="signin">Don't have an account yet? <a href="register.html">Sign Up</a></p>
+                <button type="button" id="leave-button">Instructions</button>
+                <div>
+                    <a class="team" href="./team.html"><p>About Us</p></a>
                 </div>
-
-                <form class="form" id="login-form">
-                    <h1 class="title">Welcome Back</h1>
-                    <p class="message">Sign in to continue your Azul journey</p>
-
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <div class="input-container">
-                            <i class="fas fa-envelope icon"></i>
-                            <input class="input" type="email" id="email" name="email" placeholder="Enter your email" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <div class="input-container">
-                            <i class="fas fa-lock icon"></i>
-                            <input class="input" type="password" id="password" name="password" placeholder="Enter your password" required>
-                            <i class="fas fa-eye-slash toggle-password" id="toggle-password"></i>
-                        </div>
-                    </div>
-
-                    <div class="remember-forgot">
-                        <div class="remember">
-                            <input type="checkbox" id="remember-me">
-                            <label for="remember-me">Remember me</label>
-                        </div>
-                        <a href="#" class="forgot-password">Forgot password?</a>
-                    </div>
-
-                    <button class="submit" type="submit">
-                        <span>Sign In</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-
-                    <div class="social-login">
-                        <p>Or sign in with</p>
-                        <div class="social-icons">
-                            <button type="button" class="social-btn google">
-                                <i class="fab fa-google"></i>
-                            </button>
-                            <button type="button" class="social-btn facebook">
-                                <i class="fab fa-facebook-f"></i>
-                            </button>
-                            <button type="button" class="social-btn twitter">
-                                <i class="fab fa-twitter"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <p class="signin">Don't have an account yet? <a href="register.html">Sign Up</a></p>
-
-                    <div class="additional-links">
-                        <a href="#" id="instructions-btn" class="link-btn">
-                            <i class="fas fa-book"></i> Game Instructions
-                        </a>
-                        <a href="./team.html" class="link-btn">
-                            <i class="fas fa-users"></i> About Us
-                        </a>
-                    </div>
-                </form>
-            </div>
+            </form>
         </div>
 
         <aside class="leaderboard-sidebar">
-            <div class="leaderboard-header">
-                <h2><i class="fas fa-trophy"></i> Top Players</h2>
-                <div class="leaderboard-tabs">
-                    <button class="tab-btn active" data-tab="weekly">Weekly</button>
-                    <button class="tab-btn" data-tab="alltime">All Time</button>
-                </div>
-            </div>
-
-            <div class="leaderboard-content" id="leaderboard-container">
-                <div class="leaderboard-loading">
-                    <div class="spinner"></div>
-                    <p>Loading top players...</p>
-                </div>
-
-                <!-- Leaderboard entries will be loaded here -->
-                <ul class="leaderboard-list" id="leaderboard-list">
-                    <!-- Sample entries for design purposes -->
-                    <li class="leaderboard-item">
-                        <span class="rank">1</span>
-                        <div class="player-info">
-                            <span class="player-name">TileMaster</span>
-                            <div class="player-stats">
-                                <span class="wins">152 wins</span>
-                                <span class="rating">Rating: 2450</span>
-                            </div>
-                        </div>
-                        <span class="score">9,840</span>
-                    </li>
-                    <li class="leaderboard-item">
-                        <span class="rank">2</span>
-                        <div class="player-info">
-                            <span class="player-name">AzulQueen</span>
-                            <div class="player-stats">
-                                <span class="wins">128 wins</span>
-                                <span class="rating">Rating: 2380</span>
-                            </div>
-                        </div>
-                        <span class="score">8,720</span>
-                    </li>
-                    <li class="leaderboard-item">
-                        <span class="rank">3</span>
-                        <div class="player-info">
-                            <span class="player-name">TileWizard</span>
-                            <div class="player-stats">
-                                <span class="wins">115 wins</span>
-                                <span class="rating">Rating: 2310</span>
-                            </div>
-                        </div>
-                        <span class="score">7,950</span>
-                    </li>
-                </ul>
-
-                <a href="#" class="view-all-btn">View Full Leaderboard</a>
+            <div class="leaderboard" id="leaderboard-container">
+                <!-- Dynamic leaderboard content will be loaded here -->
             </div>
         </aside>
     </div>
@@ -166,14 +95,6 @@
                         <li>Score points based on tile placement</li>
                         <li>The game ends when a player completes a horizontal row on their wall</li>
                     </ul>
-
-                    <div class="video-container">
-                        <p>Watch this quick tutorial:</p>
-                        <div class="video-placeholder">
-                            <i class="fas fa-play-circle"></i>
-                            <span>Video Tutorial</span>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -183,26 +104,8 @@
     </div>
 
     <!-- Easter Egg Modal -->
-    <div id="easter-egg-modal" class="modal easter-egg-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🎉 Secret Discovered! 🎉</h2>
-                <span class="close-modal">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="easter-egg-content">
-                    <img src="./Images/easter-egg-tile.png" alt="Special Azul Tile" class="easter-egg-image">
-                    <h3>Congratulations!</h3>
-                    <p>You've discovered a secret Azul tile! This rare find has been added to your collection.</p>
-                    <div class="reward-info">
-                        <p>Your reward: <strong>500 bonus points</strong> and a <strong>special tile pattern</strong> for your next game!</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn primary-btn" id="claim-reward">Claim Reward</button>
-            </div>
-        </div>
+    <div id="easter-egg-modal">
+        🎉 Congratulations! You just found our Azul Game easter egg! 🎉
     </div>
 
     <script src="js/login.js"></script>
