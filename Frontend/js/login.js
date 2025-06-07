@@ -7,19 +7,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordInput = document.getElementById("password")
     const emailInput = document.getElementById("email")
 
+    // Leaderboard elements
+    const leaderboardBtn = document.getElementById("leaderboard-btn")
+    const floatingLeaderboardBtn = document.getElementById("floating-leaderboard")
+    const leaderboardModal = document.getElementById("leaderboard-modal")
+
     // Check for registration success
     const urlParams = new URLSearchParams(window.location.search)
     const registrationSuccess = urlParams.get("registration")
 
     if (registrationSuccess === "success") {
-        // Get saved email from localStorage
         const registeredEmail = localStorage.getItem("registeredEmail")
-
         if (registeredEmail && emailInput) {
             emailInput.value = registeredEmail
-            // Remove email after using it
             localStorage.removeItem("registeredEmail")
-            // Show success notification
             showNotification("Registration successful! Please log in.", "success")
         }
     }
@@ -30,17 +31,36 @@ document.addEventListener("DOMContentLoaded", () => {
             const type = passwordInput.getAttribute("type") === "password" ? "text" : "password"
             passwordInput.setAttribute("type", type)
 
-            // Toggle icon
             const icon = togglePasswordButton.querySelector("i")
             icon.classList.toggle("fa-eye")
             icon.classList.toggle("fa-eye-slash")
         })
     }
 
+    // Leaderboard button handlers
+    if (leaderboardBtn) {
+        leaderboardBtn.addEventListener("click", () => {
+            openLeaderboardModal()
+        })
+    }
+
+    if (floatingLeaderboardBtn) {
+        floatingLeaderboardBtn.addEventListener("click", () => {
+            openLeaderboardModal()
+        })
+    }
+
+    function openLeaderboardModal() {
+        if (leaderboardModal) {
+            leaderboardModal.style.display = "block"
+            document.body.style.overflow = "hidden"
+            fetchLeaderboardData()
+        }
+    }
+
     // Instructions button
     if (instructionsButton) {
         instructionsButton.addEventListener("click", () => {
-            // Check if modal exists, otherwise open PDF
             const instructionsModal = document.getElementById("instructions-modal")
             if (instructionsModal) {
                 instructionsModal.style.display = "block"
@@ -112,11 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     })()
 
-    // Leaderboard functionality
-    initializeLeaderboard()
-
-    // Poll for leaderboard updates
-    setInterval(fetchLeaderboardData, 3000)
+    // Initialize leaderboard tabs
+    initializeLeaderboardTabs()
 
     // Helper Functions
     function handleSubmitButtonClick(event) {
@@ -172,7 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function sendLogin(userData) {
-        // Show loading state
         const originalText = submitButton.textContent
         submitButton.textContent = "Signing in..."
         submitButton.disabled = true
@@ -207,36 +223,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("Login failed:", error)
             })
             .finally(() => {
-                // Reset button state
                 submitButton.textContent = originalText
                 submitButton.disabled = false
             })
     }
 
-    function initializeLeaderboard() {
-        const leaderboardContainer = document.getElementById("leaderboard-container")
-        if (!leaderboardContainer) return
-
-        // Initialize tabs if they don't exist yet
-        if (!leaderboardContainer.querySelector(".leaderboard-tabs")) {
-            const tabsDiv = document.createElement("div")
-            tabsDiv.className = "leaderboard-tabs"
-            tabsDiv.innerHTML = `
-        <button class="tab-btn active" data-tab="all">All Time</button>
-        <button class="tab-btn" data-tab="weekly">This Week</button>
-      `
-
-            // Add after the title
-            const title = leaderboardContainer.querySelector("h3")
-            if (title) {
-                title.insertAdjacentElement("afterend", tabsDiv)
-            } else {
-                leaderboardContainer.prepend(tabsDiv)
-            }
-        }
-
-        // Add tab functionality
-        const tabButtons = leaderboardContainer.querySelectorAll(".tab-btn")
+    function initializeLeaderboardTabs() {
+        const tabButtons = document.querySelectorAll(".tab-btn")
         tabButtons.forEach((button) => {
             button.addEventListener("click", function () {
                 tabButtons.forEach((btn) => btn.classList.remove("active"))
@@ -244,14 +237,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 fetchLeaderboardData()
             })
         })
-
-        // Show loading initially
-        showLeaderboardLoading()
     }
 
     function fetchLeaderboardData() {
+        const container = document.getElementById("leaderboard-container")
+        if (!container) return
+
+        showLeaderboardLoading()
+
         try {
-            const token = sessionStorage.getItem("userToken")
             fetch("https://azul32.onrender.com/api/Leaderboard")
                 .then((response) => {
                     if (!response.ok) {
@@ -276,29 +270,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const container = document.getElementById("leaderboard-container")
         if (!container) return
 
-        // Keep the title and tabs
-        const title = container.querySelector("h3")
-        const tabs = container.querySelector(".leaderboard-tabs")
-
-        // Get active tab
-        const activeTab = container.querySelector(".tab-btn.active")
-        const tabType = activeTab ? activeTab.getAttribute("data-tab") : "all"
-
-        // Clear content area
-        const contentArea = container.querySelector(".leaderboard-content")
-        if (contentArea) {
-            contentArea.innerHTML = ""
-        } else {
-            const newContentArea = document.createElement("div")
-            newContentArea.className = "leaderboard-content"
-            container.appendChild(newContentArea)
-        }
-
-        // Get reference to content area
-        const leaderboardContent = container.querySelector(".leaderboard-content")
+        container.innerHTML = ""
 
         if (!data || data.length === 0) {
-            leaderboardContent.innerHTML = `
+            container.innerHTML = `
         <div style="text-align: center; padding: 20px; color: #666;">
           <p>No players found</p>
         </div>
@@ -306,12 +281,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return
         }
 
-        // Create player list
         const playerList = document.createElement("div")
         playerList.className = "leaderboard-players"
 
-        // Add top 5 players
-        data.slice(0, 5).forEach((player, index) => {
+        data.slice(0, 10).forEach((player, index) => {
             const playerItem = document.createElement("div")
             playerItem.className = "leaderboard-item"
 
@@ -335,73 +308,54 @@ document.addEventListener("DOMContentLoaded", () => {
             playerList.appendChild(playerItem)
         })
 
-        leaderboardContent.appendChild(playerList)
-
-        // Add view all link
-        const viewAllLink = document.createElement("a")
-        viewAllLink.href = "#"
-        viewAllLink.className = "leaderboard-link"
-        viewAllLink.innerHTML = '<i class="fas fa-external-link-alt"></i> View full leaderboard'
-        leaderboardContent.appendChild(viewAllLink)
+        container.appendChild(playerList)
     }
 
     function showLeaderboardLoading() {
         const container = document.getElementById("leaderboard-container")
         if (!container) return
 
-        const contentArea = container.querySelector(".leaderboard-content")
-        if (contentArea) {
-            contentArea.innerHTML = `
-        <div class="loading-spinner">
-          <i class="fas fa-spinner"></i>
-          <p>Loading leaderboard...</p>
-        </div>
-      `
-        }
+        container.innerHTML = `
+      <div class="loading-spinner">
+        <i class="fas fa-spinner"></i>
+        <p>Loading leaderboard...</p>
+      </div>
+    `
     }
 
     function showLeaderboardError(message) {
         const container = document.getElementById("leaderboard-container")
         if (!container) return
 
-        const contentArea = container.querySelector(".leaderboard-content")
-        if (contentArea) {
-            contentArea.innerHTML = `
-        <div style="text-align: center; padding: 20px; color: #d32f2f;">
-          <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
-          <p>${message}</p>
-          <button class="retry-btn" style="margin-top: 10px; padding: 5px 10px; background: #1d7cb6; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            Retry
-          </button>
-        </div>
-      `
+        container.innerHTML = `
+      <div style="text-align: center; padding: 20px; color: #d32f2f;">
+        <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
+        <p>${message}</p>
+        <button class="retry-btn" style="margin-top: 10px; padding: 5px 10px; background: #1d7cb6; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Retry
+        </button>
+      </div>
+    `
 
-            // Add retry functionality
-            const retryBtn = contentArea.querySelector(".retry-btn")
-            if (retryBtn) {
-                retryBtn.addEventListener("click", () => {
-                    showLeaderboardLoading()
-                    fetchLeaderboardData()
-                })
-            }
+        const retryBtn = container.querySelector(".retry-btn")
+        if (retryBtn) {
+            retryBtn.addEventListener("click", () => {
+                fetchLeaderboardData()
+            })
         }
     }
 
     function showNotification(message, type = "info") {
-        // Create notification element
         const notification = document.createElement("div")
         notification.className = `notification ${type}`
         notification.textContent = message
 
-        // Add to DOM
         document.body.appendChild(notification)
 
-        // Show with animation
         setTimeout(() => {
             notification.classList.add("show")
         }, 10)
 
-        // Remove after delay
         setTimeout(() => {
             notification.classList.remove("show")
             setTimeout(() => {
@@ -412,7 +366,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000)
     }
 
-    // Utility function to escape HTML
     function escapeHtml(text) {
         if (!text) return ""
         const map = {
