@@ -299,7 +299,7 @@
           <span class="player-name">${escapeHtml(player.userName)}</span>
           <div class="player-stats">
             <span>Wins: ${player.wins}</span>
-            <span>Games: ${player.gamesPlayed || "N/A"}</span>
+            <span>Losses: ${player.losses || "N/A"}</span>
           </div>
         </div>
         <div class="player-score">${player.highestScore}</div>
