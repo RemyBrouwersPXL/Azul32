@@ -34,7 +34,7 @@
                 </div>
 
             </form>
-            
+
         </div>
 
         <div id="easter-egg-modal" style="
@@ -52,14 +52,66 @@
             text-align: center;">
             Congratulations! You just found our Azul Game egg!
         </div>
-        
+
         <aside class="leaderboard-sidebar">
-            <div class="leaderboard" id="leaderboard-container">
-                <!-- Hier komt het dynamische leaderboard -->
+            <div class="leaderboard-header">
+                <h2><i class="fas fa-trophy"></i> Top Players</h2>
+                <div class="leaderboard-tabs">
+                    <button class="tab-btn active" data-tab="weekly">Weekly</button>
+                    <button class="tab-btn" data-tab="alltime">All Time</button>
+                </div>
+            </div>
+
+            <div class="leaderboard-content" id="leaderboard-container">
+                <div class="leaderboard-loading">
+                    <div class="spinner"></div>
+                    <p>Loading top players...</p>
+                </div>
+
+                <!-- Leaderboard entries will be loaded here -->
+                <ul class="leaderboard-list" id="leaderboard-list">
+                    <!-- Sample entries for design purposes -->
+                    <li class="leaderboard-item">
+                        <span class="rank">1</span>
+                        <div class="player-info">
+                            <span class="player-name">TileMaster</span>
+                            <div class="player-stats">
+                                <span class="wins">152 wins</span>
+                                <span class="rating">Rating: 2450</span>
+                            </div>
+                        </div>
+                        <span class="score">9,840</span>
+                    </li>
+                    <li class="leaderboard-item">
+                        <span class="rank">2</span>
+                        <div class="player-info">
+                            <span class="player-name">AzulQueen</span>
+                            <div class="player-stats">
+                                <span class="wins">128 wins</span>
+                                <span class="rating">Rating: 2380</span>
+                            </div>
+                        </div>
+                        <span class="score">8,720</span>
+                    </li>
+                    <li class="leaderboard-item">
+                        <span class="rank">3</span>
+                        <div class="player-info">
+                            <span class="player-name">TileWizard</span>
+                            <div class="player-stats">
+                                <span class="wins">115 wins</span>
+                                <span class="rating">Rating: 2310</span>
+                            </div>
+                        </div>
+                        <span class="score">7,950</span>
+                    </li>
+                </ul>
+
+                <a href="#" class="view-all-btn">View Full Leaderboard</a>
             </div>
         </aside>
     </div>
- 
+    
+
 </body>
 <script src="js/index.js"></script>
 </html>

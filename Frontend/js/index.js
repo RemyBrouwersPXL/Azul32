@@ -53,60 +53,60 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 })();
 
-setInterval(async function () {
-    try {
-        const token = sessionStorage.getItem('userToken');
-        const res = await fetch(
-            "https://azul32.onrender.com/api/Leaderboard"
+//setInterval(async function () {
+//    try {
+//        const token = sessionStorage.getItem('userToken');
+//        const res = await fetch(
+//            "https://azul32.onrender.com/api/Leaderboard"
 
 
-        );
-        if (!res.ok) return;
-        const data = await res.json();
-        data.sort((a, b) => b.highestScore - a.highestScore);
-        createLeaderboard(data);
+//        );
+//        if (!res.ok) return;
+//        const data = await res.json();
+//        data.sort((a, b) => b.highestScore - a.highestScore);
+//        createLeaderboard(data);
 
 
-    } catch (e) {
-        console.error('Poll error:', e);
-    }
-}, 3000);
+//    } catch (e) {
+//        console.error('Poll error:', e);
+//    }
+//}, 3000);
 
-function createLeaderboard(data) {
-    const container = document.getElementById('leaderboard-container');
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
-    }
-    // Maak titel
-    const title = document.createElement('h3');
-    title.textContent = '🏆 Top Players';
-    container.appendChild(title);
+//function createLeaderboard(data) {
+//    const container = document.getElementById('leaderboard-container');
+//    while (container.firstChild) {
+//        container.removeChild(container.firstChild);
+//    }
+//    // Maak titel
+//    const title = document.createElement('h3');
+//    title.textContent = '🏆 Top Players';
+//    container.appendChild(title);
 
-    // Maak genummerde lijst
-    const ol = document.createElement('ol');
+//    // Maak genummerde lijst
+//    const ol = document.createElement('ol');
 
-    // Voeg alleen de top 5 spelers toe (of aanpasbaar aantal)
-    data.slice(0, 5).forEach(player => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-                    <strong>${player.userName}</strong> 
-                    - High Score: ${player.highestScore} 
-                    - Wins: ${player.wins}
-                `;
-        ol.appendChild(li);
-    });
+//    // Voeg alleen de top 5 spelers toe (of aanpasbaar aantal)
+//    data.slice(0, 5).forEach(player => {
+//        const li = document.createElement('li');
+//        li.innerHTML = `
+//                    <strong>${player.userName}</strong> 
+//                    - High Score: ${player.highestScore} 
+//                    - Wins: ${player.wins}
+//                `;
+//        ol.appendChild(li);
+//    });
 
-    container.appendChild(ol);
+//    container.appendChild(ol);
 
-    // Optioneel: voeg een "meer zien" link toe
-    const link = document.createElement('a');
-    link.href = "#"; // Of link naar een volledig leaderboard
-    link.textContent = "View full leaderboard →";
-    link.style.display = "block";
-    link.style.marginTop = "10px";
-    link.style.color = "#1e3a8a";
-    container.appendChild(link);
-}
+//    // Optioneel: voeg een "meer zien" link toe
+//    const link = document.createElement('a');
+//    link.href = "#"; // Of link naar een volledig leaderboard
+//    link.textContent = "View full leaderboard →";
+//    link.style.display = "block";
+//    link.style.marginTop = "10px";
+//    link.style.color = "#1e3a8a";
+//    container.appendChild(link);
+////}
 
 function handleSubmitButtonClick(event) {
     event.preventDefault();
