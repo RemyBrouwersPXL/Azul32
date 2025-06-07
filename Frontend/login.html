@@ -10,46 +10,36 @@
 </head>
 
 <body>
-    <div class="tile-background">
-        <!-- Decorative tiles -->
-        <div class="tile blue-tile tile-1"></div>
-        <div class="tile orange-tile tile-2"></div>
-        <div class="tile yellow-tile tile-3"></div>
-        <div class="tile blue-tile tile-4"></div>
-        <div class="tile orange-tile tile-5"></div>
-        <div class="tile black-tile tile-6">
-            <div class="leaf-pattern">
-                <div class="leaf leaf-1"></div>
-                <div class="leaf leaf-2"></div>
-                <div class="leaf leaf-3"></div>
-                <div class="leaf leaf-4"></div>
-                <div class="leaf leaf-5"></div>
-                <div class="leaf leaf-6"></div>
-            </div>
-        </div>
-        <div class="tile blue-tile tile-7"></div>
-        <div class="tile yellow-tile tile-8"></div>
-    </div>
-
     <div class="layout-container">
         <div class="main-area">
-            <img src="./Images/Untitled design.png" alt="Welcome to Azul" class="welcome-logo" />
+            <div class="welcome-header">
+                <img src="./Images/Untitled design.png" alt="Welcome to Azul" class="welcome-logo" />
+            </div>
 
             <form class="form">
                 <p class="title">Log In</p>
                 <p class="message">Sign in now to start playing</p>
 
-                <span>Email</span>
-                <label>
-                    <input class="input" type="email" id="email" name="email" placeholder="" required="">
-                    <span>Enter your email</span>
-                </label>
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input class="input" type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
 
-                <span>Password</span>
-                <label>
-                    <input class="input" type="password" id="password" name="password" placeholder="" required="">
-                    <span>Enter your password</span>
-                </label>
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input class="input" type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <button type="button" id="toggle-password" class="toggle-password" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                </div>
+
+                <div class="remember-forgot">
+                    <div class="remember">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
 
                 <button class="submit" type="submit">Sign In</button>
                 <p class="signin">Don't have an account yet? <a href="register.html">Sign Up</a></p>
@@ -63,6 +53,14 @@
         <aside class="leaderboard-sidebar">
             <div class="leaderboard" id="leaderboard-container">
                 <!-- Dynamic leaderboard content will be loaded here -->
+                <h3><i class="fas fa-trophy"></i> Top Players</h3>
+                <div class="leaderboard-tabs">
+                    <button class="tab-btn active" data-tab="all">All Time</button>
+                    <button class="tab-btn" data-tab="weekly">This Week</button>
+                </div>
+                <div class="leaderboard-content">
+                    <!-- Loading spinner will appear here initially -->
+                </div>
             </div>
         </aside>
     </div>
