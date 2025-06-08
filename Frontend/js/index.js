@@ -1,11 +1,6 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
 
-    const rememberedEmail = localStorage.getItem("rememberEmail");
-    const rememberedPassword = localStorage.getItem("rememberPassword");
-
-    if (rememberedEmail && rememberedPassword) {
-        sendLogin({ email: rememberedEmail, password: rememberedPassword });
-    }
+    
 
 
     // Form elements
@@ -24,6 +19,13 @@
     // Check for registration success
     const urlParams = new URLSearchParams(window.location.search)
     const registrationSuccess = urlParams.get("registration")
+
+    const rememberedEmail = localStorage.getItem("rememberEmail");
+    const rememberedPassword = localStorage.getItem("rememberPassword");
+
+    if (rememberedEmail && rememberedPassword) {
+        sendLogin({ email: rememberedEmail, password: rememberedPassword });
+    }
 
     if (registrationSuccess === "success") {
         const registeredEmail = localStorage.getItem("registeredEmail")
