@@ -269,7 +269,7 @@ function updateGamePreview() {
         playerIconsContainer.innerHTML = ""
 
         // Add human player icons
-        for (let i = 0; i < players; i++) {
+        for (let i = 0; i < players - bots; i++) {
             const icon = document.createElement("div")
             icon.className = "player-icon human"
             icon.innerHTML = '<i class="fas fa-user"></i>'
@@ -472,8 +472,8 @@ function showHistory() {
 function logout() {
     if (confirm("Are you sure you want to logout?")) {
         sessionStorage.clear()
-        localStorage.removeItem("email")
-        localStorage.removeItem("password")
+        localStorage.removeItem("rememberEmail")
+        localStorage.removeItem("rememberPassword")
         window.location.href = "index.html"
     }
 }
