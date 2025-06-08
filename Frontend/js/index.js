@@ -242,7 +242,7 @@
                     sessionStorage.setItem("userToken", token);
                 }
                 sessionStorage.setItem("userToken", token)
-                window.location.href = "./lobby.html?token=" + token
+                window.location.href = "./lobby2.html?token=" + token
             })
             .catch((error) => {
                 showError("form", error.message)

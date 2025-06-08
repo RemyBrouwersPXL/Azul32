@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azul - Game Lobby</title>
+    <link href="CSS/lobby2.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="./Images/logo.jpg">
+</head>
+<body>
+    <!-- Header -->
+    <header class="lobby-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="./Images/Untitled design.png" alt="Azul" class="header-logo" />
+                <div class="welcome-text">
+                    <h1>Welcome back, <span id="player-name">Player</span>!</h1>
+                    <p>Ready for another game?</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="profile-btn" onclick="openModal()">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </button>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="lobby-main">
+        <div class="lobby-container">
+            <!-- Quick Stats -->
+            <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-wins">0</h3>
+                        <p>Total Wins</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="games-played">0</h3>
+                        <p>Games Played</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="highest-score">0</h3>
+                        <p>Best Score</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="win-rate">0%</h3>
+                        <p>Win Rate</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Game Actions -->
+            <section class="game-section">
+                <div class="main-game-card">
+                    <div class="game-card-header">
+                        <h2><i class="fas fa-play"></i> Start New Game</h2>
+                        <p>Configure your game settings and find opponents</p>
+                    </div>
+
+                    <form class="game-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="player">
+                                    <i class="fas fa-users"></i>
+                                    Players
+                                </label>
+                                <select class="input" id='player' name='player' required>
+                                    <option value="2">2 players</option>
+                                    <option value="3">3 players</option>
+                                    <option value="4">4 players</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bots">
+                                    <i class="fas fa-robot"></i>
+                                    Bots
+                                </label>
+                                <select class="input" id='bots' name='bots' required>
+                                    <option value="0">0 bots</option>
+                                    <option value="1">1 bot</option>
+                                    <option value="2">2 bots</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="game-preview">
+                            <div class="preview-info">
+                                <span class="preview-text">Game will have <strong id="total-players">2</strong> players</span>
+                                <div class="player-icons" id="player-icons">
+                                    <!-- Dynamic player icons will be added here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-search"></i>
+                            Find Game
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="showLeaderboard()">
+                        <i class="fas fa-trophy"></i>
+                        <span>Leaderboard</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="showInstructions()">
+                        <i class="fas fa-book"></i>
+                        <span>How to Play</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="showHistory()">
+                        <i class="fas fa-history"></i>
+                        <span>Game History</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Recent Activity -->
+            <section class="activity-section">
+                <h3><i class="fas fa-clock"></i> Recent Activity</h3>
+                <div class="activity-list" id="activity-list">
+                    <!-- Dynamic activity items will be loaded here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loader-overlay" id="loaderOverlay" hidden="hidden">
+        <div class="loader-section">
+            <div class="loader">
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+                <div class="square"></div>
+            </div>
+            <div class="loading-msg" id="loading_msg">
+                Searching for tables...
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-cog"></i> Profile Settings</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+
+            <div class="modal-body">
+                <div class="avatar-section">
+                    <div class="current-avatar">
+                        <img src="https://www.pngkey.com/png/full/115-1150420_avatar-png-pic-male-avatar-icon-png.png" alt="Avatar" id="avatar-preview">
+                    </div>
+                    <div class="avatar-actions">
+                        <button type="button" class="btn secondary">Choose Avatar</button>
+                        <button type="button" class="btn secondary">Upload Image</button>
+                    </div>
+                </div>
+
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">
+                            <i class="fas fa-user"></i>
+                            Display Name
+                        </label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-palette"></i>
+                            Player Color
+                        </label>
+                        <div class="color-options">
+                            <label class="color-option">
+                                <input type="radio" name="color" value="red">
+                                <span class="color red"></span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="color" value="blue">
+                                <span class="color blue"></span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="color" value="green">
+                                <span class="color green"></span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="color" value="orange">
+                                <span class="color orange"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio">
+                            <i class="fas fa-quote-left"></i>
+                            Bio
+                        </label>
+                        <textarea id="bio" name="bio" placeholder="Tell others about yourself..." rows="3"></textarea>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn primary">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                        <button type="button" class="btn secondary" onclick="closeModal()">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
+                <span class="close" onclick="closeLeaderboardModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="leaderboard-tabs">
+                    <button class="tab-btn active" data-tab="all">All Time</button>
+                    <button class="tab-btn" data-tab="weekly">This Week</button>
+                </div>
+                <div class="leaderboard-content" id="leaderboard-container">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/lobby2.js"></script>
+</body>
+</html>
