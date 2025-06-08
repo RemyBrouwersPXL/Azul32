@@ -255,7 +255,7 @@ function getTimeDifference(date) {
 function updateGamePreview() {
     const players = Number.parseInt(document.getElementById("player").value)
     const bots = Number.parseInt(document.getElementById("bots").value)
-    const total = players + bots
+    const total = players
 
     // Update total players text
     const totalPlayersElement = document.getElementById("total-players")
@@ -472,6 +472,8 @@ function showHistory() {
 function logout() {
     if (confirm("Are you sure you want to logout?")) {
         sessionStorage.clear()
+        localStorage.removeItem("email")
+        localStorage.removeItem("password")
         window.location.href = "index.html"
     }
 }
