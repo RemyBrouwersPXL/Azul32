@@ -1,4 +1,13 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
+
+    const rememberedEmail = localStorage.getItem("rememberEmail");
+    const rememberedPassword = localStorage.getItem("rememberPassword");
+
+    if (rememberedEmail && rememberedPassword) {
+        sendLogin({ email: rememberedEmail, password: rememberedPassword });
+    }
+
+
     // Form elements
     const loginForm = document.querySelector(".form")
     const submitButton = document.querySelector(".submit")
@@ -138,6 +147,7 @@
     // Helper Functions
     function handleSubmitButtonClick(event) {
         event.preventDefault()
+        
 
         const email = emailInput.value.trim()
         const password = passwordInput.value
@@ -154,6 +164,14 @@
         if (!password) {
             showError("password", "Password is required!")
             isValid = false
+        }
+        const rememberMe = document.getElementById("remember-me").checked;
+        if (rememberMe) {
+            localStorage.setItem("rememberEmail", email);
+            localStorage.setItem("rememberPassword", password);
+        } else {
+            localStorage.removeItem("rememberEmail");
+            localStorage.removeItem("rememberPassword");
         }
 
         if (isValid) {
@@ -215,6 +233,12 @@
             })
             .then((data) => {
                 const token = data.token
+                rememberMe = document.getElementById("remember-me").checked;
+                if (rememberMe) {
+                    localStorage.setItem("userToken", token);
+                } else {
+                    sessionStorage.setItem("userToken", token);
+                }
                 sessionStorage.setItem("userToken", token)
                 window.location.href = "./lobby.html?token=" + token
             })
